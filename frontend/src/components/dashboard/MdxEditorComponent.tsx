@@ -109,7 +109,7 @@ export default function MdxEditorComponent({
               <div className="w-full bg-white border-b border-gray-300 shadow-sm sticky top-0 z-40">
                 
                 {/* 1. TOP TITLE & QUICK ACTION BAR (Edge-to-Edge with Curved Buttons) */}
-                <div className="w-full flex items-center justify-between px-4 py-2 bg-[#2B579A] text-white border-b border-[#1E3E6D]">
+                <div className="w-full flex items-center justify-between px-4 py-2 bg-[#1E293B] text-white border-b border-[#0F172A]">
                   <div className="flex items-center gap-3">
                     <button 
                       onClick={onBack} 
@@ -119,10 +119,10 @@ export default function MdxEditorComponent({
                       <ArrowLeft className="w-4 h-4" />
                     </button>
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 bg-blue-500 rounded-lg flex items-center justify-center text-[11px] font-bold text-white shadow-inner">
-                        W
+                      <div className="w-6 h-6 bg-purple-600 rounded-lg flex items-center justify-center text-[11px] font-bold text-white shadow-inner">
+                        ✦
                       </div>
-                      <span className="text-xs font-semibold tracking-wide text-white">Lumina Word</span>
+                      <span className="text-xs font-semibold tracking-wide text-white">Lumina Studio</span>
                       <span className="text-white/40 text-xs">|</span>
                       <span className="text-xs text-white/90 font-medium truncate max-w-xs sm:max-w-md">{title || "Document"}</span>
                     </div>
@@ -130,18 +130,18 @@ export default function MdxEditorComponent({
 
                   {/* Document Stats & Curved Action Buttons */}
                   <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="hidden md:flex items-center gap-2.5 text-[11px] text-blue-100 bg-[#1E3E6D] px-3 py-1 rounded-full border border-white/10">
+                    <div className="hidden md:flex items-center gap-2.5 text-[11px] text-slate-200 bg-[#0F172A] px-3 py-1 rounded-full border border-white/10">
                       <span className="flex items-center gap-1">
-                        <FileText className="w-3 h-3 text-blue-300" />
+                        <FileText className="w-3 h-3 text-purple-400" />
                         {stats.words} words
                       </span>
                       <span>•</span>
                       <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3 text-blue-300" />
+                        <Clock className="w-3 h-3 text-purple-400" />
                         {stats.readTime} min read
                       </span>
                       <span>•</span>
-                      <span className="text-emerald-300 font-medium flex items-center gap-1">
+                      <span className="text-emerald-400 font-medium flex items-center gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                         Auto-saved
                       </span>
@@ -171,7 +171,7 @@ export default function MdxEditorComponent({
                       <button 
                         onClick={onDownload} 
                         disabled={isDownloading} 
-                        className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-black/80 hover:bg-black text-white transition-colors text-xs font-semibold shadow-sm disabled:opacity-50 cursor-pointer"
+                        className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-purple-600 hover:bg-purple-500 text-white transition-colors text-xs font-semibold shadow-sm disabled:opacity-50 cursor-pointer"
                         title="Compile and Download formatted PDF"
                       >
                         <Download className="w-3.5 h-3.5" />
@@ -181,26 +181,26 @@ export default function MdxEditorComponent({
                   </div>
                 </div>
 
-                {/* 2. MS WORD STYLE RIBBON (Curved Controls Throughout) */}
-                <div className="w-full bg-[#F3F2F1] px-4 py-2.5 border-b border-gray-300 overflow-x-auto flex items-stretch gap-4 min-h-[96px]">
+                {/* 2. LUMINA STUDIO FORMATTING TOOLBAR (Curved Controls Throughout) */}
+                <div className="w-full bg-[#F8FAFC] px-4 py-2.5 border-b border-gray-300 overflow-x-auto flex items-stretch gap-4 min-h-[96px]">
                   
-                  {/* GROUP 1: FONT PROPER */}
+                  {/* GROUP 1: FONT & TYPOGRAPHY */}
                   <div className="flex flex-col justify-between border-r border-gray-300 pr-4 shrink-0">
                     <div className="flex flex-col gap-1.5">
                       {/* Curved Font Family & Size Controls */}
                       <div className="flex items-center gap-1.5">
                         <div className="relative">
-                          <select className="border border-gray-300 rounded-xl bg-white text-xs px-3 py-1 w-36 h-7 font-medium text-gray-700 outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 shadow-2xs cursor-pointer">
-                            <option value="Calibri">Calibri (Body)</option>
+                          <select className="border border-gray-300 rounded-xl bg-white text-xs px-3 py-1 w-36 h-7 font-medium text-gray-700 outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 shadow-2xs cursor-pointer">
+                            <option value="Inter">Inter (Default)</option>
+                            <option value="Calibri">Calibri</option>
                             <option value="Times New Roman">Times New Roman</option>
                             <option value="Arial">Arial</option>
                             <option value="Georgia">Georgia</option>
-                            <option value="Inter">Inter</option>
                             <option value="Courier New">Courier New</option>
                           </select>
                         </div>
                         <div className="relative">
-                          <select className="border border-gray-300 rounded-xl bg-white text-xs px-2.5 py-1 w-14 h-7 font-medium text-gray-700 outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 shadow-2xs cursor-pointer">
+                          <select className="border border-gray-300 rounded-xl bg-white text-xs px-2.5 py-1 w-14 h-7 font-medium text-gray-700 outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 shadow-2xs cursor-pointer">
                             <option value="10">10</option>
                             <option value="11">11</option>
                             <option value="12" selected>12</option>
@@ -290,11 +290,11 @@ export default function MdxEditorComponent({
                   <div className="flex flex-col justify-between border-r border-gray-300 pr-4 shrink-0">
                     <div className="flex items-center gap-2">
                       {/* Curved Table Insertion Box */}
-                      <div className="flex flex-col items-center justify-center p-2 rounded-2xl bg-white border border-gray-300 hover:border-blue-500 hover:bg-blue-50/50 transition-all cursor-pointer shadow-2xs group min-w-[70px]">
-                        <div className="flex items-center justify-center text-blue-600 mb-0.5 group-hover:scale-105 transition-transform">
+                      <div className="flex flex-col items-center justify-center p-2 rounded-2xl bg-white border border-gray-300 hover:border-purple-500 hover:bg-purple-50/50 transition-all cursor-pointer shadow-2xs group min-w-[70px]">
+                        <div className="flex items-center justify-center text-purple-600 mb-0.5 group-hover:scale-105 transition-transform">
                           <InsertTable />
                         </div>
-                        <span className="text-[11px] font-bold text-gray-700 group-hover:text-blue-700">Table</span>
+                        <span className="text-[11px] font-bold text-gray-700 group-hover:text-purple-700">Table</span>
                       </div>
 
                       {/* Additional Insert Tools */}

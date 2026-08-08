@@ -85,10 +85,10 @@ export default function PdfDocumentCard({ title, initialContent }: PdfDocumentCa
           <div className="w-px h-4 bg-white/10 mx-1"></div>
           <button 
             onClick={handleOpenEdit}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white transition-colors shadow-sm cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-purple-600 hover:bg-purple-500 text-white transition-colors shadow-sm cursor-pointer"
           >
             <Edit3 className="w-3.5 h-3.5" />
-            <span>Edit in Word Editor</span>
+            <span>Open Studio</span>
           </button>
         </div>
         
@@ -141,14 +141,14 @@ export default function PdfDocumentCard({ title, initialContent }: PdfDocumentCa
       <div className="w-full max-w-2xl bg-white border border-black/[0.08] rounded-2xl overflow-hidden shadow-sm my-2 transition-all hover:shadow-md">
         <div className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#FDFBF7]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-red-50 flex items-center justify-center shrink-0 border border-red-100">
-              <FileText className="w-5 h-5 text-red-500" />
+            <div className="w-10 h-10 rounded-2xl bg-purple-50 flex items-center justify-center shrink-0 border border-purple-100">
+              <FileText className="w-5 h-5 text-purple-600" />
             </div>
             <div>
               <h3 className="text-sm font-bold text-black">{title}</h3>
               <p className="text-[11px] text-emerald-600 font-medium flex items-center gap-1 mt-0.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                PDF Ready • Auto-synced
+                Document Ready • Auto-synced
               </p>
             </div>
           </div>
@@ -163,7 +163,7 @@ export default function PdfDocumentCard({ title, initialContent }: PdfDocumentCa
             </button>
             <button 
               onClick={handleOpenEdit}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-sm cursor-pointer"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold text-white bg-purple-600 hover:bg-purple-500 transition-colors shadow-sm cursor-pointer"
             >
               <Edit3 className="w-3.5 h-3.5" />
               <span>Edit</span>

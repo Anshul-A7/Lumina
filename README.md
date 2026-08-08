@@ -3,7 +3,7 @@
 <br />
 
 # ✨ Lumina
-### The Enterprise AI-Powered Note Management, Conversational Document Engine & WYSIWYG Word Processor
+### The Enterprise AI-Powered Note Management, Conversational Document Engine & Visual Document Studio
 
 <br />
 
@@ -24,7 +24,7 @@
   <img alt="Swagger" src="https://img.shields.io/badge/API_Docs-OpenAPI_3.0-85EA2D?style=flat-square&logo=swagger&logoColor=white" />
 </p>
 
-> **Where Intelligence Meets Document Engineering** — Seamlessly synthesize notes, orchestrate AI workflows, edit with an authentic MS Word-style Ribbon editor, and compile high-resolution multi-page PDF documents.
+> **Where Intelligence Meets Document Engineering** — Seamlessly synthesize notes, orchestrate AI workflows, format with Lumina's visual document studio, and compile high-resolution multi-page PDF documents.
 
 <br />
 
@@ -41,7 +41,7 @@
 - [Key Features](#-key-features)
 - [Technology Stack](#-technology-stack)
 - [Project Structure](#-project-structure)
-- [MS Word Ribbon WYSIWYG Editor](#-ms-word-ribbon-wysiwyg-editor)
+- [Lumina Studio (Visual Document Editor)](#-lumina-studio-visual-document-editor)
 - [Multi-Page PDF Engine](#-multi-page-pdf-engine)
 - [REST API Reference](#-rest-api-reference)
 - [Quick Start Guide](#-quick-start-guide)
@@ -59,7 +59,7 @@
 **Lumina** is a full-stack, enterprise-grade AI note-taking and document intelligence platform. It bridges the gap between raw conversational LLM outputs and publication-ready documents by providing:
 
 1. **Conversational Synthesis**: An interactive AI chat interface that streams structured technical manuals, summaries, and notes.
-2. **Lumina Word (WYSIWYG Ribbon)**: A desktop-class visual editor featuring a true MS Word ribbon toolbar, real-time font and paragraph controls, data table insertion, live word/read-time metrics, and instant auto-saving.
+2. **Lumina Studio**: A modern, interactive visual editor featuring a rich formatting toolbar, real-time font and paragraph controls, data table insertion, live word/read-time metrics, and instant auto-saving.
 3. **High-Fidelity PDF Engine**: An automated backend compilation service using Apache PDFBox that handles multi-page typography, line-wrapping, and smart blank-page suppression.
 4. **Centralized Workspace**: A document vault equipped with real-time search, multi-column sorting, instant modal previews, and batch export.
 
@@ -73,8 +73,8 @@
 │                     Next.js 16.3 + React 19 + TypeScript                    │
 │                                                                             │
 │   ┌─────────────────────┐   ┌────────────────────────┐   ┌──────────────┐   │
-│   │  Chat & Co-Pilot    │   │  Lumina Word (Ribbon)  │   │  Workspace   │   │
-│   │  Conversational UI  │   │  WYSIWYG Lexical/MDX   │   │  PDF Vault   │   │
+│   │  Chat & Co-Pilot    │   │     Lumina Studio      │   │  Workspace   │   │
+│   │  Conversational UI  │   │  Visual WYSIWYG Editor │   │  PDF Vault   │   │
 │   └──────────┬──────────┘   └───────────┬────────────┘   └──────┬───────┘   │
 │              │                          │                       │           │
 │              └──────────────────────────┼───────────────────────┘           │
@@ -121,9 +121,9 @@
 - **Custom Prompt Transformation**: Re-write, summarize, expand, or adjust the tone of any document with prompt-driven AI edits.
 - **Continuous Chat Memory**: Context-aware chat sessions with persistent note history.
 
-### 📝 2. Lumina Word (MS Word Ribbon Editor)
-- **Border-to-Border Ribbon Toolbar**: An authentic word processor ribbon featuring organized Font, Paragraph, Insert, and Status groups.
-- **Full Typography Control**: Select from standard typefaces (Calibri, Times New Roman, Arial, Georgia, Inter, Courier New) and font sizes (10pt to 24pt).
+### 📝 2. Lumina Studio (Visual Document Editor)
+- **Border-to-Border Toolbar**: A clean, modern formatting toolbar featuring organized Font, Paragraph, Insert, and Status groups.
+- **Full Typography Control**: Select from standard typefaces (Inter, Calibri, Times New Roman, Arial, Georgia, Courier New) and font sizes (10pt to 24pt).
 - **Rich Text Styling**: One-click Bold, Italic, Underline, Strikethrough, Superscript, Subscript, and Inline Code toggles.
 - **Data Table Builder**: Interactive grid tool to insert and format data tables with custom rows and columns.
 - **Live Document Telemetry**: Real-time word count, character count, and estimated reading time indicators.
@@ -150,7 +150,7 @@
 | **Language** | **TypeScript 5** | Strict type safety across all components and services |
 | **Styling** | **Tailwind CSS 4** | Ultra-modern utility classes, fluid spacing, and custom typography |
 | **Animation** | **Framer Motion** | Physics-based micro-interactions, modal transitions, and layout animations |
-| **WYSIWYG Engine** | **MDXEditor / Lexical** | Visual markdown editor with MS Word Ribbon layout |
+| **Visual Editor Engine**| **MDXEditor / Lexical** | Visual document canvas with custom studio toolbar |
 | **Backend Framework** | **Spring Boot 3.5.x** | Enterprise Java web framework with layered architecture |
 | **Backend Language** | **Java 21 LTS** | Modern Java with virtual threads, pattern matching, and records |
 | **AI Integration** | **Spring AI** | OpenAI GPT-4o / GPT-3.5 API integration for document intelligence |
@@ -187,35 +187,33 @@ Lumina/
 │   │   │   └── dashboard/                # Main Dashboard & Workspace Routing
 │   │   ├── components/                   # UI Component Architecture
 │   │   │   ├── chat/                     # Rich Chat Bubbles & Markdown Renderers
-│   │   │   └── dashboard/                # Lumina Word, Workspace, Account, & Settings
+│   │   │   └── dashboard/                # Lumina Studio, Workspace, Account, & Settings
 │   │   ├── lib/                          # API Services, PDF Helpers, & Network Clients
 │   │   └── services/                     # Business Services (AuthService, NotesService)
 │   ├── package.json                      # NPM dependencies & scripts
 │   ├── tailwind.config.ts                # Tailwind design tokens & typography
 │   └── README.md                         # Detailed Frontend Documentation
 │
-├── README-FRONTEND.md                    # Root-level Frontend Reference
-├── README-BACKEND.md                     # Root-level Backend Reference
 └── README.md                             # Main Platform Overview (This Document)
 ```
 
 ---
 
-## 💻 MS Word Ribbon WYSIWYG Editor
+## 💻 Lumina Studio (Visual Document Editor)
 
-The **Lumina Word** component provides a desktop-class document editing experience within the web browser:
+The **Lumina Studio** component provides a desktop-class document editing experience within the web browser:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│ [←] [W] Lumina Word | Technical Reference Manual   [Copy] [Save & Return] [PDF]│
+│ [←] [✦] Lumina Studio | Technical Reference Manual  [Copy] [Save & Return] [PDF]│
 ├─────────────────────────────────────────────────────────────────────────────┤
-│ [Calibri ▾] [12 ▾] │ [Heading 1 ▾] [↶ ↷] │ [田 Table] [🔗 Link] │ [● Auto-sync]│
+│ [Inter ▾] [12 ▾]   │ [Heading 1 ▾] [↶ ↷] │ [田 Table] [🔗 Link] │ [● Auto-sync]│
 │ [B I U] [S X² X₂]  │ [• 1. ✓] [≡ ≡ ≡ ≡]  │                     │              │
 │       Font         │      Paragraph      │       Insert        │    Status    │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Seamless Synchronization**: Edits made in the WYSIWYG canvas are maintained as structured Markdown, ensuring that the backend PDF renderer outputs the exact same layout.
+- **Seamless Synchronization**: Edits made in the visual canvas are maintained as structured Markdown, ensuring that the backend PDF renderer outputs the exact same layout.
 - **Curved Micro-Design**: Built with softly curved pill buttons (`rounded-full`, `rounded-xl`, `rounded-2xl`) for a modern, tactile feel.
 - **AI Co-Pilot Drawer**: A floating prompt bar allows users to instruct the AI to make surgical additions, tone modifications, or structural re-writes.
 

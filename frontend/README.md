@@ -21,7 +21,7 @@
 - [Architecture & Design System](#-architecture--design-system)
 - [Directory Structure](#-directory-structure)
 - [Component Breakdown](#-component-breakdown)
-  - [1. Lumina Word (MS Word Ribbon Editor)](#1-lumina-word-ms-word-ribbon-editor)
+  - [1. Lumina Studio (Visual Document Editor)](#1-lumina-studio-visual-document-editor)
   - [2. Workspace & PDF Vault](#2-workspace--pdf-vault)
   - [3. Conversational AI & Co-Pilot](#3-conversational-ai--co-pilot)
   - [4. Authentication & Protected Routes](#4-authentication--protected-routes)
@@ -35,7 +35,7 @@
 
 The **Lumina Frontend** is a cutting-edge **Next.js 16.3 single-page application** powered by React 19, Turbopack, and Tailwind CSS v4. It delivers a desktop-class editing experience directly in the browser, featuring:
 
-- **Lumina Word**: A true MS Word ribbon WYSIWYG editor with live markdown compilation, font typography selectors, table creation, and auto-sync.
+- **Lumina Studio**: A visual document editor with live markdown compilation, font typography selectors, table creation, and auto-sync.
 - **Conversational Document Workspace**: An AI chat interface that streams formatted technical documents, summaries, and code snippets.
 - **PDF Vault**: A high-density data table for managing, filtering, previewing, and downloading PDF files.
 - **Fluid Micro-Interactions**: Physics-based smooth transitions powered by Framer Motion.
@@ -64,7 +64,7 @@ frontend/src/
 │   │   └── TypingIndicator.tsx       # Real-time streaming pulse
 │   └── dashboard/
 │       ├── EditPdfView.tsx           # Full-screen Editor Container & AI Co-Pilot
-│       ├── MdxEditorComponent.tsx    # Lexical/MDX MS Word Ribbon Component
+│       ├── MdxEditorComponent.tsx    # Lexical/MDX Visual Studio Component
 │       ├── PdfDocumentCard.tsx       # Interactive Chat PDF Artifact Card
 │       ├── WorkspaceView.tsx         # Document Vault & Filterable Table
 │       ├── AccountView.tsx           # User Profile & Security Settings
@@ -87,10 +87,10 @@ frontend/src/
 
 ## 🧩 Component Breakdown
 
-### 1. Lumina Word (MS Word Ribbon Editor)
+### 1. Lumina Studio (Visual Document Editor)
 Located in [`src/components/dashboard/MdxEditorComponent.tsx`](./src/components/dashboard/MdxEditorComponent.tsx):
-- **Border-to-Border Ribbon**: The toolbar touches top, left, and right borders with zero gap.
-- **Font Controls**: Font family select (Calibri, Times New Roman, Arial, Georgia, Inter, Courier New), font size select (10–24pt), Bold, Italic, Underline, Strikethrough, Superscript, Subscript, Code toggle, and Color pickers.
+- **Border-to-Border Formatting Toolbar**: The toolbar touches top, left, and right borders with zero gap.
+- **Font Controls**: Font family select (Inter, Calibri, Times New Roman, Arial, Georgia, Courier New), font size select (10–24pt), Bold, Italic, Underline, Strikethrough, Superscript, Subscript, Code toggle, and Color pickers.
 - **Paragraph Controls**: Heading level dropdown (H1–H6, Quote), Bullet & Numbered lists, Checklists, Undo/Redo, and Alignment mockup controls.
 - **Table Insert Box**: A dedicated curved grid button that opens the interactive table designer.
 - **Auto-Saving & Save & Return**: Edits are immediately synced to `sessionStorage` and dispatched via `CustomEvent('lumina:pdf_saved')` so chat cards immediately reflect updates.
@@ -105,7 +105,7 @@ Located in [`src/components/dashboard/WorkspaceView.tsx`](./src/components/dashb
 ### 3. Conversational AI & Co-Pilot
 Located in [`src/app/dashboard/page.tsx`](./src/app/dashboard/page.tsx) and [`src/components/chat/RichMessage.tsx`](./src/components/chat/RichMessage.tsx):
 - **Streaming Response Renderer**: Renders markdown, tables, headings, and code blocks with copy-to-clipboard actions.
-- **PDF Document Card**: When an AI response includes a document, it renders [`PdfDocumentCard.tsx`](./src/components/dashboard/PdfDocumentCard.tsx) with direct Preview, Edit in Word Editor, and Download actions.
+- **PDF Document Card**: When an AI response includes a document, it renders [`PdfDocumentCard.tsx`](./src/components/dashboard/PdfDocumentCard.tsx) with direct Preview, Open Studio, and Download actions.
 
 ---
 
