@@ -17,7 +17,12 @@ export const metadata: Metadata = {
   title: "Lumina | The Sovereign Workspace for Deep Thinkers",
   description: "Lumina is a premium full-stack application built with Next.js and Spring Boot. A distraction-free sanctuary for thoughts.",
   icons: {
-    icon: "/images/lumina-icon.png",
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon" }
+    ],
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
   }
 };
 
