@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { AuthService } from "@/services/auth.service";
 import { UserService, Notification } from "@/services/user.service";
+import LuminaLogo from "@/components/common/LuminaLogo";
 import { getSubscription } from "@/lib/subscription.service";
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -176,21 +177,8 @@ export default function DashboardLayout({
           <div className="h-4 w-[1px] bg-black/[0.08]" />
 
           {/* Logo & Brand Name */}
-          <Link href="/dashboard" className="flex items-center gap-2.5 group cursor-pointer">
-            <div className="w-7 h-7 rounded-lg bg-black text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L2 12L12 22L22 12L12 2Z" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <circle cx="12" cy="12" r="3" fill="currentColor"/>
-              </svg>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-bold text-black text-base tracking-tight font-heading">
-                Lumina
-              </span>
-              <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-black/[0.05] text-black/60 tracking-wider uppercase">
-                Notes
-              </span>
-            </div>
+          <Link href="/dashboard" className="cursor-pointer">
+            <LuminaLogo size={28} badge="Notes" />
           </Link>
         </div>
 

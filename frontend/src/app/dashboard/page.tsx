@@ -39,6 +39,7 @@ import SettingsView from "@/components/dashboard/SettingsView";
 import GetPlusView from "@/components/dashboard/GetPlusView";
 import WorkspaceView from "@/components/dashboard/WorkspaceView";
 import EditPdfView from "@/components/dashboard/EditPdfView";
+import { LuminaIcon } from "@/components/common/LuminaLogo";
 
 // Extend Window interface for Google APIs
 declare global {
@@ -670,8 +671,8 @@ function DashboardContent() {
             {(!activeSession) ? (
               // Empty State - Center Screen
               <div className="flex-1 flex flex-col items-center justify-center text-center mt-[-10vh]">
-                <div className="w-16 h-16 bg-black rounded-2xl flex items-center justify-center mb-6 shadow-xl">
-                  <Sparkles className="w-8 h-8 text-white" />
+                <div className="mb-6">
+                  <LuminaIcon size={64} />
                 </div>
                 <h1 className="text-3xl font-bold text-black tracking-tight mb-3" style={{ fontFamily: SERIF }}>
                   Upload or Ask

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Loader2, CheckCircle2, Mail } from "lucide-react";
 import { AuthService } from "@/services/auth.service";
+import LuminaLogo from "@/components/common/LuminaLogo";
 
 /* ══════════════════════════════════════════════════════════════════════════
    LUMINA · Animated Luxury Authentication · Password Recovery
@@ -123,20 +124,8 @@ export default function ForgotPasswordPage() {
           
           {/* Top Header Logo */}
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2.5 group cursor-pointer">
-              <motion.div 
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                whileTap={{ scale: 0.95 }}
-                className="w-8 h-8 rounded-lg bg-black text-white flex items-center justify-center shadow-lg"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 2L2 12L12 22L22 12L12 2Z" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <circle cx="12" cy="12" r="3" fill="currentColor"/>
-                </svg>
-              </motion.div>
-              <span className="font-bold text-black text-base tracking-tight font-heading">
-                Lumina
-              </span>
+            <Link href="/" className="cursor-pointer">
+              <LuminaLogo size={32} />
             </Link>
 
             <motion.div whileHover={{ x: -3 }}>
