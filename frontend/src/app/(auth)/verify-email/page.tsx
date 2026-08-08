@@ -1,0 +1,267 @@
+"use client";
+
+import React, { useState, Suspense } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, Loader2, Mail } from "lucide-react";
+import { AuthService } from "@/services/auth.service";
+import { useRouter, useSearchParams } from "next/navigation";
+
+const SERIF = "'Playfair Display', Georgia, serif";
+
+const easeOut = [0.16, 1, 0.3, 1] as const;
+
+function VerifyEmailForm() {
+  const [token, setToken] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email") || "";
+
+  const handleVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage("");
+
+    if (!token.trim()) {
+      setErrorMessage("Please enter the verification code.");
+      return;
+    }
+
+    if (!email) {
+      setErrorMessage("Missing email parameter. Please sign up again.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await AuthService.verifyEmail(
+        email,
+        token.trim()
+      );
+
+      if (typeof window !== "undefined") {
+        localStorage.setItem("lumina_user_name", response.user.username);
+        localStorage.setItem("lumina_user_email", response.user.email);
+        localStorage.setItem("note_xz_user_name", response.user.username);
+        localStorage.setItem("note_xz_user_email", response.user.email);
+        if (response.user.profileImageUrl) {
+          localStorage.setItem("lumina_user_avatar", response.user.profileImageUrl);
+        }
+      }
+
+      router.push("/dashboard");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Invalid or expired verification code.";
+      setErrorMessage(message);
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen w-full bg-[#FDFBF7] flex items-center justify-center p-4 sm:p-6 md:p-8 font-sans selection:bg-black selection:text-white overflow-hidden">
+      {/* Luxury Split Card Container */}
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.96, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: easeOut }}
+        className="w-full max-w-6xl min-h-[700px] bg-white rounded-[2.5rem] border border-black/[0.08] shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12"
+      >
+        
+        {/* Left Column: Artistic Fluid Gradient Card */}
+        <motion.div 
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.1, ease: easeOut }}
+          className="hidden lg:flex lg:col-span-6 relative bg-black p-12 flex-col justify-between overflow-hidden rounded-[2.2rem] m-3"
+        >
+          {/* Animated High-Resolution Fluid Wave Background */}
+          <motion.img
+            src="/images/auth-waves.png"
+            alt="Fluid Waves Art"
+            animate={{ scale: [1, 1.05, 1], rotate: [0, 0.5, 0] }}
+            transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute inset-0 w-full h-full object-cover object-center opacity-90"
+          />
+          
+          {/* Ambient Dark Vignette & Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/40 pointer-events-none" />
+
+          {/* Top Brand Quote Header */}
+          <motion.div 
+            initial={{ opacity: 0, y: -15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="relative z-10"
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-[11px] font-mono tracking-[0.25em] uppercase font-semibold text-white/90 drop-shadow-sm">
+                SECURITY ENCLAVE
+              </span>
+              <motion.div 
+                initial={{ width: 0 }}
+                animate={{ width: 48 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+                className="h-[1px] bg-white/50" 
+              />
+            </div>
+          </motion.div>
+
+          {/* Bottom Editorial Quote */}
+          <motion.div 
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.4, ease: easeOut }}
+            className="relative z-10 space-y-4 max-w-md"
+          >
+            <h1 
+              style={{ fontFamily: SERIF }} 
+              className="text-4xl sm:text-5xl font-normal tracking-tight text-white leading-[1.15]"
+            >
+              Verify Your <br />
+              Identity
+            </h1>
+            <p className="text-white/75 text-sm sm:text-base font-light leading-relaxed">
+              We need to ensure you own this email address before granting access to your private workspace.
+            </p>
+          </motion.div>
+        </motion.div>
+
+        {/* Right Column: Clean White Minimalist Form */}
+        <motion.div 
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.15, ease: easeOut }}
+          className="lg:col-span-6 p-8 sm:p-12 md:p-16 flex flex-col justify-between bg-white"
+        >
+          
+          {/* Top Header Logo */}
+          <div className="flex items-center justify-between">
+            <Link href="/" className="flex items-center gap-2.5 group cursor-pointer">
+              <motion.div 
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-8 h-8 rounded-lg bg-black text-white flex items-center justify-center shadow-lg"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2L2 12L12 22L22 12L12 2Z" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                </svg>
+              </motion.div>
+              <span className="font-bold text-black text-base tracking-tight font-heading">
+                Lumina
+              </span>
+            </Link>
+
+            <motion.div whileHover={{ x: -3 }}>
+              <Link 
+                href="/login"
+                className="text-xs font-semibold text-black/50 hover:text-black transition-colors flex items-center gap-1.5"
+              >
+                <ArrowLeft size={14} /> Back to Sign In
+              </Link>
+            </motion.div>
+          </div>
+
+          {/* Form Content Area */}
+          <div className="my-auto max-w-md w-full mx-auto py-8">
+            <AnimatePresence mode="wait">
+                <motion.div
+                  key="form"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <div className="text-center mb-8">
+                    <motion.div 
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
+                      className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 mx-auto flex items-center justify-center shadow-xs mb-4"
+                    >
+                      <Mail size={20} />
+                    </motion.div>
+                    <h2 
+                      style={{ fontFamily: SERIF }} 
+                      className="text-3xl sm:text-4xl font-normal text-black tracking-tight mb-2"
+                    >
+                      Check Your Email
+                    </h2>
+                    <p className="text-black/60 text-xs sm:text-sm font-light">
+                      We've sent a 6-digit verification code to <br/>
+                      <span className="font-semibold text-black">{email || "your email"}</span>
+                    </p>
+                  </div>
+
+                  {errorMessage && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mb-6 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2"
+                    >
+                      <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
+                      <span>{errorMessage}</span>
+                    </motion.div>
+                  )}
+
+                  <form onSubmit={handleVerify} className="space-y-4">
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-semibold text-black/80 text-center">
+                        Verification Code
+                      </label>
+                      <input
+                        type="text"
+                        value={token}
+                        onChange={(e) => setToken(e.target.value.replace(/[^0-9]/g, ''))}
+                        placeholder="000000"
+                        maxLength={6}
+                        className="w-full h-14 px-4 rounded-xl bg-[#F4F3EE]/70 border border-black/[0.08] text-2xl text-center tracking-[0.5em] font-mono text-black placeholder:text-black/20 focus:outline-none focus:border-black/40 focus:bg-white transition-all shadow-2xs"
+                        required
+                      />
+                    </div>
+
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      type="submit"
+                      disabled={isLoading || token.length !== 6}
+                      className="w-full h-12 mt-4 rounded-xl bg-black text-white font-semibold text-sm hover:bg-black/90 transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 cursor-pointer"
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 size={16} className="animate-spin" />
+                          <span>Verifying...</span>
+                        </>
+                      ) : (
+                        <span>Verify Email</span>
+                      )}
+                    </motion.button>
+                  </form>
+                </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Bottom Footer Switcher */}
+          <div className="text-center text-xs text-black/60 pt-4">
+            Didn't receive the code?{" "}
+            <Link href="/register" className="font-semibold text-black hover:underline">
+              Try again
+            </Link>
+          </div>
+
+        </motion.div>
+
+      </motion.div>
+    </div>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center"><Loader2 className="animate-spin text-black" size={32} /></div>}>
+      <VerifyEmailForm />
+    </Suspense>
+  )
+}

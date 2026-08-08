@@ -1,0 +1,171 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme inline {
+  /* Luxury White & High-Contrast Light Theme Palette */
+  --color-background: #FDFBF7;
+  --color-foreground: #0A0A0A;
+  
+  --color-card: #FFFFFF;
+  --color-card-foreground: #0A0A0A;
+  
+  --color-popover: #FFFFFF;
+  --color-popover-foreground: #0A0A0A;
+  
+  --color-primary: #0A0A0A;
+  --color-primary-foreground: #FFFFFF;
+  
+  --color-secondary: #F4F3EE;
+  --color-secondary-foreground: #1A1A1A;
+  
+  --color-muted: #F0EFEB;
+  --color-muted-foreground: #666660;
+  
+  --color-accent: #EAE8E0;
+  --color-accent-foreground: #0A0A0A;
+  
+  --color-destructive: #DC2626;
+  --color-destructive-foreground: #FFFFFF;
+  
+  --color-border: #E8E6DE;
+  --color-input: #FFFFFF;
+  --color-ring: #0A0A0A;
+  
+  --radius-lg: 1rem;
+  --radius-md: 0.75rem;
+  --radius-sm: 0.5rem;
+  
+  /* Fonts */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+
+  /* Animations for micro-interactions */
+  --animate-fade-in: fade-in 0.4s ease-out;
+  --animate-fade-up: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* Base resets & utilities */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-black selection:text-white;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+  
+  /* Custom sleek scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #D5D3CB;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #A8A69E;
+  }
+}
+
+/* Light glassmorphism & soft card utilities */
+@layer utilities {
+  .glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  .glass-pill {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+  }
+}
+
+/* Markdown styling for rich AI responses */
+.markdown-content h1, .markdown-content h2, .markdown-content h3, .markdown-content h4 {
+  font-weight: 700;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  letter-spacing: -0.02em;
+}
+.markdown-content h1 { font-size: 1.5rem; }
+.markdown-content h2 { font-size: 1.25rem; }
+.markdown-content h3 { font-size: 1.125rem; }
+
+.markdown-content p {
+  margin-bottom: 1em;
+}
+
+.markdown-content ul, .markdown-content ol {
+  margin-top: 0.5em;
+  margin-bottom: 1em;
+  padding-left: 1.5rem;
+}
+.markdown-content ul { list-style-type: disc; }
+.markdown-content ol { list-style-type: decimal; }
+.markdown-content li { margin-bottom: 0.25em; }
+
+.markdown-content strong {
+  font-weight: 600;
+}
+
+.markdown-content code {
+  background-color: #F4F4F4;
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-size: 0.875em;
+}
+
+.markdown-content pre {
+  background-color: #0A0A0A;
+  color: #FFFFFF;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  overflow-x: auto;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+.markdown-content pre code {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+  font-size: 0.85em;
+}
+
+.markdown-content blockquote {
+  border-left: 4px solid #0A0A0A;
+  background-color: #F9F9F9;
+  padding: 0.75rem 1rem;
+  margin: 1em 0;
+  font-style: italic;
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+}
+.markdown-content th, .markdown-content td {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+.markdown-content th {
+  background-color: #F4F4F4;
+  font-weight: 600;
+}
