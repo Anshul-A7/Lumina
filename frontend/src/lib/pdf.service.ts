@@ -18,12 +18,25 @@ export async function generatePdf(
   title: string,
   sessionId?: number
 ): Promise<Blob> {
-  const { data } = await apiClient.post(
-    '/pdf/generate',
-    { content, title, sessionId: sessionId || null },
-    { responseType: 'blob', timeout: 60000 }
-  );
-  return data;
+  try {
+    const { data } = await apiClient.post(
+      '/pdf/generate',
+      { content, title, sessionId: sessionId || null },
+      { responseType: 'blob', timeout: 90000 }
+    );
+    return data;
+  } catch (error: any) {
+    if (error.response && error.response.data instanceof Blob) {
+      try {
+        const text = await error.response.data.text();
+        const json = JSON.parse(text);
+        throw new Error(json.error || json.message || text);
+      } catch (jsonErr: any) {
+        if (jsonErr.message && !jsonErr.message.includes('JSON')) throw jsonErr;
+      }
+    }
+    throw error;
+  }
 }
 
 export async function listPdfs(): Promise<PdfMetadata[]> {
@@ -32,10 +45,23 @@ export async function listPdfs(): Promise<PdfMetadata[]> {
 }
 
 export async function downloadPdf(pdfId: number): Promise<Blob> {
-  const { data } = await apiClient.get(`/pdf/download/${pdfId}`, {
-    responseType: 'blob',
-  });
-  return data;
+  try {
+    const { data } = await apiClient.get(`/pdf/download/${pdfId}`, {
+      responseType: 'blob',
+    });
+    return data;
+  } catch (error: any) {
+    if (error.response && error.response.data instanceof Blob) {
+      try {
+        const text = await error.response.data.text();
+        const json = JSON.parse(text);
+        throw new Error(json.error || json.message || text);
+      } catch (jsonErr: any) {
+        if (jsonErr.message && !jsonErr.message.includes('JSON')) throw jsonErr;
+      }
+    }
+    throw error;
+  }
 }
 
 export async function deletePdf(pdfId: number): Promise<void> {

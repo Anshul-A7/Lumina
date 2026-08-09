@@ -50,11 +50,11 @@ export default function PdfDocumentCard({ title, initialContent, sessionId }: Pd
   const handleDownload = async () => {
     try {
       setIsDownloading(true);
-      await generateAndDownloadPdf(content, title);
+      await generateAndDownloadPdf(content, title, sessionId);
       toast.success("PDF generated successfully!");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to generate PDF", error);
-      toast.error("Failed to generate PDF. Please try again.");
+      toast.error(error.message || "Failed to generate PDF. Please try again.");
     } finally {
       setIsDownloading(false);
     }

@@ -308,7 +308,7 @@ export default function MdxEditorComponent({
         markdown={cleanMarkdown}
         onChange={handleEditorChange}
         className="w-full flex-1 flex flex-col font-sans"
-        contentEditableClassName="prose prose-sm sm:prose-base max-w-none !px-28 !py-20 min-h-[1056px] focus:outline-none bg-background shadow-lg border border-border mt-6 mb-36 mx-auto w-full max-w-[850px] rounded-2xl transition-all"
+        contentEditableClassName="prose prose-sm sm:prose-base max-w-none px-4 py-8 sm:!px-28 sm:!py-20 min-h-[1056px] focus:outline-none bg-background shadow-lg border border-border mt-3 sm:mt-6 mb-36 mx-auto w-full max-w-[850px] rounded-2xl transition-all"
         plugins={[
           headingsPlugin(),
           listsPlugin(),
@@ -342,28 +342,28 @@ export default function MdxEditorComponent({
               <div className="w-full bg-background border-b border-border shadow-sm sticky top-0 z-50 overflow-visible">
                 
                 {/* 1. TOP TITLE & ACTION BAR */}
-                <div className="w-full flex items-center justify-between px-4 py-2 bg-primary text-primary-foreground border-b border-primary">
-                  <div className="flex items-center gap-3">
+                <div className="w-full flex items-center justify-between gap-2 px-3 sm:px-4 py-2 bg-primary text-primary-foreground border-b border-primary">
+                  <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                     <button 
                       onMouseDown={(e) => e.preventDefault()}
                       onClick={() => onBack(editorRef.current?.getMarkdown() || markdown)} 
-                      className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-background/20 transition-colors text-primary-foreground cursor-pointer"
+                      className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-background/20 transition-colors text-primary-foreground cursor-pointer shrink-0"
                       title="Back to Chat / Workspace"
                     >
                       <ArrowLeft className="w-4 h-4" />
                     </button>
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 bg-purple-600 rounded-lg flex items-center justify-center text-[11px] font-bold text-primary-foreground shadow-inner">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className="w-6 h-6 bg-purple-600 rounded-lg flex items-center justify-center text-[11px] font-bold text-primary-foreground shadow-inner shrink-0">
                         ✦
                       </div>
-                      <span className="text-xs font-semibold tracking-wide text-primary-foreground">Lumina Studio</span>
-                      <span className="text-primary-foreground/40 text-xs">|</span>
-                      <span className="text-xs text-primary-foreground/90 font-medium truncate max-w-xs sm:max-w-md">{title || "Document"}</span>
+                      <span className="text-xs font-semibold tracking-wide text-primary-foreground shrink-0 hidden sm:inline">Lumina Studio</span>
+                      <span className="text-primary-foreground/40 text-xs hidden sm:inline">|</span>
+                      <span className="text-xs text-primary-foreground/90 font-medium truncate max-w-[120px] sm:max-w-md">{title || "Document"}</span>
                     </div>
                   </div>
 
                   {/* Header Metrics & Main Action Buttons */}
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2 sm:gap-4 shrink-0">
                     {/* Live Stats */}
                     <div className="hidden md:flex items-center gap-3 text-xs text-zinc-300 font-medium bg-black/30 px-3.5 py-1 rounded-full border border-white/10">
                       <span>{stats.words} words</span>
@@ -376,26 +376,27 @@ export default function MdxEditorComponent({
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
                       <button 
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={onCopy} 
-                        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-background/10 hover:bg-background/20 text-primary-foreground transition-colors text-xs font-semibold border border-white/20 cursor-pointer shadow-2xs"
+                        className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-full bg-background/10 hover:bg-background/20 text-primary-foreground transition-colors text-xs font-semibold border border-white/20 cursor-pointer shadow-2xs"
                         title="Copy Markdown to clipboard"
                       >
                         {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
-                        <span>Copy</span>
+                        <span className="hidden sm:inline">Copy</span>
                       </button>
 
                       {/* Prominent Curved Save & Return to Chat button */}
                       <button 
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => onSaveAndReturn(editorRef.current?.getMarkdown() || markdown)} 
-                        className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-primary-foreground transition-all text-xs font-bold shadow-md hover:shadow-lg cursor-pointer transform active:scale-95"
+                        className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-primary-foreground transition-all text-xs font-bold shadow-md hover:shadow-lg cursor-pointer transform active:scale-95"
                         title="Save changes and return to chat session"
                       >
                         <Save className="w-3.5 h-3.5" />
-                        <span>Save & Return</span>
+                        <span className="hidden xs:inline">Save & Return</span>
+                        <span className="xs:hidden">Save</span>
                       </button>
 
                       {/* Curved Download PDF button */}
@@ -403,11 +404,11 @@ export default function MdxEditorComponent({
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={onDownload} 
                         disabled={isDownloading} 
-                        className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-purple-600 hover:bg-purple-500 text-primary-foreground transition-colors text-xs font-semibold shadow-sm disabled:opacity-50 cursor-pointer"
+                        className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full bg-purple-600 hover:bg-purple-500 text-primary-foreground transition-colors text-xs font-semibold shadow-sm disabled:opacity-50 cursor-pointer"
                         title="Compile and Download formatted PDF"
                       >
                         <Download className="w-3.5 h-3.5" />
-                        <span>{isDownloading ? "Saving..." : "PDF"}</span>
+                        <span>{isDownloading ? "..." : "PDF"}</span>
                       </button>
                     </div>
                   </div>
@@ -415,7 +416,7 @@ export default function MdxEditorComponent({
 
                 {/* 2. LUMINA STUDIO FORMATTING TOOLBAR */}
                 <DiffSourceToggleWrapper>
-                  <div className="w-full bg-secondary px-4 py-2.5 border-b border-border flex max-md:flex-wrap items-stretch gap-4 min-h-[96px] overflow-visible relative z-40">
+                  <div className="w-full bg-secondary px-3 sm:px-4 py-2.5 border-b border-border flex items-stretch gap-4 min-h-[96px] overflow-x-auto overflow-y-visible scrollbar-none relative z-40">
                     
                     {/* GROUP 1: FONT & TYPOGRAPHY */}
                     <div className="flex flex-col justify-between border-r border-border pr-4 shrink-0 overflow-visible">
