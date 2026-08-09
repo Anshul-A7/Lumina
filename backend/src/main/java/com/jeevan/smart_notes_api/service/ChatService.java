@@ -332,9 +332,22 @@ public class ChatService {
      */
     private String buildConversationHistory(List<ChatMessage> messages) {
         StringBuilder history = new StringBuilder();
-        for (ChatMessage msg : messages) {
+        for (int i = 0; i < messages.size(); i++) {
+            ChatMessage msg = messages.get(i);
             if (msg.getRole() == ChatMessage.Role.USER) {
-                history.append("**You:**\n").append(msg.getContent());
+                String content = msg.getContent() != null ? msg.getContent().trim() : "";
+                boolean isPdfCommand = content.equalsIgnoreCase("Generate PDF")
+                        || content.equalsIgnoreCase("generate a pdf")
+                        || content.equalsIgnoreCase("Generate PDF for the response above")
+                        || content.toLowerCase().startsWith("generate a pdf of the following")
+                        || content.toLowerCase().startsWith("please generate a formatted pdf");
+
+                if (isPdfCommand && i > 0) {
+                    history.append("**You:**\n").append("Please compile and format the immediately preceding response above into a complete, publication-grade study/research document enclosed inside a <pdf_document title=\"...\"> tag. Include all concepts, sections, formulas, and diagrams with complete fidelity.");
+                } else {
+                    history.append("**You:**\n").append(content);
+                }
+
                 if (msg.getAttachmentNames() != null && !msg.getAttachmentNames().isBlank()) {
                     history.append("\n*(Attached Files: ").append(msg.getAttachmentNames()).append(")*");
                 }
