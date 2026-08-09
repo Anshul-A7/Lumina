@@ -905,6 +905,9 @@ function DashboardContent() {
             onClick={() => {
               setActiveSessionId(null);
               setDraftContent("");
+              if (activeTab) {
+                router.push("/dashboard");
+              }
             }}
             title="New Chat"
             className="w-8 h-8 rounded-lg flex items-center justify-center text-foreground/60 hover:text-foreground hover:bg-foreground/[0.04] transition-colors cursor-pointer pointer-events-auto"
