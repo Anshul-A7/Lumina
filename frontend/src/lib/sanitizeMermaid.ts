@@ -1,6 +1,8 @@
 /**
  * Auto-corrects and repairs common LLM syntax mistakes in Mermaid diagrams.
  */
+
+// Basic normalization and syntax auto-repair
 export function sanitizeMermaid(rawChart: string): string {
   if (!rawChart || typeof rawChart !== 'string') return '';
 
@@ -16,6 +18,13 @@ export function sanitizeMermaid(rawChart: string): string {
     .replace(/(-->|-.->|==>|---|--)\s*\|([^|\n]+)\|\s*->/g, '$1|$2| ')
     .replace(/\|\s*>/g, '| ')
     .replace(/\|\s*->/g, '| ');
+
+  // 2. Ensure pipe labels are properly wrapped in quotes to prevent 'got SPACE' errors
+  // e.g. |System Call| -> |"System Call"|
+  chart = chart.replace(/\|([^|\n"]+)\|/g, (match, label) => {
+    const cleanLabel = label.trim().replace(/"/g, "'");
+    return `|"${cleanLabel}"|`;
+  });
 
   const lines = chart.split('\n');
   const sanitizedLines: string[] = [];
@@ -38,26 +47,32 @@ export function sanitizeMermaid(rawChart: string): string {
     const lower = trimmed.toLowerCase();
     if (validHeaders.some(h => lower.startsWith(h))) {
       hasDiagramHeader = true;
+      // Convert legacy 'graph TD' / 'graph LR' to modern 'flowchart TD' / 'flowchart LR'
+      if (lower.startsWith('graph ')) {
+        line = line.replace(/^graph\s+/i, 'flowchart ');
+      }
     }
 
-    // Auto-quote square bracket node labels that contain parentheses, colons, or slashes if not quoted
-    // e.g. A[User Space (User Mode)] -> A["User Space (User Mode)"]
+    // Auto-quote square bracket node labels that contain spaces or special chars
+    // e.g. A[User Space] -> A["User Space"]
     line = line.replace(/([a-zA-Z0-9_-]+)\[([^"\]\n]+)\]/g, (match, id, text) => {
       const trimmedText = text.trim();
-      if (
-        trimmedText.includes('(') || 
-        trimmedText.includes(')') || 
-        trimmedText.includes(':') || 
-        trimmedText.includes(';') || 
-        trimmedText.includes('&') || 
-        trimmedText.includes('/') || 
-        trimmedText.includes('\\') || 
-        trimmedText.includes('-')
-      ) {
-        return `${id}["${trimmedText.replace(/"/g, "'")}"]`;
-      }
-      return match;
+      return `${id}["${trimmedText.replace(/"/g, "'")}"]`;
     });
+
+    // Auto-quote rounded bracket node labels that contain spaces or special chars
+    // e.g. A(User Mode) -> A("User Mode")
+    line = line.replace(/([a-zA-Z0-9_-]+)\(([^"\)\n]+)\)/g, (match, id, text) => {
+      const trimmedText = text.trim();
+      return `${id}("${trimmedText.replace(/"/g, "'")}")`;
+    });
+
+    // Clean up duplicate quotes like [""text""] -> ["text"]
+    line = line
+      .replace(/\[\s*\"+/g, '["')
+      .replace(/\"+\s*\]/g, '"]')
+      .replace(/\(\s*\"+/g, '("')
+      .replace(/\"+\s*\)/g, '")');
 
     sanitizedLines.push(line);
   }
@@ -70,4 +85,21 @@ export function sanitizeMermaid(rawChart: string): string {
   }
 
   return result;
+}
+
+// Fallback aggressive repair for severely corrupted Mermaid charts
+export function aggressiveSanitizeMermaid(rawChart: string): string {
+  let chart = sanitizeMermaid(rawChart);
+  
+  // Strip out edge labels if they still cause parse failures
+  // e.g. A -->|"label"| B -> A --> B
+  chart = chart.replace(/(-->|-.->|==>|---|--)\s*\|[^|\n]+\|\s*/g, '$1 ');
+
+  // Remove invalid style and class definitions
+  const lines = chart.split('\n').filter(line => {
+    const trimmed = line.trim().toLowerCase();
+    return !trimmed.startsWith('style ') && !trimmed.startsWith('classdef ') && !trimmed.startsWith('class ');
+  });
+
+  return lines.join('\n');
 }

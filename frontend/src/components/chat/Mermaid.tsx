@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import mermaid from "mermaid";
 import { Copy, Check, Sparkles } from "lucide-react";
-import { sanitizeMermaid } from "@/lib/sanitizeMermaid";
+import { sanitizeMermaid, aggressiveSanitizeMermaid } from "@/lib/sanitizeMermaid";
 
 mermaid.initialize({
   startOnLoad: false,
@@ -44,30 +44,45 @@ export const Mermaid = ({ chart }: { chart: string }) => {
     let isMounted = true;
     
     const renderChart = async () => {
+      const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
+      const safeChart = sanitizeMermaid(String(chart || ''));
+      if (!safeChart) return;
+      
+      // Pass 1: Try rendering with standard normalized Mermaid
       try {
-        const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
-        const safeChart = sanitizeMermaid(String(chart || ''));
-        if (!safeChart) return;
-        
-        // Validate syntax before rendering to prevent error SVGs from leaking into DOM
         await mermaid.parse(safeChart);
-        
         const { svg } = await mermaid.render(id, safeChart);
         if (isMounted) {
           setSvgContent(svg);
+          return;
         }
-      } catch (err) {
-        console.error("Mermaid parsing failed", err);
-        
-        // Clean up any stray error containers mermaid might have injected into the DOM
-        if (typeof document !== 'undefined') {
-          const strayNodes = document.querySelectorAll('[id^="dmermaid"]');
-          strayNodes.forEach(node => node.remove());
-        }
+      } catch (pass1Error) {
+        console.warn("[Mermaid] Pass 1 parse failed, attempting aggressive repair...", pass1Error);
+      }
 
+      // Clean up stray DOM nodes before pass 2
+      if (typeof document !== 'undefined') {
+        document.querySelectorAll('[id^="dmermaid"]').forEach(n => n.remove());
+      }
+
+      // Pass 2: Aggressive sanitization (strip complex edge labels/styles)
+      try {
+        const pass2Id = `mermaid-p2-${Math.random().toString(36).substr(2, 9)}`;
+        const aggressiveChart = aggressiveSanitizeMermaid(safeChart);
+        await mermaid.parse(aggressiveChart);
+        const { svg } = await mermaid.render(pass2Id, aggressiveChart);
         if (isMounted) {
-          const errMsg = err instanceof Error ? err.message.split('\n')[0] : 'Invalid syntax';
-          setSvgContent(`<div class="p-4 bg-red-950/80 border border-red-800 text-red-300 rounded-xl text-sm font-mono overflow-x-auto whitespace-pre-wrap">Syntax Error in Mermaid Diagram: ${errMsg}</div>`);
+          setSvgContent(svg);
+          return;
+        }
+      } catch (pass2Error) {
+        console.warn("[Mermaid] Pass 2 repair failed:", pass2Error);
+        if (typeof document !== 'undefined') {
+          document.querySelectorAll('[id^="dmermaid"]').forEach(n => n.remove());
+        }
+        if (isMounted) {
+          const errMsg = pass2Error instanceof Error ? pass2Error.message.split('\n')[0] : 'Syntax error';
+          setSvgContent(`<div class="p-4 bg-zinc-950 border border-zinc-800 text-zinc-400 rounded-xl text-xs font-mono overflow-x-auto whitespace-pre-wrap flex items-center gap-2"><span class="text-purple-400 font-bold">Diagram Render Error:</span> ${errMsg}</div>`);
         }
       }
     };
