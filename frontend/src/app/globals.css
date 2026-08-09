@@ -165,13 +165,7 @@
 
 /* Markdown styling for rich AI responses */
 .markdown-content {
-  overflow-wrap: anywhere;
-  word-break: break-word;
   max-width: 100%;
-}
-.markdown-content p, .markdown-content li, .markdown-content h1, .markdown-content h2, .markdown-content h3, .markdown-content h4 {
-  overflow-wrap: anywhere;
-  word-break: break-word;
 }
 .markdown-content h1, .markdown-content h2, .markdown-content h3, .markdown-content h4 {
   font-weight: 700;
@@ -185,6 +179,7 @@
 
 .markdown-content p {
   margin-bottom: 1em;
+  line-height: 1.7;
 }
 
 .markdown-content ul, .markdown-content ol {
@@ -207,8 +202,6 @@
   border-radius: 0.25rem;
   font-family: monospace;
   font-size: 0.875em;
-  overflow-wrap: anywhere;
-  word-break: break-word;
 }
 
 .markdown-content pre {

@@ -891,10 +891,10 @@ function DashboardContent() {
           ) : (
             <>
               {/* Chat Header for Get Plus and New Chat */}
-        <div className="w-full flex items-start justify-between p-3 absolute top-0 left-0 right-0 z-10 pointer-events-none bg-gradient-to-b from-background via-background/95 to-transparent pb-8">
+        <div className="w-full flex items-center justify-between p-3 absolute top-0 left-0 right-0 z-10 pointer-events-none">
           <Link 
             href="/dashboard?tab=get-plus"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-accent hover:bg-muted text-foreground text-[12px] font-bold rounded-full transition-colors cursor-pointer pointer-events-auto"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-accent hover:bg-muted text-foreground text-[12px] font-bold rounded-full transition-colors cursor-pointer pointer-events-auto shadow-xs"
           >
             <Sparkles className="w-3.5 h-3.5" />
             Get Plus
@@ -916,8 +916,8 @@ function DashboardContent() {
         </div>
 
         {/* Chat History / Empty State */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden w-full flex flex-col items-center min-w-0">
-          <div className="w-full max-w-3xl flex-1 flex flex-col pt-16 pb-32 px-4 sm:px-6 min-w-0 overflow-x-hidden">
+        <div className="flex-1 overflow-y-auto w-full flex flex-col items-center">
+          <div className="w-full max-w-3xl flex-1 flex flex-col pt-14 pb-32 px-4 sm:px-6">
             
             {(!activeSession) ? (
               // Empty State - Center Screen
@@ -934,7 +934,7 @@ function DashboardContent() {
               </div>
             ) : (
               // Chat History
-              <div className="w-full flex flex-col gap-6 min-w-0 max-w-full overflow-x-hidden">
+              <div className="w-full flex flex-col gap-6">
                 {activeSession.messages?.map((msg, idx) => {
                   const isLastMessage = idx === activeSession.messages!.length - 1;
                   const isPdfPrompt = msg.role === 'USER' && (

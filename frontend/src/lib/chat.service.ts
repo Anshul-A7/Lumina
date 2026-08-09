@@ -177,8 +177,7 @@ export async function sendMessageStream(
         if (cleanLine.startsWith('event:')) {
           eventName = cleanLine.slice(6).trim();
         } else if (cleanLine.startsWith('data:')) {
-          // In SSE, strip single optional leading space after "data:"
-          const dataContent = cleanLine.startsWith('data: ') ? cleanLine.slice(6) : cleanLine.slice(5);
+          const dataContent = cleanLine.slice(5);
           dataLines.push(dataContent);
         } else if (cleanLine === '') {
           // Empty line signals end of SSE event
