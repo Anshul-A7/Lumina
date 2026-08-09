@@ -77,13 +77,21 @@ public class AiService {
             4. CODE BLOCKS:
                - Wrap all code in fenced code blocks with explicit language tags (e.g., ```python, ```java, ```typescript).
 
-            5. FLOWCHARTS & DIAGRAMS:
-               - When visual structure, lifecycles, or processes are involved, provide complete Mermaid syntax diagrams:
+            5. FLOWCHARTS, ARCHITECTURAL & PROCESS DIAGRAMS:
+               - ABSOLUTE ZERO ASCII ART RULE: You are strictly forbidden from drawing ASCII text-box art (e.g., +-----+ | Box | +-----+). ASCII art is permanently banned.
+               - ALWAYS generate modern, interactive Mermaid diagrams inside ```mermaid code blocks.
+               - Always enclose node names in quotes to avoid syntax breaks:
                  ```mermaid
-                 graph TD
-                     A[Input] --> B[Processing Engine]
-                     B --> C[Result]
+                 flowchart TD
+                     A["User Space (User Mode)"] -->|"System Call (e.g. read, write)"| B["System Call Interface"]
+                     B --> C["Kernel Space (Kernel Mode)"]
+                     C --> D["Process & Memory Management"]
+                     C --> E["VFS / File Systems"]
+                     C --> F["Device Drivers"]
+                     F --> G["Physical Hardware"]
                  ```
+               - For lifecycles or state changes, use `stateDiagram-v2`.
+               - For multi-party interactions, use `sequenceDiagram`.
 
             ═══════════════════════════════════════════════════
             SECTION 4: STRICT PDF GENERATION RULES
@@ -565,14 +573,17 @@ public class AiService {
                     USER EDIT INSTRUCTION FOR THE SELECTED TEXT:
                     %s
 
-                    CRITICAL SURGICAL EDITING RULES:
+                    CRITICAL SURGICAL EDITING & DIAGRAM RULES:
                     1. SURGICAL SELECTION MODIFICATION:
                        - Locate the targeted selection: "%s" in the document.
                        - Modify, rewrite, expand, or replace ONLY that specific selected passage in accordance with the user's instruction.
                        - Leave all preceding and following text, headings, lists, tables, and equations 100%% UNCHANGED word-for-word.
-                    2. RICH & MASTERCLASS QUALITY:
+                    2. DIAGRAMS & CANVAS FLOWCHARTS:
+                       - If asked to create, add, or convert to a diagram, flowchart, or architecture map, NEVER draw ASCII character-art (+-----+ | Box | +-----+). ASCII art is strictly forbidden.
+                       - ALWAYS generate a valid, clean Mermaid diagram inside ```mermaid ... ``` code fences with descriptive, quoted node labels.
+                    3. RICH & MASTERCLASS QUALITY:
                        - If asked to define or expand, deliver a rich, accurate, well-formatted explanation with clear terminology and bold text.
-                    3. OUTPUT FORMAT:
+                    4. OUTPUT FORMAT:
                        - Output ONLY the complete updated Markdown document.
                        - Do NOT include any meta explanations, conversational chatter, or whole-document code fences (```markdown).
                     """.formatted(content, selectedText.trim(), instruction, selectedText.trim());
@@ -586,21 +597,24 @@ public class AiService {
                     USER EDIT INSTRUCTION:
                     %s
 
-                    CRITICAL EDITING INSTRUCTIONS:
+                    CRITICAL EDITING & DIAGRAM INSTRUCTIONS:
                     1. SURGICAL & TARGETED IN-PLACE EDITING:
                        - Apply the user's edit instruction SPECIFICALLY to the targeted section, lines, or paragraph.
                        - PRESERVE all other headings, sections, tables, equations, and text in the document completely intact word-for-word.
                        - Do NOT truncate, summarize, or alter unrelated parts of the document.
-                    2. RICH & COMPLETE EXPANSION:
+                    2. DIAGRAMS & VISUAL FLOWCHARTS:
+                       - If asked to create, add, or convert to a diagram or architecture flow, NEVER draw ASCII character boxes (+---+).
+                       - ALWAYS generate a valid Mermaid diagram inside ```mermaid ... ``` code fences.
+                    3. RICH & COMPLETE EXPANSION:
                        - When asked to add, define, or expand a topic, provide a rich, detailed, well-formatted explanation directly in place.
-                    3. OUTPUT SPECIFICATION:
+                    4. OUTPUT SPECIFICATION:
                        - Return ONLY the full updated Markdown text of the document.
                        - Do NOT include any conversational preamble, explanations, or code fence wrappers around the document.
                     """.formatted(content, instruction);
         }
 
         String result = chatClient.prompt()
-                .system("You are an expert document editor. You strictly return the full modified markdown document with the user's requested changes applied. No filler, no conversational text, no whole-document code fences.")
+                .system("You are an expert document editor. You strictly return the full modified markdown document with the user's requested changes applied. Never use ASCII character art (+---+) for diagrams; always use Mermaid code blocks. No filler, no conversational text, no whole-document code fences.")
                 .user(prompt)
                 .call()
                 .content();
