@@ -88,16 +88,38 @@ public class PdfService {
     public byte[] generatePdf(String content, String title, String email, Long sessionId) {
         User user = findUserByEmail(email);
 
+        // Protect any Mermaid diagrams from AI reformatting alterations
+        List<String> mermaidBlocks = new java.util.ArrayList<>();
+        Pattern mermaidPattern = Pattern.compile("(?s)```(?:mermaid)?\\s*(?:(?:flowchart|graph|sequenceDiagram|stateDiagram|classDiagram|erDiagram|journey|gantt|pie|mindmap)[^`]*|[^`]*-->[^`]*)```");
+        Matcher matcher = mermaidPattern.matcher(content != null ? content : "");
+        StringBuilder protectedContent = new StringBuilder();
+        int placeholderIndex = 0;
+        while (matcher.find()) {
+            mermaidBlocks.add(matcher.group());
+            matcher.appendReplacement(protectedContent, "___MERMAID_DIAGRAM_PLACEHOLDER_" + placeholderIndex + "___");
+            placeholderIndex++;
+        }
+        matcher.appendTail(protectedContent);
+
         // AI-reformat content for clean PDF output
         String formattedContent;
         try {
-            formattedContent = aiService.formatForPdf(content, title);
+            formattedContent = aiService.formatForPdf(protectedContent.toString(), title);
         } catch (Exception e) {
             // Fallback to raw content if AI reformatting fails
+            formattedContent = protectedContent.toString();
+        }
+
+        // Restore protected Mermaid diagrams
+        if (formattedContent != null) {
+            for (int i = 0; i < mermaidBlocks.size(); i++) {
+                formattedContent = formattedContent.replace("___MERMAID_DIAGRAM_PLACEHOLDER_" + i + "___", "\n\n" + mermaidBlocks.get(i) + "\n\n");
+            }
+        } else {
             formattedContent = content;
         }
 
-        // Generate PDF bytes
+        // Generate PDF bytes with visual diagram embedding
         byte[] pdfBytes = renderMarkdownToPdf(formattedContent, title);
 
         // Look up session (optional — might be null for standalone PDFs)
@@ -561,15 +583,15 @@ public class PdfService {
         String sanitized = sanitizeMermaid(rawMermaid);
         if (sanitized == null || sanitized.isBlank()) return null;
 
-        // Attempt 1: mermaid.ink with dark theme JSON
+        // Attempt 1: mermaid.ink with dark theme JSON and standard Base64
         try {
             String jsonPayload = "{\"code\":" + escapeJsonString(sanitized) + ",\"mermaid\":{\"theme\":\"dark\",\"darkMode\":true,\"background\":\"#000000\",\"themeVariables\":{\"background\":\"#000000\",\"mainBkg\":\"#0c0c0e\",\"nodeTextColor\":\"#ffffff\",\"textColor\":\"#ffffff\",\"primaryColor\":\"#7c3aed\",\"lineColor\":\"#a855f7\"}}}";
-            String base64Payload = Base64.getUrlEncoder().withoutPadding().encodeToString(jsonPayload.getBytes(StandardCharsets.UTF_8));
+            String base64Payload = Base64.getEncoder().encodeToString(jsonPayload.getBytes(StandardCharsets.UTF_8));
             String url = "https://mermaid.ink/img/" + base64Payload;
 
             HttpRequest req = HttpRequest.newBuilder()
                     .uri(URI.create(url))
-                    .timeout(Duration.ofSeconds(10))
+                    .timeout(Duration.ofSeconds(12))
                     .header("User-Agent", "Mozilla/5.0 (SmartNotes-PDF-Engine/1.0)")
                     .GET()
                     .build();
@@ -579,26 +601,7 @@ public class PdfService {
                 return resp.body();
             }
         } catch (Exception e) {
-            // Attempt 1 failed, try Kroki fallback
-        }
-
-        // Attempt 2: Kroki POST /mermaid/png
-        try {
-            String krokiPayload = "%%{init: {'theme': 'dark', 'themeVariables': {'background': '#000000', 'mainBkg': '#0c0c0e', 'nodeTextColor': '#ffffff', 'textColor': '#ffffff'}}}%%\n" + sanitized;
-            HttpRequest req = HttpRequest.newBuilder()
-                    .uri(URI.create("https://kroki.io/mermaid/png"))
-                    .timeout(Duration.ofSeconds(10))
-                    .header("Content-Type", "text/plain; charset=UTF-8")
-                    .header("User-Agent", "Mozilla/5.0 (SmartNotes-PDF-Engine/1.0)")
-                    .POST(HttpRequest.BodyPublishers.ofString(krokiPayload, StandardCharsets.UTF_8))
-                    .build();
-
-            HttpResponse<byte[]> resp = HTTP_CLIENT.send(req, HttpResponse.BodyHandlers.ofByteArray());
-            if (resp.statusCode() == 200 && resp.body() != null && resp.body().length > 200) {
-                return resp.body();
-            }
-        } catch (Exception e) {
-            // Both attempts failed
+            System.err.println("Error rendering Mermaid diagram image via mermaid.ink: " + e.getMessage());
         }
 
         return null;
@@ -607,27 +610,34 @@ public class PdfService {
     private String sanitizeMermaid(String rawChart) {
         if (rawChart == null || rawChart.isBlank()) return "";
         
-        String chart = rawChart.trim();
-        chart = chart.replaceAll("(?i)^```mermaid\\s*", "")
-                     .replaceAll("^```\\s*", "")
-                     .replaceAll("\\s*```$", "")
-                     .trim();
+        String chart = rawChart.trim()
+                .replaceAll("(?i)^```mermaid\\s*", "")
+                .replaceAll("^```\\s*", "")
+                .replaceAll("\\s*```$", "")
+                .trim();
 
-        // Fix trailing > or -> on edge labels
-        chart = chart.replaceAll("(-->|-.->|==>|---|--)\\s*\\|([^|\\n]+)\\|\\s*>", "$1|$2| ");
-        chart = chart.replaceAll("(-->|-.->|==>|---|--)\\s*\\|([^|\\n]+)\\|\\s*->", "$1|$2| ");
-        chart = chart.replaceAll("\\|\\s*>", "| ");
+        // 1. Convert pipe edge labels to dashed string labels: -->|Label| -> -- "Label" -->
+        chart = chart.replaceAll("(-->|---|-.->|==>)\\s*\\|([^|\\n]+)\\|\\s*>?", "-- \"$2\" --> ");
 
-        // Quote unquoted pipe labels
-        Pattern pipePattern = Pattern.compile("\\|([^|\\n\"]+)\\|");
-        Matcher pipeMatcher = pipePattern.matcher(chart);
-        StringBuilder sb = new StringBuilder();
-        while (pipeMatcher.find()) {
-            String label = pipeMatcher.group(1).trim().replace("\"", "'");
-            pipeMatcher.appendReplacement(sb, Matcher.quoteReplacement("|\"" + label + "\"|"));
+        // 2. Fix subgraphs with spaces: subgraph Kernel Space -> subgraph Kernel_Space ["Kernel Space"]
+        Pattern subgraphPattern = Pattern.compile("subgraph\\s+([^\\n\"\\[]+)");
+        Matcher subgraphMatcher = subgraphPattern.matcher(chart);
+        StringBuilder sbSub = new StringBuilder();
+        while (subgraphMatcher.find()) {
+            String name = subgraphMatcher.group(1).trim();
+            if (name.contains(" ")) {
+                subgraphMatcher.appendReplacement(sbSub, Matcher.quoteReplacement("subgraph " + name.replaceAll("\\s+", "_") + " [\"" + name + "\"]"));
+            } else {
+                subgraphMatcher.appendReplacement(sbSub, Matcher.quoteReplacement("subgraph " + name));
+            }
         }
-        pipeMatcher.appendTail(sb);
-        chart = sb.toString();
+        subgraphMatcher.appendTail(sbSub);
+        chart = sbSub.toString();
+
+        // 3. Convert graph LR/TD to flowchart LR/TD
+        if (chart.toLowerCase().startsWith("graph ")) {
+            chart = chart.replaceFirst("(?i)^graph\\s+", "flowchart ");
+        }
 
         String[] lines = chart.split("\n");
         StringBuilder sanitized = new StringBuilder();
@@ -645,20 +655,11 @@ public class PdfService {
                 lower.startsWith("statediagram") || lower.startsWith("classdiagram") || lower.startsWith("erdiagram") ||
                 lower.startsWith("journey") || lower.startsWith("gantt") || lower.startsWith("pie") || lower.startsWith("mindmap")) {
                 hasHeader = true;
-                if (lower.startsWith("graph ")) {
-                    line = line.replaceFirst("(?i)^graph\\s+", "flowchart ");
-                }
             }
 
-            // Auto-quote square bracket node labels
-            line = line.replaceAll("([a-zA-Z0-9_-]+)\\[([^\"\\]\\n]+)\\]", "$1[\"$2\"]");
-            // Auto-quote rounded bracket node labels
-            line = line.replaceAll("([a-zA-Z0-9_-]+)\\(([^\"\\)\\n]+)\\)", "$1(\"$2\")");
-            // Clean duplicate quotes
-            line = line.replaceAll("\\[\\s*\"+", "[\"")
-                       .replaceAll("\"+\\s*\\]", "\"]")
-                       .replaceAll("\\(\\s*\"+", "(\"")
-                       .replaceAll("\"+\\s*\\)", "\")");
+            // Auto-quote unquoted square bracket node labels
+            line = line.replaceAll("([a-zA-Z0-9_-]+)\\[\\s*([a-zA-Z0-9_\\s\\(\\)\\/\\-\\:\\,\\.]+)\\s*\\]", "$1[\"$2\"]");
+            line = line.replaceAll("\\[\\s*\"+", "[\"").replaceAll("\"+\\s*\\]", "\"]");
 
             sanitized.append(line).append("\n");
         }
