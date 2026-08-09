@@ -1,6 +1,8 @@
 package com.jeevan.smart_notes_api.service;
 
 import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
@@ -11,9 +13,11 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
+import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import com.jeevan.smart_notes_api.entity.ChatSession;
@@ -28,6 +32,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -180,6 +191,7 @@ public class PdfService {
 
             String[] lines = markdown.split("\n");
             boolean inCodeBlock = false;
+            String codeBlockLang = "";
             StringBuilder codeContent = new StringBuilder();
             boolean inTable = false;
             List<String[]> tableRows = new java.util.ArrayList<>();
@@ -191,19 +203,58 @@ public class PdfService {
                 if (line.trim().startsWith("```")) {
                     if (inCodeBlock) {
                         // End code block — render it
-                        Paragraph codeBlock = new Paragraph(codeContent.toString().trim())
-                                .setFont(fontMono)
-                                .setFontSize(9)
-                                .setFontColor(COLOR_BODY)
-                                .setBackgroundColor(COLOR_CODE_BG)
-                                .setPaddings(12, 14, 12, 14)
-                                .setMarginBottom(12)
-                                .setMarginTop(4);
-                        doc.add(codeBlock);
+                        String rawCode = codeContent.toString().trim();
+                        if ("mermaid".equalsIgnoreCase(codeBlockLang) || isMermaidSyntax(rawCode)) {
+                            byte[] diagramBytes = renderMermaidToImage(rawCode);
+                            if (diagramBytes != null && diagramBytes.length > 0) {
+                                try {
+                                    ImageData imgData = ImageDataFactory.create(diagramBytes);
+                                    Image diagramImg = new Image(imgData);
+                                    diagramImg.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                                    diagramImg.setMaxWidth(UnitValue.createPercentValue(100));
+                                    diagramImg.setAutoScale(true);
+                                    diagramImg.setMarginTop(8);
+                                    diagramImg.setMarginBottom(14);
+                                    doc.add(diagramImg);
+                                } catch (Exception imgEx) {
+                                    Paragraph codeBlock = new Paragraph(rawCode)
+                                            .setFont(fontMono)
+                                            .setFontSize(9)
+                                            .setFontColor(COLOR_BODY)
+                                            .setBackgroundColor(COLOR_CODE_BG)
+                                            .setPaddings(12, 14, 12, 14)
+                                            .setMarginBottom(12)
+                                            .setMarginTop(4);
+                                    doc.add(codeBlock);
+                                }
+                            } else {
+                                Paragraph codeBlock = new Paragraph(rawCode)
+                                        .setFont(fontMono)
+                                        .setFontSize(9)
+                                        .setFontColor(COLOR_BODY)
+                                        .setBackgroundColor(COLOR_CODE_BG)
+                                        .setPaddings(12, 14, 12, 14)
+                                        .setMarginBottom(12)
+                                        .setMarginTop(4);
+                                doc.add(codeBlock);
+                            }
+                        } else {
+                            Paragraph codeBlock = new Paragraph(rawCode)
+                                    .setFont(fontMono)
+                                    .setFontSize(9)
+                                    .setFontColor(COLOR_BODY)
+                                    .setBackgroundColor(COLOR_CODE_BG)
+                                    .setPaddings(12, 14, 12, 14)
+                                    .setMarginBottom(12)
+                                    .setMarginTop(4);
+                            doc.add(codeBlock);
+                        }
                         codeContent.setLength(0);
+                        codeBlockLang = "";
                         inCodeBlock = false;
                     } else {
                         inCodeBlock = true;
+                        codeBlockLang = line.trim().replace("`", "").trim().toLowerCase();
                     }
                     continue;
                 }
@@ -479,6 +530,170 @@ public class PdfService {
                 .replaceAll("`(.*?)`", "$1")
                 .replaceAll("~~(.*?)~~", "$1")
                 .trim();
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    // MERMAID DIAGRAM RENDERER — High-resolution dark canvas rendering for PDF
+    // ════════════════════════════════════════════════════════════════════════
+
+    private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(12))
+            .build();
+
+    private boolean isMermaidSyntax(String text) {
+        if (text == null || text.isBlank()) return false;
+        String trimmed = text.trim().toLowerCase();
+        return trimmed.startsWith("flowchart") ||
+               trimmed.startsWith("graph") ||
+               trimmed.startsWith("sequencediagram") ||
+               trimmed.startsWith("statediagram") ||
+               trimmed.startsWith("classdiagram") ||
+               trimmed.startsWith("erdiagram") ||
+               trimmed.startsWith("pie") ||
+               trimmed.startsWith("mindmap") ||
+               trimmed.startsWith("gantt") ||
+               trimmed.contains("-->") ||
+               trimmed.contains("---|") ||
+               trimmed.contains("==>");
+    }
+
+    private byte[] renderMermaidToImage(String rawMermaid) {
+        String sanitized = sanitizeMermaid(rawMermaid);
+        if (sanitized == null || sanitized.isBlank()) return null;
+
+        // Attempt 1: mermaid.ink with dark theme JSON
+        try {
+            String jsonPayload = "{\"code\":" + escapeJsonString(sanitized) + ",\"mermaid\":{\"theme\":\"dark\",\"darkMode\":true,\"background\":\"#000000\",\"themeVariables\":{\"background\":\"#000000\",\"mainBkg\":\"#0c0c0e\",\"nodeTextColor\":\"#ffffff\",\"textColor\":\"#ffffff\",\"primaryColor\":\"#7c3aed\",\"lineColor\":\"#a855f7\"}}}";
+            String base64Payload = Base64.getUrlEncoder().withoutPadding().encodeToString(jsonPayload.getBytes(StandardCharsets.UTF_8));
+            String url = "https://mermaid.ink/img/" + base64Payload;
+
+            HttpRequest req = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .timeout(Duration.ofSeconds(10))
+                    .header("User-Agent", "Mozilla/5.0 (SmartNotes-PDF-Engine/1.0)")
+                    .GET()
+                    .build();
+
+            HttpResponse<byte[]> resp = HTTP_CLIENT.send(req, HttpResponse.BodyHandlers.ofByteArray());
+            if (resp.statusCode() == 200 && resp.body() != null && resp.body().length > 200) {
+                return resp.body();
+            }
+        } catch (Exception e) {
+            // Attempt 1 failed, try Kroki fallback
+        }
+
+        // Attempt 2: Kroki POST /mermaid/png
+        try {
+            String krokiPayload = "%%{init: {'theme': 'dark', 'themeVariables': {'background': '#000000', 'mainBkg': '#0c0c0e', 'nodeTextColor': '#ffffff', 'textColor': '#ffffff'}}}%%\n" + sanitized;
+            HttpRequest req = HttpRequest.newBuilder()
+                    .uri(URI.create("https://kroki.io/mermaid/png"))
+                    .timeout(Duration.ofSeconds(10))
+                    .header("Content-Type", "text/plain; charset=UTF-8")
+                    .header("User-Agent", "Mozilla/5.0 (SmartNotes-PDF-Engine/1.0)")
+                    .POST(HttpRequest.BodyPublishers.ofString(krokiPayload, StandardCharsets.UTF_8))
+                    .build();
+
+            HttpResponse<byte[]> resp = HTTP_CLIENT.send(req, HttpResponse.BodyHandlers.ofByteArray());
+            if (resp.statusCode() == 200 && resp.body() != null && resp.body().length > 200) {
+                return resp.body();
+            }
+        } catch (Exception e) {
+            // Both attempts failed
+        }
+
+        return null;
+    }
+
+    private String sanitizeMermaid(String rawChart) {
+        if (rawChart == null || rawChart.isBlank()) return "";
+        
+        String chart = rawChart.trim();
+        chart = chart.replaceAll("(?i)^```mermaid\\s*", "")
+                     .replaceAll("^```\\s*", "")
+                     .replaceAll("\\s*```$", "")
+                     .trim();
+
+        // Fix trailing > or -> on edge labels
+        chart = chart.replaceAll("(-->|-.->|==>|---|--)\\s*\\|([^|\\n]+)\\|\\s*>", "$1|$2| ");
+        chart = chart.replaceAll("(-->|-.->|==>|---|--)\\s*\\|([^|\\n]+)\\|\\s*->", "$1|$2| ");
+        chart = chart.replaceAll("\\|\\s*>", "| ");
+
+        // Quote unquoted pipe labels
+        Pattern pipePattern = Pattern.compile("\\|([^|\\n\"]+)\\|");
+        Matcher pipeMatcher = pipePattern.matcher(chart);
+        StringBuilder sb = new StringBuilder();
+        while (pipeMatcher.find()) {
+            String label = pipeMatcher.group(1).trim().replace("\"", "'");
+            pipeMatcher.appendReplacement(sb, Matcher.quoteReplacement("|\"" + label + "\"|"));
+        }
+        pipeMatcher.appendTail(sb);
+        chart = sb.toString();
+
+        String[] lines = chart.split("\n");
+        StringBuilder sanitized = new StringBuilder();
+        boolean hasHeader = false;
+
+        for (String line : lines) {
+            String trimmed = line.trim();
+            if (trimmed.isEmpty() || trimmed.startsWith("%%")) {
+                sanitized.append(line).append("\n");
+                continue;
+            }
+
+            String lower = trimmed.toLowerCase();
+            if (lower.startsWith("flowchart") || lower.startsWith("graph") || lower.startsWith("sequencediagram") ||
+                lower.startsWith("statediagram") || lower.startsWith("classdiagram") || lower.startsWith("erdiagram") ||
+                lower.startsWith("journey") || lower.startsWith("gantt") || lower.startsWith("pie") || lower.startsWith("mindmap")) {
+                hasHeader = true;
+                if (lower.startsWith("graph ")) {
+                    line = line.replaceFirst("(?i)^graph\\s+", "flowchart ");
+                }
+            }
+
+            // Auto-quote square bracket node labels
+            line = line.replaceAll("([a-zA-Z0-9_-]+)\\[([^\"\\]\\n]+)\\]", "$1[\"$2\"]");
+            // Auto-quote rounded bracket node labels
+            line = line.replaceAll("([a-zA-Z0-9_-]+)\\(([^\"\\)\\n]+)\\)", "$1(\"$2\")");
+            // Clean duplicate quotes
+            line = line.replaceAll("\\[\\s*\"+", "[\"")
+                       .replaceAll("\"+\\s*\\]", "\"]")
+                       .replaceAll("\\(\\s*\"+", "(\"")
+                       .replaceAll("\"+\\s*\\)", "\")");
+
+            sanitized.append(line).append("\n");
+        }
+
+        String result = sanitized.toString().trim();
+        if (!hasHeader) {
+            result = "flowchart TD\n" + result;
+        }
+        return result;
+    }
+
+    private String escapeJsonString(String str) {
+        if (str == null) return "\"\"";
+        StringBuilder sb = new StringBuilder("\"");
+        for (char c : str.toCharArray()) {
+            switch (c) {
+                case '"' -> sb.append("\\\"");
+                case '\\' -> sb.append("\\\\");
+                case '\b' -> sb.append("\\b");
+                case '\f' -> sb.append("\\f");
+                case '\n' -> sb.append("\\n");
+                case '\r' -> sb.append("\\r");
+                case '\t' -> sb.append("\\t");
+                default -> {
+                    if (c < ' ') {
+                        String hex = "000" + Integer.toHexString(c);
+                        sb.append("\\u").append(hex.substring(hex.length() - 4));
+                    } else {
+                        sb.append(c);
+                    }
+                }
+            }
+        }
+        sb.append("\"");
+        return sb.toString();
     }
 
     private User findUserByEmail(String email) {
