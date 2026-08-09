@@ -168,34 +168,42 @@ export async function sendMessageStream(
       buffer = lines.pop() || ''; // Keep incomplete line in buffer
 
       let eventName = '';
-      let eventData = '';
+      let dataLines: string[] = [];
 
       for (const line of lines) {
-        if (line.startsWith('event:')) {
-          eventName = line.slice(6).trim();
-        } else if (line.startsWith('data:')) {
-          eventData = line.slice(5);
-        } else if (line === '' && eventName && eventData) {
-          // End of event
-          if (eventName === 'token') {
-            callbacks.onToken(eventData);
-          } else if (eventName === 'done') {
-            try {
-              const finalMsg = JSON.parse(eventData);
-              callbacks.onDone(finalMsg);
-            } catch {
-              callbacks.onDone({ id: 0, role: 'ASSISTANT', content: eventData, attachmentNames: null, createdAt: new Date().toISOString() });
-            }
-          } else if (eventName === 'error') {
-            try {
-              const errObj = JSON.parse(eventData);
-              callbacks.onError(errObj.error || 'Unknown error');
-            } catch {
-              callbacks.onError(eventData);
+        // Strip trailing CR if present (\r\n)
+        const cleanLine = line.endsWith('\r') ? line.slice(0, -1) : line;
+
+        if (cleanLine.startsWith('event:')) {
+          eventName = cleanLine.slice(6).trim();
+        } else if (cleanLine.startsWith('data:')) {
+          // In SSE, strip single optional leading space after "data:"
+          const dataContent = cleanLine.startsWith('data: ') ? cleanLine.slice(6) : cleanLine.slice(5);
+          dataLines.push(dataContent);
+        } else if (cleanLine === '') {
+          // Empty line signals end of SSE event
+          if (dataLines.length > 0) {
+            const eventData = dataLines.join('\n');
+            if (eventName === 'token') {
+              callbacks.onToken(eventData);
+            } else if (eventName === 'done') {
+              try {
+                const finalMsg = JSON.parse(eventData);
+                callbacks.onDone(finalMsg);
+              } catch {
+                callbacks.onDone({ id: 0, role: 'ASSISTANT', content: eventData, attachmentNames: null, createdAt: new Date().toISOString() });
+              }
+            } else if (eventName === 'error') {
+              try {
+                const errObj = JSON.parse(eventData);
+                callbacks.onError(errObj.error || 'Unknown error');
+              } catch {
+                callbacks.onError(eventData);
+              }
             }
           }
           eventName = '';
-          eventData = '';
+          dataLines = [];
         }
       }
     }
