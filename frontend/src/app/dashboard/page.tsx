@@ -574,7 +574,7 @@ function DashboardContent() {
     if (!activeSession) return;
 
     const userDisplayText = "Generate PDF";
-    const prompt = `Please generate a formatted PDF document based on the previous response:\n\n${content}\n\nOutput the full content formatted inside a <pdf_document title="Document"> tag.`;
+    const prompt = "Generate a PDF for the response above";
     
     const tempUserMessage: ChatMessage = {
       id: Date.now(),
@@ -595,15 +595,6 @@ function DashboardContent() {
     try {
       await ChatService.sendMessage(activeSession.id, prompt, []);
       const updatedSession = await ChatService.getSession(activeSession.id);
-      
-      // Clean up the user message display so it doesn't show the huge backend prompt
-      if (updatedSession.messages) {
-        const lastUser = updatedSession.messages.filter(m => m.role === 'USER').pop();
-        if (lastUser && (lastUser.content.startsWith('Please generate a formatted PDF') || lastUser.content.startsWith('Generate a PDF of the following'))) {
-          lastUser.content = userDisplayText;
-        }
-      }
-
       setSessions(prev => prev.map(s => s.id === updatedSession.id ? updatedSession : s));
       if (pdfsGeneratedRemaining !== null) {
         setPdfsGeneratedRemaining(prev => (prev !== null && prev > 0 ? prev - 1 : prev));
@@ -946,9 +937,17 @@ function DashboardContent() {
               <div className="w-full flex flex-col gap-6 min-w-0 max-w-full overflow-x-hidden">
                 {activeSession.messages?.map((msg, idx) => {
                   const isLastMessage = idx === activeSession.messages!.length - 1;
+                  const isPdfPrompt = msg.role === 'USER' && (
+                    msg.content.startsWith('Please generate a formatted PDF') ||
+                    msg.content.startsWith('Generate a PDF of the following') ||
+                    msg.content.startsWith('Please generate a PDF document') ||
+                    msg.content.startsWith('Generate a PDF for the response') ||
+                    msg.content.startsWith('Generate PDF')
+                  );
+                  const cleanText = isPdfPrompt ? 'Generate PDF' : msg.content;
                   const displayContent = msg.attachmentNames 
-                    ? `${msg.content}\n\n*(Attached: ${msg.attachmentNames})*` 
-                    : msg.content;
+                    ? `${cleanText}\n\n*(Attached: ${msg.attachmentNames})*` 
+                    : cleanText;
                     
                   return (
                     <RichMessage 
