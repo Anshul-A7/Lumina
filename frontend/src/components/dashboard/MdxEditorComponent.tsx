@@ -90,13 +90,7 @@ const BLOCK_TYPES = [
   { label: 'Quote', value: 'quote', prefix: '> ' }
 ];
 
-// Sanitize markdown to ensure MDX parser compatibility (no broken nested quotes in attributes)
-const sanitizeMarkdown = (raw: string): string => {
-  if (!raw) return '';
-  return raw
-    .replace(/style="([^"]*?)"/gi, (_, inner) => `style="${inner.replace(/"/g, '')}"`)
-    .replace(/<span style="font-family:\s*([^"]*?);?">/gi, (_, f) => `<span style="font-family: ${f.replace(/"/g, '')};">`);
-};
+import { sanitizeMdx } from '@/lib/sanitizeMdx';
 
 export default function MdxEditorComponent({ 
   markdown, 
@@ -111,7 +105,7 @@ export default function MdxEditorComponent({
 }: MdxEditorComponentProps) {
 
   const editorRef = useRef<MDXEditorMethods>(null);
-  const cleanMarkdown = useMemo(() => sanitizeMarkdown(markdown), [markdown]);
+  const cleanMarkdown = useMemo(() => sanitizeMdx(markdown), [markdown]);
 
   // Selected Block / Typography states
   const [selectedBlockType, setSelectedBlockType] = useState('Paragraph');
@@ -136,11 +130,12 @@ export default function MdxEditorComponent({
 
   // Auto-save whenever markdown changes
   const handleEditorChange = (newMarkdown: string) => {
-    onChange(newMarkdown);
+    const safeMarkdown = sanitizeMdx(newMarkdown);
+    onChange(safeMarkdown);
     if (typeof window !== 'undefined') {
-      sessionStorage.setItem('lumina_edit_pdf_content', newMarkdown);
+      sessionStorage.setItem('lumina_edit_pdf_content', safeMarkdown);
       sessionStorage.setItem('lumina_edit_pdf_title', title);
-      window.dispatchEvent(new CustomEvent('lumina:pdf_saved', { detail: { content: newMarkdown, title } }));
+      window.dispatchEvent(new CustomEvent('lumina:pdf_saved', { detail: { content: safeMarkdown, title } }));
     }
   };
 
@@ -169,20 +164,20 @@ export default function MdxEditorComponent({
     editorRef.current?.focus();
   };
 
-  // 1. Font Size applied directly to the SELECTED text
+  // 1. Font Size applied directly to the SELECTED text (using clean single-quoted styles)
   const handleFontSizeChange = (size: string) => {
     formatSelection((selected) => {
       const text = selected.trim() ? selected : 'Selected Text';
-      return `<span style="font-size: ${size};">${text}</span>`;
+      return `<span style='font-size: ${size};'>${text}</span>`;
     });
   };
 
-  // 2. Font Family applied directly to the SELECTED text
+  // 2. Font Family applied directly to the SELECTED text (using clean single-quoted styles)
   const handleFontFamilyChange = (font: string) => {
     formatSelection((selected) => {
       const text = selected.trim() ? selected : 'Selected Text';
-      const cleanFont = font.replace(/["']/g, '');
-      return `<span style="font-family: ${cleanFont};">${text}</span>`;
+      const cleanFont = font.replace(/["']/g, '').trim();
+      return `<span style='font-family: ${cleanFont};'>${text}</span>`;
     });
   };
 
@@ -192,7 +187,7 @@ export default function MdxEditorComponent({
     setShowHighlightPicker(false);
     formatSelection((selected) => {
       const text = selected.trim() ? selected : 'Highlighted Text';
-      return `<mark style="background-color: ${color}; color: #000; padding: 2px 6px; border-radius: 4px;">${text}</mark>`;
+      return `<mark style='background-color: ${color}; color: #000; padding: 2px 6px; border-radius: 4px;'>${text}</mark>`;
     });
   };
 
@@ -202,7 +197,7 @@ export default function MdxEditorComponent({
     setShowTextColorPicker(false);
     formatSelection((selected) => {
       const text = selected.trim() ? selected : 'Colored Text';
-      return `<span style="color: ${color}; font-weight: 600;">${text}</span>`;
+      return `<span style='color: ${color}; font-weight: 600;'>${text}</span>`;
     });
   };
 
@@ -221,7 +216,7 @@ export default function MdxEditorComponent({
   const applyAlignment = (align: 'left' | 'center' | 'right' | 'justify') => {
     formatSelection((selected) => {
       const text = selected.trim() ? selected : 'Aligned paragraph text';
-      return `\n\n<div align="${align}">\n\n${text}\n\n</div>\n\n`;
+      return `\n\n<div align='${align}'>\n\n${text}\n\n</div>\n\n`;
     });
   };
 

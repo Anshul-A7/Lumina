@@ -13,6 +13,8 @@ const MdxEditorComponent = dynamic(
   { ssr: false, loading: () => <div className="p-8 text-center text-gray-500 font-medium">Loading Document Studio...</div> }
 );
 
+import { sanitizeMdx } from '@/lib/sanitizeMdx';
+
 function EditPdfViewContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -29,13 +31,15 @@ function EditPdfViewContent() {
   useEffect(() => {
     // Load from session storage and URL query params
     const storedContent = sessionStorage.getItem('lumina_edit_pdf_content') || '';
+    const cleanStoredContent = sanitizeMdx(storedContent);
     const storedTitle = sessionStorage.getItem('lumina_edit_pdf_title') || 'Document';
     const paramSession = searchParams.get('session');
     const storedSessionId = paramSession 
       ? Number(paramSession) 
       : (sessionStorage.getItem('lumina_edit_pdf_session_id') ? Number(sessionStorage.getItem('lumina_edit_pdf_session_id')) : null);
 
-    setContent(storedContent);
+    setContent(cleanStoredContent);
+    sessionStorage.setItem('lumina_edit_pdf_content', cleanStoredContent);
     setTitle(storedTitle);
     if (storedSessionId) {
       setSessionId(storedSessionId);
