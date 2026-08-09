@@ -23,7 +23,10 @@ import {
   CodeToggle, 
   InsertTable, 
   InsertThematicBreak, 
-  ListsToggle 
+  ListsToggle,
+  BlockTypeSelect,
+  CreateLink,
+  InsertCodeBlock
 } from '@mdxeditor/editor'
 import '@mdxeditor/editor/style.css'
 import { 
@@ -107,10 +110,6 @@ export default function MdxEditorComponent({
   const editorRef = useRef<MDXEditorMethods>(null);
   const cleanMarkdown = useMemo(() => sanitizeMdx(markdown), [markdown]);
 
-  // Selected Block / Typography states
-  const [selectedBlockType, setSelectedBlockType] = useState('Paragraph');
-  const [showBlockDropdown, setShowBlockDropdown] = useState(false);
-
   // Color picker popover states
   const [showHighlightPicker, setShowHighlightPicker] = useState(false);
   const [activeHighlightColor, setActiveHighlightColor] = useState('#FEF08A');
@@ -122,7 +121,6 @@ export default function MdxEditorComponent({
     const handleOutsideClick = () => {
       setShowHighlightPicker(false);
       setShowTextColorPicker(false);
-      setShowBlockDropdown(false);
     };
     window.addEventListener('click', handleOutsideClick);
     return () => window.removeEventListener('click', handleOutsideClick);
@@ -150,9 +148,10 @@ export default function MdxEditorComponent({
 
   // Core Selection-Preserving Formatter
   const formatSelection = (transform: (selected: string) => string) => {
-    let selected = editorRef.current?.getSelectionMarkdown() || '';
+    let selected = '';
     
-    if (!selected && typeof window !== 'undefined') {
+    // MDXEditor doesn't expose getSelectionMarkdown directly in the Ref methods safely
+    if (typeof window !== 'undefined') {
       const winSel = window.getSelection();
       if (winSel && !winSel.isCollapsed) {
         selected = winSel.toString();
@@ -164,63 +163,52 @@ export default function MdxEditorComponent({
     editorRef.current?.focus();
   };
 
-  // 1. Font Size applied directly to the SELECTED text (using clean single-quoted styles)
+  // 1. Font Size applied directly to the SELECTED text
   const handleFontSizeChange = (size: string) => {
     formatSelection((selected) => {
       const text = selected.trim() ? selected : 'Selected Text';
-      return `<span style='font-size: ${size};'>${text}</span>`;
+      return `<span style="font-size: ${size};">${text}</span>`;
     });
   };
 
-  // 2. Font Family applied directly to the SELECTED text (using clean single-quoted styles)
+  // 2. Font Family applied directly to the SELECTED text
   const handleFontFamilyChange = (font: string) => {
     formatSelection((selected) => {
       const text = selected.trim() ? selected : 'Selected Text';
       const cleanFont = font.replace(/["']/g, '').trim();
-      return `<span style='font-family: ${cleanFont};'>${text}</span>`;
+      return `<span style="font-family: ${cleanFont};">${text}</span>`;
     });
   };
 
   // 3. Highlight Color applied to SELECTED text
   const applyHighlight = (color: string) => {
-    setActiveHighlightColor(color);
-    setShowHighlightPicker(false);
     formatSelection((selected) => {
       const text = selected.trim() ? selected : 'Highlighted Text';
-      return `<mark style='background-color: ${color}; color: #000; padding: 2px 6px; border-radius: 4px;'>${text}</mark>`;
+      return `<mark style="background-color: ${color}; color: #000; padding: 2px 6px; border-radius: 4px;">${text}</mark>`;
     });
+    setActiveHighlightColor(color);
+    setShowHighlightPicker(false);
   };
 
   // 4. Text Color applied to SELECTED text
   const applyTextColor = (color: string) => {
-    setActiveTextColor(color);
-    setShowTextColorPicker(false);
     formatSelection((selected) => {
       const text = selected.trim() ? selected : 'Colored Text';
-      return `<span style='color: ${color}; font-weight: 600;'>${text}</span>`;
+      return `<span style="color: ${color}; font-weight: 600;">${text}</span>`;
     });
+    setActiveTextColor(color);
+    setShowTextColorPicker(false);
   };
 
-  // 5. Block Type / Heading applied to selection
-  const handleBlockTypeSelect = (block: typeof BLOCK_TYPES[0]) => {
-    setSelectedBlockType(block.label);
-    setShowBlockDropdown(false);
-    formatSelection((selected) => {
-      const text = selected.trim() ? selected : 'Heading Content';
-      if (block.value === 'p') return `\n\n${text}\n\n`;
-      return `\n\n${block.prefix}${text}\n\n`;
-    });
-  };
-
-  // 6. Text Alignment applied to selection
+  // 5. Text Alignment applied to selection
   const applyAlignment = (align: 'left' | 'center' | 'right' | 'justify') => {
     formatSelection((selected) => {
       const text = selected.trim() ? selected : 'Aligned paragraph text';
-      return `\n\n<div align='${align}'>\n\n${text}\n\n</div>\n\n`;
+      return `\n\n<div align="${align}">\n\n${text}\n\n</div>\n\n`;
     });
   };
 
-  // 7. Indent & Outdent applied to selection
+  // 6. Indent & Outdent applied to selection
   const applyIndent = () => {
     formatSelection((selected) => {
       if (selected.trim()) {
@@ -236,24 +224,6 @@ export default function MdxEditorComponent({
         return selected.split('\n').map(line => line.replace(/^(\s{2,4}|>\s?)/, '')).join('\n');
       }
       return '';
-    });
-  };
-
-  // 8. Real Link Dialog
-  const handleInsertLink = () => {
-    const url = prompt("Enter Web Link URL (e.g. https://google.com):", "https://");
-    if (!url) return;
-    formatSelection((selected) => {
-      const label = selected.trim() ? selected : url.replace(/^https?:\/\//, '');
-      return `[${label}](${url})`;
-    });
-  };
-
-  // 9. Real Code Box Insertion
-  const handleInsertCodeBlock = () => {
-    formatSelection((selected) => {
-      const code = selected.trim() ? selected : '// Write or paste your code here\nconsole.log("Hello, Lumina!");';
-      return `\n\n\`\`\`javascript\n${code}\n\`\`\`\n\n`;
     });
   };
 
@@ -439,7 +409,6 @@ export default function MdxEditorComponent({
                                 e.stopPropagation();
                                 setShowHighlightPicker(!showHighlightPicker);
                                 setShowTextColorPicker(false);
-                                setShowBlockDropdown(false);
                               }}
                               className="p-1 hover:bg-gray-100 rounded-lg flex flex-col items-center justify-center h-6 w-6 transition-colors cursor-pointer" 
                               title="Highlight Selected Text"
@@ -477,7 +446,6 @@ export default function MdxEditorComponent({
                                 e.stopPropagation();
                                 setShowTextColorPicker(!showTextColorPicker);
                                 setShowHighlightPicker(false);
-                                setShowBlockDropdown(false);
                               }}
                               className="p-1 hover:bg-gray-100 rounded-lg flex flex-col items-center justify-center h-6 w-6 transition-colors cursor-pointer" 
                               title="Change Selected Text Color"
@@ -515,43 +483,9 @@ export default function MdxEditorComponent({
                       <div className="flex flex-col gap-1.5 overflow-visible">
                         <div className="flex items-center gap-1.5 overflow-visible">
                           
-                          {/* Custom Robust Block Type Dropdown */}
-                          <div className="relative overflow-visible">
-                            <button
-                              type="button"
-                              onMouseDown={(e) => e.preventDefault()}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setShowBlockDropdown(!showBlockDropdown);
-                                setShowHighlightPicker(false);
-                                setShowTextColorPicker(false);
-                              }}
-                              className="bg-white border border-gray-200 rounded-xl px-2.5 py-1 shadow-2xs h-7 flex items-center gap-1.5 text-xs font-semibold text-gray-800 hover:bg-gray-50 cursor-pointer min-w-[110px] justify-between"
-                              title="Choose Paragraph / Heading Format"
-                            >
-                              <span className="truncate">{selectedBlockType}</span>
-                              <ChevronDown className="w-3.5 h-3.5 text-gray-500" />
-                            </button>
-
-                            {showBlockDropdown && (
-                              <div 
-                                onClick={(e) => e.stopPropagation()} 
-                                className="absolute top-8 left-0 z-[100] bg-white border border-gray-300 rounded-2xl p-1.5 shadow-2xl min-w-[150px] flex flex-col gap-1"
-                              >
-                                {BLOCK_TYPES.map((block) => (
-                                  <button
-                                    key={block.value}
-                                    type="button"
-                                    onMouseDown={(e) => e.preventDefault()}
-                                    onClick={() => handleBlockTypeSelect(block)}
-                                    className="px-3 py-1.5 text-left text-xs font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-700 rounded-xl transition-colors cursor-pointer flex items-center justify-between"
-                                  >
-                                    <span>{block.label}</span>
-                                    <span className="text-[10px] text-gray-400 font-mono">{block.prefix || 'Normal'}</span>
-                                  </button>
-                                ))}
-                              </div>
-                            )}
+                          {/* Native MDXEditor Block Type Dropdown */}
+                          <div className="bg-white border border-gray-200 rounded-xl shadow-2xs h-7 flex items-center [&>button]:px-2.5 [&>button]:py-1 [&>button]:text-xs [&>button]:font-semibold [&>button]:text-gray-800 [&>button]:h-full [&>button]:flex [&>button]:items-center min-w-[110px]">
+                            <BlockTypeSelect />
                           </div>
 
                           {/* Undo / Redo */}
@@ -633,38 +567,20 @@ export default function MdxEditorComponent({
                     {/* GROUP 3: TABLE, CODE & INSERT */}
                     <div className="flex flex-col justify-between border-r border-gray-300 pr-4 shrink-0">
                       <div className="flex items-center gap-2">
-                        {/* Real Table Insertion Box */}
-                        <div className="flex flex-col items-center justify-center p-2 rounded-2xl bg-white border border-gray-300 hover:border-purple-500 hover:bg-purple-50/50 transition-all cursor-pointer shadow-2xs group min-w-[70px]">
-                          <div className="flex items-center justify-center text-purple-600 mb-0.5 group-hover:scale-105 transition-transform">
-                            <InsertTable />
-                          </div>
-                          <span className="text-[11px] font-bold text-gray-700 group-hover:text-purple-700">Table</span>
+                        {/* Native Table Insertion */}
+                        <div className="flex flex-col items-center justify-center p-2 rounded-2xl bg-white border border-gray-300 hover:border-purple-500 hover:bg-purple-50/50 transition-all cursor-pointer shadow-2xs group min-w-[60px] h-[50px] [&>button]:w-full [&>button]:h-full [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button>svg]:w-5 [&>button>svg]:h-5 [&>button>svg]:text-purple-600">
+                          <InsertTable />
                         </div>
 
-                        {/* Real Code Box Button */}
-                        <button
-                          type="button"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={handleInsertCodeBlock}
-                          className="flex flex-col items-center justify-center p-2 rounded-2xl bg-white border border-gray-300 hover:border-purple-500 hover:bg-purple-50/50 transition-all cursor-pointer shadow-2xs group min-w-[70px]"
-                          title="Insert Syntax-Highlighted Code Block"
-                        >
-                          <Code2 className="w-5 h-5 text-purple-600 mb-0.5 group-hover:scale-105 transition-transform" />
-                          <span className="text-[11px] font-bold text-gray-700 group-hover:text-purple-700">Code</span>
-                        </button>
+                        {/* Native Code Box Button */}
+                        <div className="flex flex-col items-center justify-center p-2 rounded-2xl bg-white border border-gray-300 hover:border-purple-500 hover:bg-purple-50/50 transition-all cursor-pointer shadow-2xs group min-w-[60px] h-[50px] [&>button]:w-full [&>button]:h-full [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button>svg]:w-5 [&>button>svg]:h-5 [&>button>svg]:text-purple-600">
+                          <InsertCodeBlock />
+                        </div>
 
                         {/* Real Link & Thematic Break */}
                         <div className="flex flex-col gap-1.5">
-                          <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-xl px-2 py-0.5 shadow-2xs h-7">
-                            <button
-                              type="button"
-                              onMouseDown={(e) => e.preventDefault()}
-                              onClick={handleInsertLink}
-                              className="p-1 hover:bg-gray-100 rounded-lg text-gray-700 hover:text-purple-600 transition-colors cursor-pointer"
-                              title="Insert Web Link"
-                            >
-                              <LinkIcon className="w-3.5 h-3.5" />
-                            </button>
+                          <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-xl px-1.5 py-0.5 shadow-2xs h-7 [&>button]:p-1 [&>button]:rounded-lg [&>button:hover]:bg-gray-100 [&>button]:text-gray-700 [&>button>svg]:w-3.5 [&>button>svg]:h-3.5">
+                            <CreateLink />
                             <div className="w-px h-4 bg-gray-300 mx-0.5"></div>
                             <InsertThematicBreak />
                           </div>
