@@ -20,10 +20,12 @@ import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
+import com.jeevan.smart_notes_api.entity.ChatMessage;
 import com.jeevan.smart_notes_api.entity.ChatSession;
 import com.jeevan.smart_notes_api.entity.GeneratedPdf;
 import com.jeevan.smart_notes_api.entity.User;
 import com.jeevan.smart_notes_api.exception.ResourceNotFoundException;
+import com.jeevan.smart_notes_api.repository.ChatMessageRepository;
 import com.jeevan.smart_notes_api.repository.ChatSessionRepository;
 import com.jeevan.smart_notes_api.repository.GeneratedPdfRepository;
 import com.jeevan.smart_notes_api.repository.UserRepository;
@@ -56,6 +58,9 @@ public class PdfService {
 
     @Autowired
     private ChatSessionRepository sessionRepository;
+
+    @Autowired
+    private ChatMessageRepository chatMessageRepository;
 
     @Autowired
     private AiService aiService;
@@ -136,10 +141,44 @@ public class PdfService {
     }
 
     /**
-     * List all generated PDFs for the user's account page.
+     * List all generated PDFs for the user's workspace and account page.
+     * Automatically scans all chat messages to discover and persist every generated document.
      */
+    @Transactional
     public List<Map<String, Object>> getUserPdfs(String email) {
-        List<GeneratedPdf> pdfs = pdfRepository.findByUserEmailOrderByCreatedAtDesc(email);
+        User user = findUserByEmail(email);
+        List<GeneratedPdf> pdfs = new java.util.ArrayList<>(pdfRepository.findByUserEmailOrderByCreatedAtDesc(email));
+
+        // Scan all chat messages for <pdf_document> tags generated across user sessions
+        List<ChatMessage> chatDocs = chatMessageRepository.searchByContent(email, "<pdf_document");
+        Pattern pdfPattern = Pattern.compile("(?i)<pdf_document(?:\\s+title=\"([^\"]+)\")?>([\\s\\S]*?)(?:</pdf_document>|$)");
+
+        for (ChatMessage msg : chatDocs) {
+            if (msg.getContent() == null) continue;
+            Matcher m = pdfPattern.matcher(msg.getContent());
+            while (m.find()) {
+                String title = (m.group(1) != null && !m.group(1).isBlank()) ? m.group(1).trim() : "Generated Document";
+                String docContent = m.group(2) != null ? m.group(2).trim() : "";
+
+                if (docContent.isEmpty()) continue;
+
+                // Check if this document from this session is already saved in GeneratedPdf
+                boolean alreadySaved = pdfs.stream().anyMatch(p -> 
+                    (p.getSession() != null && msg.getSession() != null && p.getSession().getId().equals(msg.getSession().getId()) && p.getTitle().equalsIgnoreCase(title))
+                    || p.getTitle().equalsIgnoreCase(title)
+                );
+
+                if (!alreadySaved) {
+                    try {
+                        byte[] pdfBytes = renderMarkdownToPdf(docContent, title);
+                        GeneratedPdf autoSavedPdf = new GeneratedPdf(user, msg.getSession(), title, pdfBytes);
+                        GeneratedPdf saved = pdfRepository.save(autoSavedPdf);
+                        pdfs.add(0, saved);
+                    } catch (Exception ignored) {}
+                }
+            }
+        }
+
         return pdfs.stream().map(pdf -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", pdf.getId());
