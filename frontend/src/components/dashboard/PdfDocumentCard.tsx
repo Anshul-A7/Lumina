@@ -179,7 +179,7 @@ export default function PdfDocumentCard({ title, initialContent, sessionId }: Pd
     <>
       {/* The compact card shown in the chat stream */}
       <div className="w-full max-w-2xl bg-white border border-black/[0.08] rounded-2xl overflow-hidden shadow-sm my-2 transition-all hover:shadow-md">
-        <div className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#FDFBF7]">
+        <div className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-background">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-purple-50 flex items-center justify-center shrink-0 border border-purple-100">
               <FileText className="w-5 h-5 text-purple-600" />

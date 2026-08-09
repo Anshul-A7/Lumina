@@ -110,7 +110,7 @@ function ResetPasswordForm() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#FDFBF7] flex items-center justify-center p-4 sm:p-6 md:p-8 font-sans selection:bg-black selection:text-white overflow-hidden">
+    <div className="min-h-screen w-full bg-background flex items-center justify-center p-4 sm:p-6 md:p-8 font-sans selection:bg-black selection:text-white overflow-hidden">
       {/* Luxury Split Card Container */}
       <motion.div
         initial={{ opacity: 0, scale: 0.96, y: 20 }}
@@ -469,7 +469,7 @@ function ResetPasswordForm() {
 export default function ResetPasswordPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-black/20 border-t-black rounded-full animate-spin" />
       </div>
     }>

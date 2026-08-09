@@ -200,7 +200,7 @@ export default function RegisterPage() {
 
 
   return (
-    <div className="min-h-screen w-full bg-[#FDFBF7] flex items-center justify-center p-4 sm:p-6 md:p-8 font-sans selection:bg-black selection:text-white overflow-hidden">
+    <div className="min-h-screen w-full bg-background flex items-center justify-center p-4 sm:p-6 md:p-8 font-sans selection:bg-black selection:text-white overflow-hidden">
       {/* Luxury Split Card Container */}
       <motion.div 
         key="register-page"

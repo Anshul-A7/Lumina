@@ -66,7 +66,7 @@ export function RichMessage({ content, isUser, animate = false, onRequestGenerat
   if (isUser) {
     return (
       <div className="flex w-full justify-end">
-        <div className="max-w-[85%] rounded-3xl px-5 py-3.5 text-[15px] leading-relaxed shadow-sm bg-[#F4F4F4] text-black border border-black/[0.02]">
+        <div className="max-w-[85%] rounded-3xl px-5 py-3.5 text-[15px] leading-relaxed shadow-sm bg-secondary text-foreground border border-foreground/[0.02]">
           {content.split("\n").map((line, i) => (
             <p key={i} className="mb-1.5 last:mb-0">
               {line}
@@ -113,7 +113,7 @@ export function RichMessage({ content, isUser, animate = false, onRequestGenerat
                       return <Mermaid chart={String(children).replace(/\n$/, '')} />
                     }
                     return !inline && match ? (
-                      <div className="bg-[#2A2A2A] text-white text-sm rounded-lg p-4 my-2 overflow-x-auto font-mono">
+                      <div className="bg-primary text-primary-foreground text-sm rounded-lg p-4 my-2 overflow-x-auto font-mono">
                         <code className={className} {...props}>
                           {children}
                         </code>
@@ -170,7 +170,7 @@ export function RichMessage({ content, isUser, animate = false, onRequestGenerat
 
               {/* More Dropdown Menu */}
               {showMoreMenu && (
-                <div className="absolute top-full left-0 mt-1 w-48 bg-[#2A2A2A] rounded-2xl shadow-xl py-2 z-50 text-white/90 text-[14px]">
+                <div className="absolute top-full left-0 mt-1 w-48 bg-primary rounded-2xl shadow-xl py-2 z-50 text-primary-foreground/90 text-[14px]">
                   <div className="px-3 py-1.5 text-xs text-white/50 mb-1">
                     Options
                   </div>

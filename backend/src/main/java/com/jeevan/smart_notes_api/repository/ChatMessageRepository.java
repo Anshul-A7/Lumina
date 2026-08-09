@@ -24,4 +24,7 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
     long countBySessionId(Long sessionId);
 
     void deleteBySessionId(Long sessionId);
+
+    @Query("SELECT m FROM ChatMessage m WHERE m.session.user.email = :email AND LOWER(m.content) LIKE LOWER(CONCAT('%', :query, '%')) ORDER BY m.createdAt DESC")
+    List<ChatMessage> searchByContent(@Param("email") String email, @Param("query") String query);
 }

@@ -1,35 +1,38 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* 1. Map Tailwind Theme to our dynamic CSS variables */
 @theme inline {
-  /* Luxury White & High-Contrast Light Theme Palette */
-  --color-background: #FDFBF7;
-  --color-foreground: #0A0A0A;
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
   
-  --color-card: #FFFFFF;
-  --color-card-foreground: #0A0A0A;
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-fg);
   
-  --color-popover: #FFFFFF;
-  --color-popover-foreground: #0A0A0A;
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-fg);
   
-  --color-primary: #0A0A0A;
-  --color-primary-foreground: #FFFFFF;
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-fg);
   
-  --color-secondary: #F4F3EE;
-  --color-secondary-foreground: #1A1A1A;
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-fg);
   
-  --color-muted: #F0EFEB;
-  --color-muted-foreground: #666660;
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-fg);
   
-  --color-accent: #EAE8E0;
-  --color-accent-foreground: #0A0A0A;
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-fg);
   
-  --color-destructive: #DC2626;
-  --color-destructive-foreground: #FFFFFF;
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-fg);
   
-  --color-border: #E8E6DE;
-  --color-input: #FFFFFF;
-  --color-ring: #0A0A0A;
+  --color-border: var(--border-color);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-white: var(--theme-white);
+  --color-black: var(--theme-black);
   
   --radius-lg: 1rem;
   --radius-md: 0.75rem;
@@ -53,13 +56,79 @@
   }
 }
 
-/* Base resets & utilities */
+/* 2. Define the dynamic CSS variables for Light & Dark mode */
 @layer base {
+  :root {
+    --theme-white: #FFFFFF;
+    --theme-black: #000000;
+    
+    --bg: #FDFBF7;
+    --fg: #0A0A0A;
+    
+    --card: #FFFFFF;
+    --card-fg: #0A0A0A;
+    
+    --popover: #FFFFFF;
+    --popover-fg: #0A0A0A;
+    
+    --primary: #0A0A0A;
+    --primary-fg: #FFFFFF;
+    
+    --secondary: #F4F3EE;
+    --secondary-fg: #1A1A1A;
+    
+    --muted: #F0EFEB;
+    --muted-fg: #666660;
+    
+    --accent: #EAE8E0;
+    --accent-fg: #0A0A0A;
+    
+    --destructive: #DC2626;
+    --destructive-fg: #FFFFFF;
+    
+    --border-color: #E8E6DE;
+    --input: #FFFFFF;
+    --ring: #0A0A0A;
+  }
+
+  .dark {
+    --theme-white: #000000;
+    --theme-black: #FFFFFF;
+    
+    --bg: #000000;
+    --fg: #FFFFFF;
+    
+    --card: #0A0A0A;
+    --card-fg: #FFFFFF;
+    
+    --popover: #0A0A0A;
+    --popover-fg: #FFFFFF;
+    
+    --primary: #FFFFFF;
+    --primary-fg: #000000;
+    
+    --secondary: #1A1A1A;
+    --secondary-fg: #F4F3EE;
+    
+    --muted: #1A1A1A;
+    --muted-fg: #A1A1AA;
+    
+    --accent: #27272A;
+    --accent-fg: #FFFFFF;
+    
+    --destructive: #7F1D1D;
+    --destructive-fg: #FFFFFF;
+    
+    --border-color: #27272A;
+    --input: #000000;
+    --ring: #FFFFFF;
+  }
+
   * {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground antialiased selection:bg-black selection:text-white;
+    @apply bg-background text-foreground antialiased selection:bg-primary selection:text-primary-foreground;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
   
@@ -123,7 +192,8 @@
 }
 
 .markdown-content code {
-  background-color: #F4F4F4;
+  background-color: var(--muted);
+  color: var(--foreground);
   padding: 0.2em 0.4em;
   border-radius: 0.25rem;
   font-family: monospace;
@@ -131,8 +201,8 @@
 }
 
 .markdown-content pre {
-  background-color: #0A0A0A;
-  color: #FFFFFF;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
   padding: 1rem;
   border-radius: 0.75rem;
   overflow-x: auto;
@@ -147,8 +217,8 @@
 }
 
 .markdown-content blockquote {
-  border-left: 4px solid #0A0A0A;
-  background-color: #F9F9F9;
+  border-left: 4px solid var(--primary);
+  background-color: var(--muted);
   padding: 0.75rem 1rem;
   margin: 1em 0;
   font-style: italic;
@@ -161,11 +231,11 @@
   margin: 1em 0;
 }
 .markdown-content th, .markdown-content td {
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
   padding: 0.5rem 0.75rem;
   text-align: left;
 }
 .markdown-content th {
-  background-color: #F4F4F4;
+  background-color: var(--muted);
   font-weight: 600;
 }

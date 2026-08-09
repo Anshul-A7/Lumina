@@ -136,6 +136,14 @@ public class ChatController {
 
         String email = auth.getName();
 
+        // Enforce AI request quota
+        if (!subscriptionService.canPerformAction(email, "ai_request")) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", "Daily AI request limit reached. Upgrade your plan for more.");
+            error.put("upgradeUrl", "/dashboard/get-plus");
+            return ResponseEntity.status(429).body(error);
+        }
+
         // Track AI usage
         subscriptionService.incrementUsage(email, "ai_request");
 
@@ -187,6 +195,14 @@ public class ChatController {
         String email = auth.getName();
         String content = body.get("content");
 
+        // Enforce AI request quota
+        if (!subscriptionService.canPerformAction(email, "ai_request")) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", "Daily AI request limit reached. Upgrade your plan for more.");
+            error.put("upgradeUrl", "/dashboard/get-plus");
+            return ResponseEntity.status(429).body(error);
+        }
+
         subscriptionService.incrementUsage(email, "ai_request");
 
         ChatMessage aiResponse = chatService.sendMessage(id, email, content, null);
@@ -196,6 +212,74 @@ public class ChatController {
         result.put("sessionTitle", session.getTitle());
 
         return ResponseEntity.ok(result);
+    }
+
+    /**
+     * POST /chat/sessions/{id}/messages/stream — Send a text message with SSE streaming response.
+     * Body: { "content": "user message" }
+     * Returns text/event-stream with token-by-token AI response.
+     */
+    @PostMapping(value = "/sessions/{id}/messages/stream", produces = org.springframework.http.MediaType.TEXT_EVENT_STREAM_VALUE)
+    public org.springframework.web.servlet.mvc.method.annotation.SseEmitter streamMessage(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body,
+            Authentication auth) {
+
+        String email = auth.getName();
+        String content = body.get("content");
+
+        org.springframework.web.servlet.mvc.method.annotation.SseEmitter emitter =
+                new org.springframework.web.servlet.mvc.method.annotation.SseEmitter(120_000L);
+
+        // Check quota
+        if (!subscriptionService.canPerformAction(email, "ai_request")) {
+            try {
+                emitter.send(org.springframework.web.servlet.mvc.method.annotation.SseEmitter.event()
+                        .name("error")
+                        .data("{\"error\":\"Daily AI request limit reached. Upgrade your plan.\"}"));
+                emitter.complete();
+            } catch (Exception ignored) {}
+            return emitter;
+        }
+
+        subscriptionService.incrementUsage(email, "ai_request");
+
+        // Run streaming in a separate thread to not block the servlet thread
+        java.util.concurrent.ExecutorService executor = java.util.concurrent.Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                ChatMessage finalMsg = chatService.sendMessageStreaming(id, email, content, token -> {
+                    try {
+                        emitter.send(org.springframework.web.servlet.mvc.method.annotation.SseEmitter.event()
+                                .name("token")
+                                .data(token));
+                    } catch (Exception e) {
+                        emitter.completeWithError(e);
+                    }
+                });
+
+                // Send final message with metadata
+                Map<String, Object> finalData = new HashMap<>();
+                finalData.put("id", finalMsg.getId());
+                finalData.put("role", finalMsg.getRole().name());
+                finalData.put("content", finalMsg.getContent());
+                finalData.put("createdAt", finalMsg.getCreatedAt());
+
+                ChatSession session = chatService.getSessionById(id, email);
+                finalData.put("sessionTitle", session.getTitle());
+
+                emitter.send(org.springframework.web.servlet.mvc.method.annotation.SseEmitter.event()
+                        .name("done")
+                        .data(new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(finalData)));
+                emitter.complete();
+            } catch (Exception e) {
+                emitter.completeWithError(e);
+            } finally {
+                executor.shutdown();
+            }
+        });
+
+        return emitter;
     }
 
     /**
@@ -267,6 +351,89 @@ public class ChatController {
         headers.setContentDispositionFormData("attachment", filename);
 
         return new ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    // SEARCH ENDPOINT
+    // ════════════════════════════════════════════════════════════════════════
+
+    /**
+     * GET /chat/search?q={query} — Search across all chat messages.
+     */
+    @GetMapping("/search")
+    public ResponseEntity<java.util.List<java.util.Map<String, Object>>> searchMessages(
+            @RequestParam("q") String query,
+            Authentication auth) {
+
+        String email = auth.getName();
+        java.util.List<java.util.Map<String, Object>> results = chatService.searchMessages(email, query);
+        return ResponseEntity.ok(results);
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    // EXPORT ENDPOINT
+    // ════════════════════════════════════════════════════════════════════════
+
+    /**
+     * POST /chat/export — Export a session as HTML or TXT.
+     * Body: { "sessionId": 1, "format": "html" | "txt" }
+     */
+    @PostMapping("/export")
+    public ResponseEntity<byte[]> exportSession(
+            @RequestBody Map<String, Object> body,
+            Authentication auth) {
+
+        String email = auth.getName();
+        Long sessionId = Long.valueOf(body.get("sessionId").toString());
+        String format = body.getOrDefault("format", "txt").toString().toLowerCase();
+
+        ChatSession session = chatService.getSessionById(sessionId, email);
+        java.util.List<ChatMessage> messages = chatService.getSessionMessages(sessionId);
+
+        StringBuilder sb = new StringBuilder();
+
+        if ("html".equals(format)) {
+            sb.append("<!DOCTYPE html><html><head><meta charset='UTF-8'><title>")
+              .append(session.getTitle())
+              .append("</title><style>body{font-family:'Inter',sans-serif;max-width:800px;margin:40px auto;padding:20px;background:#fff;color:#1a1a1a;line-height:1.7}")
+              .append(".msg{margin:16px 0;padding:16px;border-radius:12px}.user{background:#f4f4f4;border-left:4px solid #0a0a0a}")
+              .append(".assistant{background:#fafafa;border-left:4px solid #5533ff}.role{font-weight:700;margin-bottom:8px;font-size:13px;text-transform:uppercase;letter-spacing:0.05em}")
+              .append("pre{background:#0a0a0a;color:#fff;padding:16px;border-radius:8px;overflow-x:auto}code{font-size:14px}")
+              .append("h1,h2,h3{margin-top:1.5em}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:8px;text-align:left}")
+              .append("</style></head><body>");
+            sb.append("<h1>").append(session.getTitle()).append("</h1>");
+
+            for (ChatMessage msg : messages) {
+                String roleClass = msg.getRole() == ChatMessage.Role.USER ? "user" : "assistant";
+                String roleLabel = msg.getRole() == ChatMessage.Role.USER ? "You" : "Lumina";
+                sb.append("<div class='msg ").append(roleClass).append("'>")
+                  .append("<div class='role'>").append(roleLabel).append("</div>")
+                  .append("<div>").append(msg.getContent().replace("\n", "<br/>")).append("</div>")
+                  .append("</div>");
+            }
+            sb.append("</body></html>");
+
+            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+            headers.setContentType(org.springframework.http.MediaType.TEXT_HTML);
+            String filename = session.getTitle().replaceAll("[^a-zA-Z0-9.-]", "_") + ".html";
+            headers.setContentDispositionFormData("attachment", filename);
+            return new ResponseEntity<>(sb.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8), headers, org.springframework.http.HttpStatus.OK);
+
+        } else {
+            // Plain text export
+            sb.append("=== ").append(session.getTitle()).append(" ===\n\n");
+            for (ChatMessage msg : messages) {
+                String roleLabel = msg.getRole() == ChatMessage.Role.USER ? "You" : "Lumina";
+                sb.append("[").append(roleLabel).append("]\n");
+                sb.append(msg.getContent()).append("\n\n");
+            }
+
+            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+            headers.setContentType(org.springframework.http.MediaType.TEXT_PLAIN);
+            String filename = session.getTitle().replaceAll("[^a-zA-Z0-9.-]", "_") + ".txt";
+            headers.setContentDispositionFormData("attachment", filename);
+            return new ResponseEntity<>(sb.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8), headers, org.springframework.http.HttpStatus.OK);
+        }
     }
 
     // ════════════════════════════════════════════════════════════════════════

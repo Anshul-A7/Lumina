@@ -25,7 +25,8 @@ import {
   Globe,
   BarChart3,
   MessageSquarePlus,
-  X
+  X,
+  Download
 } from "lucide-react";
 import { AuthService } from "@/services/auth.service";
 import * as ChatService from "@/lib/chat.service";
@@ -93,6 +94,13 @@ function DashboardContent() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // Search modal state (Feature 3)
+  const [showSearchModal, setShowSearchModal] = useState(false);
+  const [searchModalQuery, setSearchModalQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<ChatService.SearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Load initial notes and sessions
   const loadSessions = async () => {
@@ -209,6 +217,71 @@ function DashboardContent() {
     window.addEventListener("click", handleClick);
     return () => window.removeEventListener("click", handleClick);
   }, []);
+
+  // Cmd+K keyboard shortcut for search modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setShowSearchModal(prev => !prev);
+        setSearchModalQuery("");
+        setSearchResults([]);
+      }
+      if (e.key === "Escape" && showSearchModal) {
+        setShowSearchModal(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showSearchModal]);
+
+  // Auto-focus search input when modal opens
+  useEffect(() => {
+    if (showSearchModal && searchInputRef.current) {
+      setTimeout(() => searchInputRef.current?.focus(), 100);
+    }
+  }, [showSearchModal]);
+
+  // Search handler with debounce
+  useEffect(() => {
+    if (!searchModalQuery || searchModalQuery.trim().length < 2) {
+      setSearchResults([]);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      setIsSearching(true);
+      try {
+        const results = await ChatService.searchMessages(searchModalQuery.trim());
+        setSearchResults(results);
+      } catch (err) {
+        console.error("Search error:", err);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchModalQuery]);
+
+  // Export session handler
+  const handleExportSession = async (sessionId: number, format: 'html' | 'txt') => {
+    try {
+      const blob = await ChatService.exportSession(sessionId, format);
+      const session = sessions.find(s => s.id === sessionId);
+      const filename = (session?.title || 'chat') + '.' + format;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success(`Exported as ${format.toUpperCase()}`);
+    } catch (err) {
+      console.error("Export error:", err);
+      toast.error("Failed to export session.");
+    }
+  };
 
   const activeSession = useMemo(() => {
     return sessions.find((s) => s.id === activeSessionId) || null;
@@ -407,19 +480,87 @@ function DashboardContent() {
 
       setIsThinking(true);
       setIsTypingAllowed(true);
-      try {
-        await ChatService.sendMessage(activeSession.id, userInput, currentFiles);
-        const updatedSession = await ChatService.getSession(activeSession.id);
-        setSessions(prev => prev.map(s => s.id === updatedSession.id ? updatedSession : s));
-      } catch (err: any) {
-        console.error("AI Error:", err);
-        const errMsg = err?.response?.data?.message || err?.response?.data?.error || "Failed to send message. Please try again.";
-        toast.error(errMsg);
-        // Revert optimistic update by refreshing session
-        const originalSession = await ChatService.getSession(activeSession.id);
-        setSessions(prev => prev.map(s => s.id === originalSession.id ? originalSession : s));
-      } finally {
-        setIsThinking(false);
+
+      // Use SSE streaming for text-only messages, multipart for file uploads
+      if (currentFiles.length === 0) {
+        // ── SSE Streaming Path ──
+        const streamingMsgId = Date.now() + 1;
+        const tempAssistantMessage: ChatMessage = {
+          id: streamingMsgId,
+          role: 'ASSISTANT',
+          content: '',
+          attachmentNames: null,
+          createdAt: new Date().toISOString()
+        };
+
+        // Append empty assistant message that will be filled by streaming tokens
+        setSessions(prev => prev.map(s => {
+          if (s.id !== activeSession.id) return s;
+          return { ...s, messages: [...(s.messages || []), tempUserMessage, tempAssistantMessage] };
+        }));
+
+        try {
+          await ChatService.sendMessageStream(activeSession.id, userInput, {
+            onToken: (token: string) => {
+              setSessions(prev => prev.map(s => {
+                if (s.id !== activeSession.id) return s;
+                const msgs = [...(s.messages || [])];
+                const lastMsg = msgs[msgs.length - 1];
+                if (lastMsg && lastMsg.role === 'ASSISTANT') {
+                  msgs[msgs.length - 1] = { ...lastMsg, content: lastMsg.content + token };
+                }
+                return { ...s, messages: msgs };
+              }));
+            },
+            onDone: (finalMsg) => {
+              // Replace streaming message with final saved message from server
+              setSessions(prev => prev.map(s => {
+                if (s.id !== activeSession.id) return s;
+                const msgs = [...(s.messages || [])];
+                if (msgs.length > 0 && msgs[msgs.length - 1].role === 'ASSISTANT') {
+                  msgs[msgs.length - 1] = {
+                    id: finalMsg.id,
+                    role: 'ASSISTANT',
+                    content: finalMsg.content,
+                    attachmentNames: null,
+                    createdAt: finalMsg.createdAt
+                  };
+                }
+                // Update session title if returned
+                const newTitle = (finalMsg as any).sessionTitle;
+                return { ...s, messages: msgs, ...(newTitle ? { title: newTitle } : {}) };
+              }));
+              setIsThinking(false);
+            },
+            onError: (error: string) => {
+              toast.error(error);
+              setIsThinking(false);
+              // Refresh session to get clean state
+              ChatService.getSession(activeSession.id).then(updated => {
+                setSessions(prev => prev.map(s => s.id === updated.id ? updated : s));
+              }).catch(console.error);
+            }
+          });
+        } catch (err: any) {
+          console.error("Stream Error:", err);
+          toast.error("Failed to stream response. Falling back...");
+          setIsThinking(false);
+        }
+      } else {
+        // ── Multipart Upload Path (files attached) ──
+        try {
+          await ChatService.sendMessage(activeSession.id, userInput, currentFiles);
+          const updatedSession = await ChatService.getSession(activeSession.id);
+          setSessions(prev => prev.map(s => s.id === updatedSession.id ? updatedSession : s));
+        } catch (err: any) {
+          console.error("AI Error:", err);
+          const errMsg = err?.response?.data?.message || err?.response?.data?.error || "Failed to send message. Please try again.";
+          toast.error(errMsg);
+          const originalSession = await ChatService.getSession(activeSession.id);
+          setSessions(prev => prev.map(s => s.id === originalSession.id ? originalSession : s));
+        } finally {
+          setIsThinking(false);
+        }
       }
     } else {
       handleCreateNewSession(userInput, currentFiles.length > 0 ? currentFiles : undefined);
@@ -577,21 +718,62 @@ function DashboardContent() {
   const pinnedSessions = filteredSessions.filter(s => s.pinned);
   const unpinnedSessions = filteredSessions.filter(s => !s.pinned);
 
+  // Swipe-to-open handlers
+  const [touchStartX, setTouchStartX] = useState(0);
+  const [touchEndX, setTouchEndX] = useState(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.targetTouches[0].clientX);
+  };
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+  };
+  const handleTouchEnd = () => {
+    if (!touchStartX || !touchEndX) return;
+    const distance = touchEndX - touchStartX;
+    const isSwipeRight = distance > 60;
+    
+    // Only open if swiped from the left edge (e.g. < 40px)
+    if (isSwipeRight && !sidebarOpen && touchStartX < 40) {
+      setSidebarOpen(true);
+      window.dispatchEvent(new CustomEvent("lumina:toggle_sidebar", { detail: true }));
+    }
+    setTouchStartX(0);
+    setTouchEndX(0);
+  };
+
   return (
-    <div className="flex-1 flex w-full h-full bg-white text-[#0A0A0A] overflow-hidden">
+    <div 
+      className="flex-1 flex w-full h-full bg-background text-foreground overflow-hidden"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       
       {/* ───────────────────────────────────────────────────────────────────────
           SIDEBAR
           ─────────────────────────────────────────────────────────────────────── */}
       <AnimatePresence initial={false}>
         {sidebarOpen && (
-          <motion.aside
-            initial={{ width: 0, opacity: 0 }}
-            animate={{ width: 280, opacity: 1 }}
-            exit={{ width: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="bg-[#F9F9F8] border-r border-black/[0.06] flex flex-col z-20 shrink-0 overflow-hidden select-none"
-          >
+          <>
+            {/* Mobile Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => {
+                setSidebarOpen(false);
+                window.dispatchEvent(new CustomEvent("lumina:toggle_sidebar", { detail: false }));
+              }}
+              className="absolute inset-0 bg-black/40 z-30 md:hidden"
+            />
+            <motion.aside
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: 280, opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              className="bg-card border-r border-foreground/[0.06] flex flex-col shrink-0 overflow-hidden select-none max-md:absolute max-md:top-0 max-md:bottom-0 max-md:left-0 z-40 md:relative md:z-20"
+            >
             {/* New Session Button & Search */}
             <div className="p-4 flex flex-col gap-3">
               <button
@@ -606,13 +788,13 @@ function DashboardContent() {
               </button>
               
               <div className="relative">
-                <Search className="w-[18px] h-[18px] text-black/40 absolute left-3 top-1/2 -translate-y-1/2" />
+                <Search className="w-[18px] h-[18px] text-foreground/40 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search sessions..."
-                  className="w-full h-10 pl-10 pr-3 text-[13px] font-medium bg-white rounded-xl border border-black/[0.08] focus:border-black/30 outline-none text-black placeholder:text-black/40 transition-colors shadow-sm"
+                  className="w-full h-10 pl-10 pr-3 text-[13px] font-medium bg-background rounded-xl border border-foreground/[0.08] focus:border-foreground/30 outline-none text-foreground placeholder:text-foreground/40 transition-colors shadow-sm"
                 />
               </div>
             </div>
@@ -622,7 +804,7 @@ function DashboardContent() {
               
               {pinnedSessions.length > 0 && (
                 <div>
-                  <div className="px-3 py-1.5 text-[11px] font-sans uppercase tracking-wider font-bold text-black/50 mb-1 flex items-center gap-2">
+                  <div className="px-3 py-1.5 text-[11px] font-sans uppercase tracking-wider font-bold text-foreground/50 mb-1 flex items-center gap-2">
                     <Pin className="w-3.5 h-3.5" /> Pinned
                   </div>
                   <div className="space-y-0.5">
@@ -632,12 +814,12 @@ function DashboardContent() {
               )}
 
               <div>
-                <div className="px-3 py-1.5 text-[11px] font-sans uppercase tracking-wider font-bold text-black/50 mb-1 flex items-center gap-2">
+                <div className="px-3 py-1.5 text-[11px] font-sans uppercase tracking-wider font-bold text-foreground/50 mb-1 flex items-center gap-2">
                   <MessageSquare className="w-3.5 h-3.5" /> All Sessions
                 </div>
                 <div className="space-y-0.5">
                   {unpinnedSessions.length === 0 && pinnedSessions.length === 0 ? (
-                    <div className="px-2 py-4 text-xs text-black/40 text-center font-light">
+                    <div className="px-2 py-4 text-xs text-foreground/40 text-center font-light">
                       No sessions found.
                     </div>
                   ) : (
@@ -648,28 +830,28 @@ function DashboardContent() {
             </div>
 
             {/* Account Profile Bottom */}
-            <div className="p-4 mt-auto border-t border-black/[0.04] flex flex-col gap-1">
+            <div className="p-4 mt-auto border-t border-foreground/[0.04] flex flex-col gap-1">
               <Link href="/dashboard?tab=account"
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-black/[0.05] transition-colors text-left cursor-pointer"
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-foreground/[0.05] transition-colors text-left cursor-pointer"
               >
                 {userAvatar ? (
                   <img src={userAvatar} alt="Avatar" className="w-[26px] h-[26px] rounded-full object-cover shadow-sm shrink-0" />
                 ) : (
-                  <div className="w-[26px] h-[26px] rounded-full bg-[#2A2A2A] text-white font-bold text-[11px] flex items-center justify-center shadow-sm shrink-0">
+                  <div className="w-[26px] h-[26px] rounded-full bg-primary text-primary-foreground font-bold text-[11px] flex items-center justify-center shadow-sm shrink-0">
                     {userName ? userName.charAt(0).toUpperCase() : "N"}
                   </div>
                 )}
                 <div className="flex flex-col flex-1 min-w-0">
-                  <span className="text-[13px] font-semibold text-black truncate leading-tight">{userName}</span>
-                  {userEmail && <span className="text-[11px] text-black/50 truncate leading-tight">{userEmail}</span>}
+                  <span className="text-[13px] font-semibold text-foreground truncate leading-tight">{userName}</span>
+                  {userEmail && <span className="text-[11px] text-foreground/50 truncate leading-tight">{userEmail}</span>}
                 </div>
               </Link>
               
               <Link href="/dashboard?tab=settings"
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-black/[0.05] transition-colors text-left cursor-pointer"
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-foreground/[0.05] transition-colors text-left cursor-pointer"
               >
-                <Settings className="w-[18px] h-[18px] text-black/60 shrink-0" />
-                <span className="text-[13px] font-semibold text-black">Settings</span>
+                <Settings className="w-[18px] h-[18px] text-foreground/60 shrink-0" />
+                <span className="text-[13px] font-semibold text-foreground">Settings</span>
               </Link>
               
               <button
@@ -684,13 +866,14 @@ function DashboardContent() {
               </button>
             </div>
           </motion.aside>
+          </>
         )}
       </AnimatePresence>
 
       {/* ───────────────────────────────────────────────────────────────────────
           MAIN CHAT AREA (Center)
           ─────────────────────────────────────────────────────────────────────── */}
-        <main className="flex-1 flex flex-col min-w-0 bg-white relative">
+        <main className="flex-1 flex flex-col min-w-0 bg-background relative">
           {activeTab === "account" ? (
             <AccountView />
           ) : activeTab === "settings" ? (
@@ -707,7 +890,7 @@ function DashboardContent() {
         <div className="w-full flex items-center justify-between p-3 absolute top-0 left-0 right-0 z-10 pointer-events-none">
           <Link 
             href="/dashboard?tab=get-plus"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#F0EEFA] hover:bg-[#E5E1F5] text-[#5533FF] text-[12px] font-bold rounded-full transition-colors cursor-pointer pointer-events-auto"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-accent hover:bg-muted text-foreground text-[12px] font-bold rounded-full transition-colors cursor-pointer pointer-events-auto"
           >
             <Sparkles className="w-3.5 h-3.5" />
             Get Plus
@@ -719,7 +902,7 @@ function DashboardContent() {
               setDraftContent("");
             }}
             title="New Chat"
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-black/60 hover:text-black hover:bg-black/[0.04] transition-colors cursor-pointer pointer-events-auto"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-foreground/60 hover:text-foreground hover:bg-foreground/[0.04] transition-colors cursor-pointer pointer-events-auto"
           >
             <MessageSquarePlus className="w-4.5 h-4.5" />
           </button>
@@ -735,10 +918,10 @@ function DashboardContent() {
                 <div className="mb-6">
                   <LuminaIcon size={64} />
                 </div>
-                <h1 className="text-3xl font-bold text-black tracking-tight mb-3" style={{ fontFamily: SERIF }}>
+                <h1 className="text-3xl font-bold text-foreground tracking-tight mb-3" style={{ fontFamily: SERIF }}>
                   Upload or Ask
                 </h1>
-                <p className="text-sm text-black/50 max-w-sm">
+                <p className="text-sm text-foreground/50 max-w-sm">
                   Start a new session by asking a question, uploading a document, or typing an idea.
                 </p>
               </div>
@@ -767,12 +950,12 @@ function DashboardContent() {
                 {/* Thinking Indicator */}
                 {isThinking && (
                   <div className="flex w-full justify-start relative group mt-2 mb-4">
-                    <div className="flex items-center gap-2 px-2 text-sm text-black/50 font-medium italic">
+                    <div className="flex items-center gap-2 px-2 text-sm text-foreground/50 font-medium italic">
                       <span>Thinking...</span>
                       <div className="flex gap-1 items-center mt-1">
-                        <span className="w-1.5 h-1.5 bg-black/40 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                        <span className="w-1.5 h-1.5 bg-black/40 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                        <span className="w-1.5 h-1.5 bg-black/40 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                        <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                        <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                        <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
                       </div>
                     </div>
                   </div>
@@ -791,7 +974,7 @@ function DashboardContent() {
           <div className="w-full max-w-3xl relative">
             <form 
               onSubmit={handleChatSubmit}
-              className="relative flex items-end w-full bg-[#F4F4F4] border border-black/[0.05] rounded-3xl focus-within:ring-2 focus-within:ring-black/20 focus-within:bg-white transition-all shadow-sm"
+              className="relative flex items-end w-full bg-secondary border border-foreground/[0.05] rounded-3xl focus-within:ring-2 focus-within:ring-foreground/20 focus-within:bg-background transition-all shadow-sm"
             >
               {/* Attachment Button */}
               <div className="absolute left-3 bottom-2">
@@ -802,7 +985,7 @@ function DashboardContent() {
                     e.stopPropagation();
                     setActiveMenuId(activeMenuId === "attach" ? null : "attach");
                   }}
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-black/40 hover:bg-black/[0.05] hover:text-black transition-colors cursor-pointer"
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-foreground/40 hover:bg-foreground/[0.05] hover:text-foreground transition-colors cursor-pointer"
                 >
                   <Plus className="w-5 h-5" />
                 </button>
@@ -826,7 +1009,7 @@ function DashboardContent() {
                           } 
                         }
                       }}
-                      className="absolute bottom-14 left-0 w-[420px] bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-black/[0.08] p-1.5 z-50 text-black flex flex-col"
+                      className="absolute bottom-14 left-0 w-[420px] bg-background rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-foreground/[0.08] p-1.5 z-50 text-foreground flex flex-col"
                       onClick={(e) => e.stopPropagation()}
                     >
                       {[
@@ -841,12 +1024,12 @@ function DashboardContent() {
                           }}
                           type="button"
                           onClick={item.action}
-                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-black/[0.04] text-left cursor-pointer transition-colors group"
+                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] text-left cursor-pointer transition-colors group"
                         >
-                          <item.icon className="w-[18px] h-[18px] text-black/50 group-hover:text-black transition-colors shrink-0" />
+                          <item.icon className="w-[18px] h-[18px] text-foreground/50 group-hover:text-foreground transition-colors shrink-0" />
                           <div className="flex items-baseline gap-2 flex-1 min-w-0">
-                            <span className="text-[14px] font-medium text-black whitespace-nowrap">{item.title}</span>
-                            <span className="text-[12px] text-black/40 truncate">{item.sub}</span>
+                            <span className="text-[14px] font-medium text-foreground whitespace-nowrap">{item.title}</span>
+                            <span className="text-[12px] text-foreground/40 truncate">{item.sub}</span>
                           </div>
                         </motion.button>
                       ))}
@@ -870,7 +1053,7 @@ function DashboardContent() {
                 {attachments.length > 0 && (
                   <div className="flex flex-wrap items-center justify-center gap-2 px-2 mb-2 mt-2">
                     {attachments.map((att, idx) => (
-                      <div key={idx} className="flex items-center gap-2 px-2.5 py-1.5 bg-black/[0.04] border border-black/5 rounded-xl w-fit relative group transition-all hover:bg-black/[0.06]">
+                      <div key={idx} className="flex items-center gap-2 px-2.5 py-1.5 bg-foreground/[0.04] border border-foreground/5 rounded-xl w-fit relative group transition-all hover:bg-foreground/[0.06]">
                         {att.preview ? (
                           <img src={att.preview} alt="Preview" className="w-6 h-6 rounded-md object-cover shadow-sm" />
                         ) : (
@@ -879,14 +1062,14 @@ function DashboardContent() {
                           </div>
                         )}
                         <div className="flex flex-col pr-3 overflow-hidden">
-                          <span className="text-[11px] font-semibold text-black max-w-[100px] truncate leading-tight">{att.file.name}</span>
+                          <span className="text-[11px] font-semibold text-foreground max-w-[100px] truncate leading-tight">{att.file.name}</span>
                         </div>
                         <button
                           type="button"
                           onClick={() => {
                             setAttachments(prev => prev.filter((_, i) => i !== idx));
                           }}
-                          className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-white border border-black/10 text-black/60 hover:text-black hover:bg-red-50 hover:border-red-200 hover:text-red-600 rounded-full flex items-center justify-center shadow-sm cursor-pointer transition-colors"
+                          className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-background border border-foreground/10 text-foreground/60 hover:text-foreground hover:bg-red-50 hover:border-red-200 hover:text-red-600 rounded-full flex items-center justify-center shadow-sm cursor-pointer transition-colors"
                         >
                           <X className="w-3 h-3" />
                         </button>
@@ -902,13 +1085,13 @@ function DashboardContent() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
-                      className="absolute bottom-full left-14 mb-2 w-64 max-h-60 overflow-y-auto bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-black/[0.08] p-1.5 z-50 flex flex-col"
+                      className="absolute bottom-full left-14 mb-2 w-64 max-h-60 overflow-y-auto bg-background rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-foreground/[0.08] p-1.5 z-50 flex flex-col"
                     >
-                      <div className="px-2 py-1.5 text-[11px] font-medium text-black/40 uppercase tracking-wider">
+                      <div className="px-2 py-1.5 text-[11px] font-medium text-foreground/40 uppercase tracking-wider">
                         Insert Snippet
                       </div>
                       {filteredNotes.length === 0 ? (
-                        <div className="px-2 py-3 text-[13px] text-black/40 text-center">No snippets found</div>
+                        <div className="px-2 py-3 text-[13px] text-foreground/40 text-center">No snippets found</div>
                       ) : (
                         filteredNotes.map(note => (
                           <button
@@ -923,10 +1106,10 @@ function DashboardContent() {
                               setShowSnippetMenu(false);
                               textareaRef.current?.focus();
                             }}
-                            className="w-full text-left px-3 py-2 rounded-lg hover:bg-black/[0.04] transition-colors flex flex-col"
+                            className="w-full text-left px-3 py-2 rounded-lg hover:bg-foreground/[0.04] transition-colors flex flex-col"
                           >
-                            <span className="text-[13px] font-semibold text-black truncate">{note.title}</span>
-                            <span className="text-[11px] text-black/50 truncate mt-0.5">{note.content.substring(0, 40)}...</span>
+                            <span className="text-[13px] font-semibold text-foreground truncate">{note.title}</span>
+                            <span className="text-[11px] text-foreground/50 truncate mt-0.5">{note.content.substring(0, 40)}...</span>
                           </button>
                         ))
                       )}
@@ -966,7 +1149,7 @@ function DashboardContent() {
                   }}
                   placeholder={uploadProgress ? "Uploading file..." : "Ask anything... (type @ to insert snippet)"}
                   disabled={uploadProgress}
-                  className="w-full max-h-48 min-h-[36px] py-[8px] mb-2 bg-transparent resize-none outline-none text-sm text-black placeholder:text-black/40 disabled:opacity-50"
+                  className="w-full max-h-48 min-h-[36px] py-[8px] mb-2 bg-transparent resize-none outline-none text-sm text-foreground placeholder:text-foreground/40 disabled:opacity-50"
                   rows={1}
                   style={{ height: "auto" }}
                 />
@@ -981,13 +1164,84 @@ function DashboardContent() {
                 <ArrowUp className="w-5 h-5" />
               </button>
             </form>
-            <div className="text-center mt-2 text-[11px] text-black/40 font-light">
+            <div className="text-center mt-2 text-[11px] text-foreground/40 font-light">
               Lumina can make mistakes. Verify important information.
             </div>
           </div>
         </div>
               </>
           )}
+
+          {/* Search Modal */}
+          <AnimatePresence>
+            {showSearchModal && (
+              <div className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh] px-4 bg-foreground/20 backdrop-blur-sm" onClick={() => setShowSearchModal(false)}>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                  onClick={e => e.stopPropagation()}
+                  className="w-full max-w-2xl bg-background rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-foreground/10 overflow-hidden flex flex-col"
+                >
+                  <div className="flex items-center px-4 py-3 border-b border-foreground/[0.06]">
+                    <Search className="w-5 h-5 text-foreground/40 mr-3 shrink-0" />
+                    <input
+                      ref={searchInputRef}
+                      type="text"
+                      value={searchModalQuery}
+                      onChange={e => setSearchModalQuery(e.target.value)}
+                      placeholder="Search messages across all sessions..."
+                      className="flex-1 bg-transparent border-none outline-none text-[15px] font-medium text-foreground placeholder:text-foreground/40"
+                    />
+                    <div className="text-[10px] font-bold tracking-wider text-foreground/30 uppercase ml-3 shrink-0 px-2 py-1 bg-foreground/5 rounded">Esc</div>
+                  </div>
+                  
+                  <div className="max-h-[60vh] overflow-y-auto">
+                    {isSearching ? (
+                      <div className="px-6 py-10 text-center text-[13px] text-foreground/40 flex items-center justify-center gap-2">
+                        <div className="w-3 h-3 border-2 border-foreground/20 border-t-black rounded-full animate-spin"></div>
+                        Searching...
+                      </div>
+                    ) : searchResults.length > 0 ? (
+                      <div className="p-2 space-y-1">
+                        {searchResults.map((result, idx) => (
+                          <div 
+                            key={idx}
+                            onClick={() => {
+                              setShowSearchModal(false);
+                              const session = sessions.find(s => s.id === result.sessionId);
+                              if (session) selectSession(session);
+                            }}
+                            className="p-3 hover:bg-foreground/[0.03] rounded-xl cursor-pointer transition-colors"
+                          >
+                            <div className="flex items-center gap-2 mb-1.5">
+                              <span className="text-[12px] font-semibold text-foreground">{result.sessionTitle || "Untitled Session"}</span>
+                              <span className="text-[11px] text-foreground/40">• {new Date(result.createdAt).toLocaleDateString()}</span>
+                              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase ${result.role === 'USER' ? 'bg-foreground/5 text-foreground/60' : 'bg-primary/10 text-primary'}`}>
+                                {result.role === 'USER' ? 'You' : 'Lumina'}
+                              </span>
+                            </div>
+                            <div className="text-[13px] text-foreground/70 leading-relaxed font-light">
+                              {result.content}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : searchModalQuery.length >= 2 ? (
+                      <div className="px-6 py-10 text-center text-[13px] text-foreground/40">
+                        No results found for "{searchModalQuery}"
+                      </div>
+                    ) : (
+                      <div className="px-6 py-8 flex flex-col items-center justify-center text-center">
+                        <MessageSquare className="w-8 h-8 text-foreground/10 mb-3" />
+                        <span className="text-[13px] text-foreground/40 font-medium">Type at least 2 characters to search across all your chats</span>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>
         </main>
       </div>
   );
@@ -1004,7 +1258,7 @@ function DashboardContent() {
         className={`relative px-3 py-2.5 rounded-xl transition-all flex items-center justify-between group ${
           isSelected
             ? "bg-black text-white shadow-sm"
-            : "hover:bg-black/[0.04] text-black cursor-pointer"
+            : "hover:bg-foreground/[0.04] text-foreground cursor-pointer"
         }`}
         onClick={() => {
           if (!isEditing) selectSession(session);
@@ -1022,24 +1276,24 @@ function DashboardContent() {
                 if (e.key === "Enter") handleRenameSubmit(session.id);
                 if (e.key === "Escape") setEditingId(null);
               }}
-              className="w-full bg-white text-black text-[13px] font-semibold px-2 py-1 rounded outline-none border border-black/20"
+              className="w-full bg-background text-foreground text-[13px] font-semibold px-2 py-1 rounded outline-none border border-foreground/20"
               onClick={(e) => e.stopPropagation()}
             />
           ) : (
-            <p className={`text-[13px] font-semibold truncate ${isSelected ? "text-white" : "text-black/80"}`}>
+            <p className={`text-[13px] font-semibold truncate ${isSelected ? "text-white" : "text-foreground/80"}`}>
               {session.title || "Untitled Session"}
             </p>
           )}
         </div>
         
         {/* 3 Dots Menu Button */}
-        <div className={`absolute right-2 flex items-center ${isMenuOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity ${isSelected ? "text-white" : "text-black/40"}`}>
+        <div className={`absolute right-2 flex items-center ${isMenuOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity ${isSelected ? "text-white" : "text-foreground/40"}`}>
           <button
             onClick={(e) => {
               e.stopPropagation();
               setActiveMenuId(isMenuOpen ? null : session.id.toString());
             }}
-            className={`p-1 rounded transition-colors cursor-pointer ${isSelected ? "hover:bg-white/20" : "hover:bg-black/10"}`}
+            className={`p-1 rounded transition-colors cursor-pointer ${isSelected ? "hover:bg-background/20" : "hover:bg-foreground/10"}`}
           >
             <MoreVertical className="w-4 h-4" />
           </button>
@@ -1053,7 +1307,7 @@ function DashboardContent() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.1 }}
-              className="absolute right-8 top-8 w-32 bg-white rounded-lg shadow-xl border border-black/[0.08] py-1 z-50 text-black flex flex-col"
+              className="absolute right-8 top-8 w-32 bg-background rounded-lg shadow-xl border border-foreground/[0.08] py-1 z-50 text-foreground flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
               <button 
@@ -1062,29 +1316,51 @@ function DashboardContent() {
                   setEditingTitle(session.title);
                   setActiveMenuId(null);
                 }}
-                className="w-full flex items-center gap-2 px-3 py-1.5 text-xs hover:bg-black/[0.04] text-left cursor-pointer"
+                className="w-full flex items-center gap-2 px-3 py-1.5 text-xs hover:bg-foreground/[0.04] text-left cursor-pointer"
               >
-                <Edit2 className="w-3.5 h-3.5 text-black/60" /> Rename
+                <Edit2 className="w-3.5 h-3.5 text-foreground/60" /> Rename
               </button>
               <button 
                 onClick={() => {
                   selectSession(session);
                   setActiveMenuId(null);
                 }}
-                className="w-full flex items-center gap-2 px-3 py-1.5 text-xs hover:bg-black/[0.04] text-left cursor-pointer"
+                className="w-full flex items-center gap-2 px-3 py-1.5 text-xs hover:bg-foreground/[0.04] text-left cursor-pointer"
               >
-                <MessageSquare className="w-3.5 h-3.5 text-black/60" /> Edit Session
+                <MessageSquare className="w-3.5 h-3.5 text-foreground/60" /> Edit Session
               </button>
               <button 
                 onClick={() => {
                   handlePinSession(session);
                   setActiveMenuId(null);
                 }}
-                className="w-full flex items-center gap-2 px-3 py-1.5 text-xs hover:bg-black/[0.04] text-left cursor-pointer"
+                className="w-full flex items-center gap-2 px-3 py-1.5 text-xs hover:bg-foreground/[0.04] text-left cursor-pointer"
               >
-                <Pin className="w-3.5 h-3.5 text-black/60" /> {session.pinned ? "Unpin" : "Pin"}
+                <Pin className="w-3.5 h-3.5 text-foreground/60" /> {session.pinned ? "Unpin" : "Pin"}
               </button>
-              <div className="h-px w-full bg-black/[0.06] my-1" />
+
+              <div className="h-px w-full bg-foreground/[0.06] my-1" />
+
+              <button 
+                onClick={() => {
+                  handleExportSession(session.id, 'txt');
+                  setActiveMenuId(null);
+                }}
+                className="w-full flex items-center gap-2 px-3 py-1.5 text-xs hover:bg-foreground/[0.04] text-left cursor-pointer"
+              >
+                <Download className="w-3.5 h-3.5 text-foreground/60" /> Export as TXT
+              </button>
+              <button 
+                onClick={() => {
+                  handleExportSession(session.id, 'html');
+                  setActiveMenuId(null);
+                }}
+                className="w-full flex items-center gap-2 px-3 py-1.5 text-xs hover:bg-foreground/[0.04] text-left cursor-pointer"
+              >
+                <Download className="w-3.5 h-3.5 text-foreground/60" /> Export as HTML
+              </button>
+
+              <div className="h-px w-full bg-foreground/[0.06] my-1" />
               <button 
                 onClick={() => {
                   handleDeleteSession(session.id);
@@ -1104,7 +1380,7 @@ function DashboardContent() {
 
 export default function DashboardPage() {
   return (
-    <Suspense fallback={<div className="flex h-screen items-center justify-center bg-[#FAFAFA]">Loading...</div>}>
+    <Suspense fallback={<div className="flex h-screen items-center justify-center bg-background">Loading...</div>}>
       <DashboardContent />
     </Suspense>
   );

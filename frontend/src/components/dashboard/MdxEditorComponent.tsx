@@ -302,13 +302,13 @@ export default function MdxEditorComponent({
   };
 
   return (
-    <div className="w-full h-full flex flex-col bg-[#F3F4F6] select-text">
+    <div className="w-full h-full flex flex-col bg-background select-text">
       <MDXEditor
         ref={editorRef}
         markdown={cleanMarkdown}
         onChange={handleEditorChange}
         className="w-full flex-1 flex flex-col font-sans"
-        contentEditableClassName="prose prose-sm sm:prose-base max-w-none !px-28 !py-20 min-h-[1056px] focus:outline-none bg-white shadow-lg border border-gray-200 mt-6 mb-36 mx-auto w-full max-w-[850px] rounded-2xl transition-all"
+        contentEditableClassName="prose prose-sm sm:prose-base max-w-none !px-28 !py-20 min-h-[1056px] focus:outline-none bg-background shadow-lg border border-border mt-6 mb-36 mx-auto w-full max-w-[850px] rounded-2xl transition-all"
         plugins={[
           headingsPlugin(),
           listsPlugin(),
@@ -339,26 +339,26 @@ export default function MdxEditorComponent({
           markdownShortcutPlugin(),
           toolbarPlugin({
             toolbarContents: () => (
-              <div className="w-full bg-white border-b border-gray-300 shadow-sm sticky top-0 z-50 overflow-visible">
+              <div className="w-full bg-background border-b border-border shadow-sm sticky top-0 z-50 overflow-visible">
                 
                 {/* 1. TOP TITLE & ACTION BAR */}
-                <div className="w-full flex items-center justify-between px-4 py-2 bg-[#1E293B] text-white border-b border-[#0F172A]">
+                <div className="w-full flex items-center justify-between px-4 py-2 bg-primary text-primary-foreground border-b border-primary">
                   <div className="flex items-center gap-3">
                     <button 
                       onMouseDown={(e) => e.preventDefault()}
                       onClick={() => onBack(editorRef.current?.getMarkdown() || markdown)} 
-                      className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors text-white cursor-pointer"
+                      className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-background/20 transition-colors text-primary-foreground cursor-pointer"
                       title="Back to Chat / Workspace"
                     >
                       <ArrowLeft className="w-4 h-4" />
                     </button>
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 bg-purple-600 rounded-lg flex items-center justify-center text-[11px] font-bold text-white shadow-inner">
+                      <div className="w-6 h-6 bg-purple-600 rounded-lg flex items-center justify-center text-[11px] font-bold text-primary-foreground shadow-inner">
                         ✦
                       </div>
-                      <span className="text-xs font-semibold tracking-wide text-white">Lumina Studio</span>
-                      <span className="text-white/40 text-xs">|</span>
-                      <span className="text-xs text-white/90 font-medium truncate max-w-xs sm:max-w-md">{title || "Document"}</span>
+                      <span className="text-xs font-semibold tracking-wide text-primary-foreground">Lumina Studio</span>
+                      <span className="text-primary-foreground/40 text-xs">|</span>
+                      <span className="text-xs text-primary-foreground/90 font-medium truncate max-w-xs sm:max-w-md">{title || "Document"}</span>
                     </div>
                   </div>
 
@@ -367,9 +367,9 @@ export default function MdxEditorComponent({
                     {/* Live Stats */}
                     <div className="hidden md:flex items-center gap-3 text-xs text-zinc-300 font-medium bg-black/30 px-3.5 py-1 rounded-full border border-white/10">
                       <span>{stats.words} words</span>
-                      <span className="text-white/20">•</span>
+                      <span className="text-primary-foreground/20">•</span>
                       <span>{stats.readTime} min read</span>
-                      <span className="text-white/20">•</span>
+                      <span className="text-primary-foreground/20">•</span>
                       <span className="flex items-center gap-1.5 text-emerald-400">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                         Auto-saved
@@ -380,7 +380,7 @@ export default function MdxEditorComponent({
                       <button 
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={onCopy} 
-                        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors text-xs font-semibold border border-white/20 cursor-pointer shadow-2xs"
+                        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-background/10 hover:bg-background/20 text-primary-foreground transition-colors text-xs font-semibold border border-white/20 cursor-pointer shadow-2xs"
                         title="Copy Markdown to clipboard"
                       >
                         {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
@@ -391,7 +391,7 @@ export default function MdxEditorComponent({
                       <button 
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => onSaveAndReturn(editorRef.current?.getMarkdown() || markdown)} 
-                        className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white transition-all text-xs font-bold shadow-md hover:shadow-lg cursor-pointer transform active:scale-95"
+                        className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-primary-foreground transition-all text-xs font-bold shadow-md hover:shadow-lg cursor-pointer transform active:scale-95"
                         title="Save changes and return to chat session"
                       >
                         <Save className="w-3.5 h-3.5" />
@@ -403,7 +403,7 @@ export default function MdxEditorComponent({
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={onDownload} 
                         disabled={isDownloading} 
-                        className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-purple-600 hover:bg-purple-500 text-white transition-colors text-xs font-semibold shadow-sm disabled:opacity-50 cursor-pointer"
+                        className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-purple-600 hover:bg-purple-500 text-primary-foreground transition-colors text-xs font-semibold shadow-sm disabled:opacity-50 cursor-pointer"
                         title="Compile and Download formatted PDF"
                       >
                         <Download className="w-3.5 h-3.5" />
@@ -415,10 +415,10 @@ export default function MdxEditorComponent({
 
                 {/* 2. LUMINA STUDIO FORMATTING TOOLBAR */}
                 <DiffSourceToggleWrapper>
-                  <div className="w-full bg-[#F8FAFC] px-4 py-2.5 border-b border-gray-300 flex items-stretch gap-4 min-h-[96px] overflow-visible relative z-40">
+                  <div className="w-full bg-secondary px-4 py-2.5 border-b border-border flex max-md:flex-wrap items-stretch gap-4 min-h-[96px] overflow-visible relative z-40">
                     
                     {/* GROUP 1: FONT & TYPOGRAPHY */}
-                    <div className="flex flex-col justify-between border-r border-gray-300 pr-4 shrink-0 overflow-visible">
+                    <div className="flex flex-col justify-between border-r border-border pr-4 shrink-0 overflow-visible">
                       <div className="flex flex-col gap-1.5 overflow-visible">
                         {/* Font Family & Size applied to SELECTED text */}
                         <div className="flex items-center gap-1.5">
@@ -429,7 +429,7 @@ export default function MdxEditorComponent({
                                 e.target.value = "Font";
                               }}
                               defaultValue="Font"
-                              className="border border-gray-300 rounded-xl bg-white text-xs px-3 py-1 w-36 h-7 font-medium text-gray-700 outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 shadow-2xs cursor-pointer"
+                              className="border border-border rounded-xl bg-background text-xs px-3 py-1 w-36 h-7 font-medium text-foreground outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 shadow-2xs cursor-pointer"
                               title="Apply Font Family to selected text"
                             >
                               <option value="Font" disabled>Font Family</option>
@@ -449,7 +449,7 @@ export default function MdxEditorComponent({
                                 e.target.value = "Size";
                               }}
                               defaultValue="Size"
-                              className="border border-gray-300 rounded-xl bg-white text-xs px-2 py-1 w-16 h-7 font-medium text-gray-700 outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 shadow-2xs cursor-pointer"
+                              className="border border-border rounded-xl bg-background text-xs px-2 py-1 w-16 h-7 font-medium text-foreground outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 shadow-2xs cursor-pointer"
                               title="Apply Font Size to selected text"
                             >
                               <option value="Size" disabled>Size</option>
@@ -466,7 +466,7 @@ export default function MdxEditorComponent({
                         </div>
 
                         {/* Font Formatting Buttons with Highlight & Text Color Popovers */}
-                        <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-xl px-2 py-0.5 w-fit shadow-2xs relative overflow-visible">
+                        <div className="flex items-center gap-1 bg-background border border-border rounded-xl px-2 py-0.5 w-fit shadow-2xs relative overflow-visible">
                           <BoldItalicUnderlineToggles />
                           <div className="w-px h-4 bg-gray-300 mx-0.5"></div>
                           <StrikeThroughSupSubToggles />
@@ -484,17 +484,17 @@ export default function MdxEditorComponent({
                                 setShowHighlightPicker(!showHighlightPicker);
                                 setShowTextColorPicker(false);
                               }}
-                              className="p-1 hover:bg-gray-100 rounded-lg flex flex-col items-center justify-center h-6 w-6 transition-colors cursor-pointer" 
+                              className="p-1 hover:bg-accent rounded-lg flex flex-col items-center justify-center h-6 w-6 transition-colors cursor-pointer" 
                               title="Highlight Selected Text"
                             >
-                              <Highlighter className="w-3.5 h-3.5 text-gray-700" />
+                              <Highlighter className="w-3.5 h-3.5 text-foreground" />
                               <div className="w-3 h-0.5 mt-0.5 rounded-full" style={{ backgroundColor: activeHighlightColor }}></div>
                             </button>
 
                             {showHighlightPicker && (
                               <div 
                                 onClick={(e) => e.stopPropagation()} 
-                                className="absolute top-9 left-0 z-[100] bg-white border border-gray-300 rounded-2xl p-2.5 shadow-2xl flex items-center gap-2 min-w-[170px]"
+                                className="absolute top-9 left-0 z-[100] bg-background border border-border rounded-2xl p-2.5 shadow-2xl flex items-center gap-2 min-w-[170px]"
                               >
                                 {HIGHLIGHT_COLORS.map((col) => (
                                   <button
@@ -502,7 +502,7 @@ export default function MdxEditorComponent({
                                     type="button"
                                     onMouseDown={(e) => e.preventDefault()}
                                     onClick={() => applyHighlight(col.value)}
-                                    className="w-6 h-6 rounded-full border border-gray-300 hover:scale-125 transition-transform cursor-pointer shadow-sm"
+                                    className="w-6 h-6 rounded-full border border-border hover:scale-125 transition-transform cursor-pointer shadow-sm"
                                     style={{ backgroundColor: col.value }}
                                     title={col.name}
                                   />
@@ -521,17 +521,17 @@ export default function MdxEditorComponent({
                                 setShowTextColorPicker(!showTextColorPicker);
                                 setShowHighlightPicker(false);
                               }}
-                              className="p-1 hover:bg-gray-100 rounded-lg flex flex-col items-center justify-center h-6 w-6 transition-colors cursor-pointer" 
+                              className="p-1 hover:bg-accent rounded-lg flex flex-col items-center justify-center h-6 w-6 transition-colors cursor-pointer" 
                               title="Change Selected Text Color"
                             >
-                              <Baseline className="w-3.5 h-3.5 text-gray-700 font-bold" />
+                              <Baseline className="w-3.5 h-3.5 text-foreground font-bold" />
                               <div className="w-3 h-0.5 mt-0.5 rounded-full" style={{ backgroundColor: activeTextColor }}></div>
                             </button>
 
                             {showTextColorPicker && (
                               <div 
                                 onClick={(e) => e.stopPropagation()} 
-                                className="absolute top-9 left-0 z-[100] bg-white border border-gray-300 rounded-2xl p-2.5 shadow-2xl flex items-center gap-2 min-w-[190px]"
+                                className="absolute top-9 left-0 z-[100] bg-background border border-border rounded-2xl p-2.5 shadow-2xl flex items-center gap-2 min-w-[190px]"
                               >
                                 {TEXT_COLORS.map((col) => (
                                   <button
@@ -539,7 +539,7 @@ export default function MdxEditorComponent({
                                     type="button"
                                     onMouseDown={(e) => e.preventDefault()}
                                     onClick={() => applyTextColor(col.value)}
-                                    className="w-6 h-6 rounded-full border border-gray-300 hover:scale-125 transition-transform cursor-pointer shadow-sm"
+                                    className="w-6 h-6 rounded-full border border-border hover:scale-125 transition-transform cursor-pointer shadow-sm"
                                     style={{ backgroundColor: col.value }}
                                     title={col.name}
                                   />
@@ -553,33 +553,33 @@ export default function MdxEditorComponent({
                     </div>
 
                     {/* GROUP 2: PARAGRAPH & HEADINGS */}
-                    <div className="flex flex-col justify-between border-r border-gray-300 pr-4 shrink-0 overflow-visible">
+                    <div className="flex flex-col justify-between border-r border-border pr-4 shrink-0 overflow-visible">
                       <div className="flex flex-col gap-1.5 overflow-visible">
                         <div className="flex items-center gap-1.5 overflow-visible">
                           
                           {/* Native MDXEditor Block Type Dropdown */}
-                          <div className="bg-white border border-gray-200 rounded-xl shadow-2xs h-7 flex items-center [&>button]:px-2.5 [&>button]:py-1 [&>button]:text-xs [&>button]:font-semibold [&>button]:text-gray-800 [&>button]:h-full [&>button]:flex [&>button]:items-center min-w-[110px]">
+                          <div className="bg-background border border-border rounded-xl shadow-2xs h-7 flex items-center [&>button]:px-2.5 [&>button]:py-1 [&>button]:text-xs [&>button]:font-semibold [&>button]:text-foreground [&>button]:h-full [&>button]:flex [&>button]:items-center min-w-[110px]">
                             <BlockTypeSelect />
                           </div>
 
                           {/* Undo / Redo */}
-                          <div className="bg-white border border-gray-200 rounded-xl px-1.5 py-0.5 shadow-2xs h-7 flex items-center">
+                          <div className="bg-background border border-border rounded-xl px-1.5 py-0.5 shadow-2xs h-7 flex items-center">
                             <UndoRedo />
                           </div>
                         </div>
 
                         <div className="flex items-center gap-1">
                           {/* Lists Toggle */}
-                          <div className="flex items-center bg-white border border-gray-200 rounded-xl px-2 py-0.5 shadow-2xs h-7">
+                          <div className="flex items-center bg-background border border-border rounded-xl px-2 py-0.5 shadow-2xs h-7">
                             <ListsToggle />
                           </div>
                           {/* Real Text Alignment Controls */}
-                          <div className="flex items-center bg-white border border-gray-200 rounded-xl px-1.5 py-0.5 shadow-2xs h-7 text-gray-600">
+                          <div className="flex items-center bg-background border border-border rounded-xl px-1.5 py-0.5 shadow-2xs h-7 text-muted-foreground">
                             <button 
                               type="button"
                               onMouseDown={(e) => e.preventDefault()}
                               onClick={() => applyAlignment('left')}
-                              className="p-1 hover:bg-gray-100 rounded-lg text-gray-700 hover:text-black transition-colors cursor-pointer" 
+                              className="p-1 hover:bg-accent rounded-lg text-foreground hover:text-foreground transition-colors cursor-pointer" 
                               title="Align Left"
                             >
                               <AlignLeft className="w-3.5 h-3.5" />
@@ -588,7 +588,7 @@ export default function MdxEditorComponent({
                               type="button"
                               onMouseDown={(e) => e.preventDefault()}
                               onClick={() => applyAlignment('center')}
-                              className="p-1 hover:bg-gray-100 rounded-lg text-gray-700 hover:text-black transition-colors cursor-pointer" 
+                              className="p-1 hover:bg-accent rounded-lg text-foreground hover:text-foreground transition-colors cursor-pointer" 
                               title="Align Center"
                             >
                               <AlignCenter className="w-3.5 h-3.5" />
@@ -597,7 +597,7 @@ export default function MdxEditorComponent({
                               type="button"
                               onMouseDown={(e) => e.preventDefault()}
                               onClick={() => applyAlignment('right')}
-                              className="p-1 hover:bg-gray-100 rounded-lg text-gray-700 hover:text-black transition-colors cursor-pointer" 
+                              className="p-1 hover:bg-accent rounded-lg text-foreground hover:text-foreground transition-colors cursor-pointer" 
                               title="Align Right"
                             >
                               <AlignRight className="w-3.5 h-3.5" />
@@ -606,19 +606,19 @@ export default function MdxEditorComponent({
                               type="button"
                               onMouseDown={(e) => e.preventDefault()}
                               onClick={() => applyAlignment('justify')}
-                              className="p-1 hover:bg-gray-100 rounded-lg text-gray-700 hover:text-black transition-colors cursor-pointer" 
+                              className="p-1 hover:bg-accent rounded-lg text-foreground hover:text-foreground transition-colors cursor-pointer" 
                               title="Justify Text"
                             >
                               <AlignJustify className="w-3.5 h-3.5" />
                             </button>
                           </div>
                           {/* Real Indent & Outdent Controls */}
-                          <div className="flex items-center bg-white border border-gray-200 rounded-xl px-1.5 py-0.5 shadow-2xs h-7 text-gray-600">
+                          <div className="flex items-center bg-background border border-border rounded-xl px-1.5 py-0.5 shadow-2xs h-7 text-muted-foreground">
                             <button 
                               type="button"
                               onMouseDown={(e) => e.preventDefault()}
                               onClick={applyOutdent}
-                              className="p-1 hover:bg-gray-100 rounded-lg text-gray-700 hover:text-black transition-colors cursor-pointer" 
+                              className="p-1 hover:bg-accent rounded-lg text-foreground hover:text-foreground transition-colors cursor-pointer" 
                               title="Decrease Indent / Remove Quote"
                             >
                               <Outdent className="w-3.5 h-3.5" />
@@ -627,7 +627,7 @@ export default function MdxEditorComponent({
                               type="button"
                               onMouseDown={(e) => e.preventDefault()}
                               onClick={applyIndent}
-                              className="p-1 hover:bg-gray-100 rounded-lg text-gray-700 hover:text-black transition-colors cursor-pointer" 
+                              className="p-1 hover:bg-accent rounded-lg text-foreground hover:text-foreground transition-colors cursor-pointer" 
                               title="Increase Indent / Add Quote Block"
                             >
                               <Indent className="w-3.5 h-3.5" />
@@ -639,21 +639,21 @@ export default function MdxEditorComponent({
                     </div>
 
                     {/* GROUP 3: TABLE, CODE & INSERT */}
-                    <div className="flex flex-col justify-between border-r border-gray-300 pr-4 shrink-0">
+                    <div className="flex flex-col justify-between border-r border-border pr-4 shrink-0">
                       <div className="flex items-center gap-2">
                         {/* Native Table Insertion */}
-                        <div className="flex flex-col items-center justify-center p-2 rounded-2xl bg-white border border-gray-300 hover:border-purple-500 hover:bg-purple-50/50 transition-all cursor-pointer shadow-2xs group min-w-[60px] h-[50px] [&>button]:w-full [&>button]:h-full [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button>svg]:w-5 [&>button>svg]:h-5 [&>button>svg]:text-purple-600">
+                        <div className="flex flex-col items-center justify-center p-2 rounded-2xl bg-background border border-border hover:border-purple-500 hover:bg-purple-50/50 transition-all cursor-pointer shadow-2xs group min-w-[60px] h-[50px] [&>button]:w-full [&>button]:h-full [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button>svg]:w-5 [&>button>svg]:h-5 [&>button>svg]:text-purple-600">
                           <InsertTable />
                         </div>
 
                         {/* Native Code Box Button */}
-                        <div className="flex flex-col items-center justify-center p-2 rounded-2xl bg-white border border-gray-300 hover:border-purple-500 hover:bg-purple-50/50 transition-all cursor-pointer shadow-2xs group min-w-[60px] h-[50px] [&>button]:w-full [&>button]:h-full [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button>svg]:w-5 [&>button>svg]:h-5 [&>button>svg]:text-purple-600">
+                        <div className="flex flex-col items-center justify-center p-2 rounded-2xl bg-background border border-border hover:border-purple-500 hover:bg-purple-50/50 transition-all cursor-pointer shadow-2xs group min-w-[60px] h-[50px] [&>button]:w-full [&>button]:h-full [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button>svg]:w-5 [&>button>svg]:h-5 [&>button>svg]:text-purple-600">
                           <InsertCodeBlock />
                         </div>
 
                         {/* Real Link & Thematic Break */}
                         <div className="flex flex-col gap-1.5">
-                          <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-xl px-1.5 py-0.5 shadow-2xs h-7 [&>button]:p-1 [&>button]:rounded-lg [&>button:hover]:bg-gray-100 [&>button]:text-gray-700 [&>button>svg]:w-3.5 [&>button>svg]:h-3.5">
+                          <div className="flex items-center gap-1 bg-background border border-border rounded-xl px-1.5 py-0.5 shadow-2xs h-7 [&>button]:p-1 [&>button]:rounded-lg [&>button:hover]:bg-gray-100 [&>button]:text-foreground [&>button>svg]:w-3.5 [&>button>svg]:h-3.5">
                             <CreateLink />
                             <div className="w-px h-4 bg-gray-300 mx-0.5"></div>
                             <InsertThematicBreak />
@@ -669,7 +669,7 @@ export default function MdxEditorComponent({
                     {/* GROUP 4: LIVE AUTO-SYNC STATUS */}
                     <div className="flex flex-col justify-between pr-2 shrink-0">
                       <div className="flex flex-col gap-1.5">
-                        <div className="flex items-center gap-2.5 bg-white border border-emerald-200 rounded-2xl px-3.5 py-1.5 shadow-2xs">
+                        <div className="flex items-center gap-2.5 bg-background border border-emerald-200 rounded-2xl px-3.5 py-1.5 shadow-2xs">
                           <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
                           <div className="flex flex-col">
                             <span className="text-[11px] font-bold text-emerald-900 leading-tight">Live Auto-Sync</span>
@@ -696,7 +696,7 @@ export default function MdxEditorComponent({
             left: `${floatingBubble.left}px`,
             position: 'fixed'
           }}
-          className="z-50 -translate-x-1/2 flex items-center gap-1.5 bg-gray-900/95 text-white px-3 py-1.5 rounded-full shadow-[0_8px_25px_rgba(0,0,0,0.3)] border border-gray-700/80 backdrop-blur-md animate-in fade-in zoom-in-95 duration-150 select-none cursor-pointer hover:bg-black hover:scale-105 active:scale-95 transition-all"
+          className="z-50 -translate-x-1/2 flex items-center gap-1.5 bg-primary/95 text-primary-foreground px-3 py-1.5 rounded-full shadow-[0_8px_25px_rgba(0,0,0,0.3)] border border-gray-700/80 backdrop-blur-md animate-in fade-in zoom-in-95 duration-150 select-none cursor-pointer hover:bg-black hover:scale-105 active:scale-95 transition-all"
           onMouseDown={(e) => {
             e.preventDefault();
             e.stopPropagation();

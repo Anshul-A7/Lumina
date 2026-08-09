@@ -153,6 +153,7 @@ public class SubscriptionService {
             case "image_generate" -> usage.getImagesGenerated() < sub.getDailyImageGenerationLimit();
             case "pdf_attach" -> usage.getPdfsAttached() < sub.getDailyPdfAttachmentLimit();
             case "image_attach" -> usage.getImagesAttached() < sub.getDailyImageAttachmentLimit();
+            case "ai_request" -> usage.getAiRequests() < sub.getDailyAiRequestLimit();
             default -> true;
         };
     }

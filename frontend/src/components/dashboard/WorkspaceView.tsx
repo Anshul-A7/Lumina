@@ -161,7 +161,7 @@ export default function WorkspaceView() {
         <div className="bg-white rounded-2xl border border-black/[0.08] shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm text-black">
-              <thead className="bg-[#FDFBF7] border-b border-black/[0.08] text-xs uppercase font-bold text-black/50 select-none">
+              <thead className="bg-background border-b border-black/[0.08] text-xs uppercase font-bold text-black/50 select-none">
                 <tr>
                   <th className="px-6 py-4 cursor-pointer hover:bg-black/[0.02] transition-colors" onClick={() => toggleSort('id')}>
                     <div className="flex items-center gap-1.5">

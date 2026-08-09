@@ -238,6 +238,42 @@ public class AiService {
         return response;
     }
 
+    /**
+     * Stream chat response token by token. The tokenConsumer receives each token fragment as it arrives.
+     * Returns the complete accumulated response when finished.
+     */
+    public String streamChat(String history, String email, java.util.function.Consumer<String> tokenConsumer) {
+        checkAiRequestLimit(email);
+
+        StringBuilder fullResponse = new StringBuilder();
+
+        chatClient.prompt()
+                .user("""
+                        CONVERSATION CONTEXT:
+                        %s
+
+                        INSTRUCTIONS FOR THIS TURN:
+                        - If the user sent a casual greeting (e.g. "Hi", "Hello", "Hey", "Good morning"): Respond naturally and warmly in 1-2 friendly sentences.
+                        - If the user asked a technical question, requested important points, notes, explanations, or academic analysis: Deliver an exhaustive, deeply detailed, conceptually rigorous markdown breakdown following all formatting rules.
+                        - Do NOT output <pdf_document> tags unless the user explicitly requested to generate or compile a PDF file.
+                        """.formatted(history))
+                .stream()
+                .chatResponse()
+                .doOnNext(chatResponse -> {
+                    if (chatResponse != null && chatResponse.getResult() != null && chatResponse.getResult().getOutput() != null) {
+                        String token = chatResponse.getResult().getOutput().getText();
+                        if (token != null && !token.isEmpty()) {
+                            fullResponse.append(token);
+                            tokenConsumer.accept(token);
+                        }
+                    }
+                })
+                .blockLast();
+
+        subscriptionService.incrementUsage(email, "ai_request");
+        return fullResponse.toString();
+    }
+
     // ════════════════════════════════════════════════════════════════════════
     // SUMMARIZE — Quick note summarization
     // ════════════════════════════════════════════════════════════════════════

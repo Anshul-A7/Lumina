@@ -117,6 +117,22 @@ public class Subscription {
         };
     }
 
+    public int getDailyAiRequestLimit() {
+        return switch (plan) {
+            case FREE -> 50;
+            case PLUS -> 500;
+            case PRO -> Integer.MAX_VALUE;
+        };
+    }
+
+    public int getDailyChatSessionLimit() {
+        return switch (plan) {
+            case FREE -> 10;
+            case PLUS -> 100;
+            case PRO -> Integer.MAX_VALUE;
+        };
+    }
+
     public int getMonthlyPriceInr() {
         return switch (plan) {
             case FREE -> 0;

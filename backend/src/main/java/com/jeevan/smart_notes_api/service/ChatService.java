@@ -59,6 +59,13 @@ public class ChatService {
     }
 
     /**
+     * Get all messages for a session in chronological order.
+     */
+    public List<ChatMessage> getSessionMessages(Long sessionId) {
+        return messageRepository.findBySessionIdOrderByCreatedAtAsc(sessionId);
+    }
+
+    /**
      * Get a specific session with all its messages.
      */
     public ChatSession getSessionById(Long sessionId, String email) {
@@ -171,6 +178,55 @@ public class ChatService {
             } catch (Exception ignored) {
                 // Title generation failure is non-critical
             }
+        }
+
+        return aiMessage;
+    }
+
+    /**
+     * SSE streaming variant of sendMessage. Streams AI tokens via tokenConsumer,
+     * saves the final accumulated response as an assistant message.
+     */
+    @Transactional
+    public ChatMessage sendMessageStreaming(Long sessionId, String email, String content,
+                                           java.util.function.Consumer<String> tokenConsumer) {
+
+        ChatSession session = getSessionById(sessionId, email);
+
+        // Save user message
+        ChatMessage userMessage = new ChatMessage(session, ChatMessage.Role.USER, content, null);
+        messageRepository.save(userMessage);
+
+        // Build conversation history for AI context
+        List<ChatMessage> allMessages = messageRepository.findBySessionIdOrderByCreatedAtAsc(sessionId);
+        String conversationHistory = buildConversationHistory(allMessages);
+
+        // Stream AI response
+        String aiResponseText;
+        try {
+            aiResponseText = aiService.streamChat(conversationHistory, email, tokenConsumer);
+        } catch (Exception e) {
+            e.printStackTrace();
+            aiResponseText = "I encountered an issue processing your request. Please try again.";
+        }
+
+        // Save AI response
+        ChatMessage aiMessage = new ChatMessage(session, ChatMessage.Role.ASSISTANT, aiResponseText, null);
+        messageRepository.save(aiMessage);
+
+        // Touch session updatedAt
+        session.setUpdatedAt(java.time.LocalDateTime.now());
+        sessionRepository.save(session);
+
+        // Auto-generate title after first exchange
+        if ("New Session".equals(session.getTitle()) || session.getTitle().startsWith("New Session")) {
+            try {
+                String dynamicTitle = aiService.generateSessionTitle(content);
+                if (dynamicTitle != null && !dynamicTitle.isBlank()) {
+                    session.setTitle(dynamicTitle);
+                    sessionRepository.save(session);
+                }
+            } catch (Exception ignored) {}
         }
 
         return aiMessage;
@@ -293,5 +349,42 @@ public class ChatService {
     private User findUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    /**
+     * Search messages across all sessions for a user.
+     * Returns matching messages with their session context.
+     */
+    public List<java.util.Map<String, Object>> searchMessages(String email, String query) {
+        if (query == null || query.trim().length() < 2) {
+            return java.util.Collections.emptyList();
+        }
+
+        List<ChatMessage> results = messageRepository.searchByContent(email, query.trim());
+
+        // Limit to 50 results max
+        return results.stream()
+                .limit(50)
+                .map(msg -> {
+                    java.util.Map<String, Object> result = new java.util.HashMap<>();
+                    result.put("sessionId", msg.getSession().getId());
+                    result.put("sessionTitle", msg.getSession().getTitle());
+                    result.put("messageId", msg.getId());
+                    result.put("role", msg.getRole().name());
+                    // Return snippet around match (max 200 chars)
+                    String content = msg.getContent();
+                    int idx = content.toLowerCase().indexOf(query.toLowerCase());
+                    if (idx >= 0) {
+                        int start = Math.max(0, idx - 60);
+                        int end = Math.min(content.length(), idx + query.length() + 140);
+                        String snippet = (start > 0 ? "..." : "") + content.substring(start, end) + (end < content.length() ? "..." : "");
+                        result.put("content", snippet);
+                    } else {
+                        result.put("content", content.length() > 200 ? content.substring(0, 200) + "..." : content);
+                    }
+                    result.put("createdAt", msg.getCreatedAt());
+                    return result;
+                })
+                .collect(Collectors.toList());
     }
 }

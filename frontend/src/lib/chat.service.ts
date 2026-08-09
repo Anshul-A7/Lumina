@@ -106,3 +106,130 @@ export async function editDocumentWithAi(
   });
   return data.content || content;
 }
+
+// ── SSE Streaming ───────────────────────────────────────────────────────
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+
+export interface StreamCallbacks {
+  onToken: (token: string) => void;
+  onDone: (message: SendMessageResponse) => void;
+  onError: (error: string) => void;
+}
+
+/**
+ * Send a text message with SSE streaming response.
+ * Tokens arrive one-by-one via onToken callback.
+ * When complete, onDone fires with the final saved message.
+ */
+export async function sendMessageStream(
+  sessionId: number,
+  content: string,
+  callbacks: StreamCallbacks
+): Promise<void> {
+  const token = typeof window !== 'undefined' 
+    ? localStorage.getItem('lumina_access_token') 
+    : null;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/chat/sessions/${sessionId}/messages/stream`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'text/event-stream',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify({ content }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      callbacks.onError(errorText || `Request failed with status ${response.status}`);
+      return;
+    }
+
+    const reader = response.body?.getReader();
+    if (!reader) {
+      callbacks.onError('No response body');
+      return;
+    }
+
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+
+      // Parse SSE events from buffer
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || ''; // Keep incomplete line in buffer
+
+      let eventName = '';
+      let eventData = '';
+
+      for (const line of lines) {
+        if (line.startsWith('event:')) {
+          eventName = line.slice(6).trim();
+        } else if (line.startsWith('data:')) {
+          eventData = line.slice(5);
+        } else if (line === '' && eventName && eventData) {
+          // End of event
+          if (eventName === 'token') {
+            callbacks.onToken(eventData);
+          } else if (eventName === 'done') {
+            try {
+              const finalMsg = JSON.parse(eventData);
+              callbacks.onDone(finalMsg);
+            } catch {
+              callbacks.onDone({ id: 0, role: 'ASSISTANT', content: eventData, attachmentNames: null, createdAt: new Date().toISOString() });
+            }
+          } else if (eventName === 'error') {
+            try {
+              const errObj = JSON.parse(eventData);
+              callbacks.onError(errObj.error || 'Unknown error');
+            } catch {
+              callbacks.onError(eventData);
+            }
+          }
+          eventName = '';
+          eventData = '';
+        }
+      }
+    }
+  } catch (err: any) {
+    callbacks.onError(err.message || 'Stream connection failed');
+  }
+}
+
+// ── Chat Search ─────────────────────────────────────────────────────────
+
+export interface SearchResult {
+  sessionId: number;
+  sessionTitle: string;
+  messageId: number;
+  role: string;
+  content: string;
+  createdAt: string;
+}
+
+export async function searchMessages(query: string): Promise<SearchResult[]> {
+  const { data } = await apiClient.get(`/chat/search`, { params: { q: query } });
+  return data;
+}
+
+// ── Export Session ───────────────────────────────────────────────────────
+
+export async function exportSession(
+  sessionId: number, 
+  format: 'html' | 'txt' | 'pdf'
+): Promise<Blob> {
+  const { data } = await apiClient.post(
+    `/chat/export`,
+    { sessionId, format },
+    { responseType: 'blob' }
+  );
+  return data;
+}

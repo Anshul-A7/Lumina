@@ -752,7 +752,7 @@ const MindMapSection = () => {
                   style={{ left: `${node.x}%`, top: `${node.y}%` }}
                   className={`absolute -translate-x-1/2 -translate-y-1/2 px-4 py-2 rounded-2xl text-xs font-semibold transition-all duration-300 flex items-center gap-2 shadow-xs cursor-pointer ${isSelected
                       ? "bg-black text-white scale-110 shadow-lg ring-4 ring-black/10 z-10"
-                      : "bg-[#FDFBF7] text-black border border-black/10 hover:border-black/30"
+                      : "bg-background text-black border border-black/10 hover:border-black/30"
                     }`}
                 >
                   <CircleDot size={12} className={isSelected ? "text-emerald-400 animate-pulse" : "text-black/40"} />
@@ -896,7 +896,7 @@ const AgentsSection = () => {
                 whileTap={tapEffect}
                 onClick={() => setActiveAgent(idx)}
                 className={`p-6 rounded-2xl border transition-all cursor-pointer ${activeAgent === idx
-                    ? "bg-[#FDFBF7] text-black border-black/30 shadow-md scale-[1.01]"
+                    ? "bg-background text-black border-black/30 shadow-md scale-[1.01]"
                     : "bg-white text-black/70 border-black/[0.06] hover:border-black/20 hover:bg-[#FAF9F5]"
                   }`}
               >
@@ -927,7 +927,7 @@ const AgentsSection = () => {
           {/* Active Agent Interactive Showcase */}
           <motion.div
             layout
-            className="lg:col-span-7 rounded-3xl border border-black/10 bg-[#FDFBF7] p-8 shadow-lg flex flex-col justify-between"
+            className="lg:col-span-7 rounded-3xl border border-black/10 bg-background p-8 shadow-lg flex flex-col justify-between"
           >
             <div>
               <div className="flex items-center justify-between pb-6 border-b border-black/[0.08]">
@@ -1026,7 +1026,7 @@ const WorkspaceFeatures = () => {
             className="md:col-span-2 rounded-3xl bg-white border border-black/[0.08] p-8 flex flex-col justify-between shadow-xs hover:border-black/20 hover:shadow-md transition-all duration-300"
           >
             <div>
-              <div className="w-10 h-10 rounded-xl bg-[#FDFBF7] border border-black/10 flex items-center justify-center mb-6">
+              <div className="w-10 h-10 rounded-xl bg-background border border-black/10 flex items-center justify-center mb-6">
                 <Zap className="w-5 h-5 text-black" />
               </div>
               <h3 className="text-2xl font-bold font-heading text-black mb-2">
@@ -1046,7 +1046,7 @@ const WorkspaceFeatures = () => {
             className="rounded-3xl bg-white border border-black/[0.08] p-8 flex flex-col justify-between shadow-xs hover:border-black/20 hover:shadow-md transition-all duration-300"
           >
             <div>
-              <div className="w-10 h-10 rounded-xl bg-[#FDFBF7] border border-black/10 flex items-center justify-center mb-6">
+              <div className="w-10 h-10 rounded-xl bg-background border border-black/10 flex items-center justify-center mb-6">
                 <CloudOff className="w-5 h-5 text-black" />
               </div>
               <h3 className="text-xl font-bold font-heading text-black mb-2">Offline-First Design</h3>
@@ -1064,7 +1064,7 @@ const WorkspaceFeatures = () => {
             className="rounded-3xl bg-white border border-black/[0.08] p-8 flex flex-col justify-between shadow-xs hover:border-black/20 hover:shadow-md transition-all duration-300"
           >
             <div>
-              <div className="w-10 h-10 rounded-xl bg-[#FDFBF7] border border-black/10 flex items-center justify-center mb-6">
+              <div className="w-10 h-10 rounded-xl bg-background border border-black/10 flex items-center justify-center mb-6">
                 <Users className="w-5 h-5 text-black" />
               </div>
               <h3 className="text-xl font-bold font-heading text-black mb-2">Team Workspaces</h3>
@@ -1082,7 +1082,7 @@ const WorkspaceFeatures = () => {
             className="md:col-span-2 rounded-3xl bg-white border border-black/[0.08] p-8 flex flex-col justify-between shadow-xs hover:border-black/20 hover:shadow-md transition-all duration-300"
           >
             <div>
-              <div className="w-10 h-10 rounded-xl bg-[#FDFBF7] border border-black/10 flex items-center justify-center mb-6">
+              <div className="w-10 h-10 rounded-xl bg-background border border-black/10 flex items-center justify-center mb-6">
                 <Lock className="w-5 h-5 text-black" />
               </div>
               <h3 className="text-2xl font-bold font-heading text-black mb-2">
@@ -1151,7 +1151,7 @@ const TestimonialsSection = () => {
             <motion.div
               key={r.name}
               whileHover={hoverCardEffect}
-              className="p-8 rounded-3xl bg-[#FDFBF7] border border-black/[0.06] shadow-xs flex flex-col justify-between"
+              className="p-8 rounded-3xl bg-background border border-black/[0.06] shadow-xs flex flex-col justify-between"
             >
               <div>
                 <Quote size={24} className="text-black/20 mb-4" />
