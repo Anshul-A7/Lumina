@@ -212,6 +212,28 @@ public class ChatController {
     }
 
     /**
+     * PUT /chat/sessions/{id}/update-pdf — Update latest PDF content in session with manual edits.
+     */
+    @PutMapping("/sessions/{id}/update-pdf")
+    public ResponseEntity<Map<String, Object>> updateSessionPdf(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body,
+            Authentication auth) {
+
+        String email = auth.getName();
+        String title = body.getOrDefault("title", "Document");
+        String content = body.get("content");
+
+        ChatMessage updatedMsg = chatService.updateLatestPdfContent(id, email, title, content);
+        Map<String, Object> result = new HashMap<>();
+        result.put("message", "PDF updated successfully");
+        if (updatedMsg != null) {
+            result.put("updatedMessage", mapMessage(updatedMsg));
+        }
+        return ResponseEntity.ok(result);
+    }
+
+    /**
      * POST /chat/generate-pdf — Generate a PDF from a given markdown string.
      * Body: { "content": "markdown", "title": "optional", "sessionId": 123 (optional) }
      */

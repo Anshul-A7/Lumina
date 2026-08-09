@@ -190,7 +190,7 @@ export default function MdxEditorComponent({
                       {/* Curved Font Family & Size Controls */}
                       <div className="flex items-center gap-1.5">
                         <div className="relative">
-                          <select className="border border-gray-300 rounded-xl bg-white text-xs px-3 py-1 w-36 h-7 font-medium text-gray-700 outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 shadow-2xs cursor-pointer">
+                          <select defaultValue="Inter" className="border border-gray-300 rounded-xl bg-white text-xs px-3 py-1 w-36 h-7 font-medium text-gray-700 outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 shadow-2xs cursor-pointer">
                             <option value="Inter">Inter (Default)</option>
                             <option value="Calibri">Calibri</option>
                             <option value="Times New Roman">Times New Roman</option>
@@ -200,10 +200,10 @@ export default function MdxEditorComponent({
                           </select>
                         </div>
                         <div className="relative">
-                          <select className="border border-gray-300 rounded-xl bg-white text-xs px-2.5 py-1 w-14 h-7 font-medium text-gray-700 outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 shadow-2xs cursor-pointer">
+                          <select defaultValue="12" className="border border-gray-300 rounded-xl bg-white text-xs px-2.5 py-1 w-14 h-7 font-medium text-gray-700 outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 shadow-2xs cursor-pointer">
                             <option value="10">10</option>
                             <option value="11">11</option>
-                            <option value="12" selected>12</option>
+                            <option value="12">12</option>
                             <option value="14">14</option>
                             <option value="16">16</option>
                             <option value="18">18</option>

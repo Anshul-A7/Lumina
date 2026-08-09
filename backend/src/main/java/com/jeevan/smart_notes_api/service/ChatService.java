@@ -228,6 +228,26 @@ public class ChatService {
         return messageRepository.findBySessionIdOrderByCreatedAtAsc(sessionId);
     }
 
+    /**
+     * Update the latest PDF document in a chat session with manually edited content.
+     */
+    @Transactional
+    public ChatMessage updateLatestPdfContent(Long sessionId, String email, String title, String newPdfContent) {
+        getSessionById(sessionId, email);
+        List<ChatMessage> messages = messageRepository.findBySessionIdOrderByCreatedAtAsc(sessionId);
+
+        for (int i = messages.size() - 1; i >= 0; i--) {
+            ChatMessage msg = messages.get(i);
+            if (msg.getRole() == ChatMessage.Role.ASSISTANT && msg.getContent().contains("<pdf_document")) {
+                String replacement = String.format("<pdf_document title=\"%s\">\n%s\n</pdf_document>", title, newPdfContent);
+                String updatedContent = msg.getContent().replaceAll("(?s)<pdf_document[^>]*>.*?</pdf_document>", replacement);
+                msg.setContent(updatedContent);
+                return messageRepository.save(msg);
+            }
+        }
+        return null;
+    }
+
     // ════════════════════════════════════════════════════════════════════════
     // INTERNAL HELPERS
     // ════════════════════════════════════════════════════════════════════════

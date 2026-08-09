@@ -570,4 +570,41 @@ public class AiService {
                 .call()
                 .content();
     }
+
+    // ════════════════════════════════════════════════════════════════════════
+    // EDIT DOCUMENT — Precision in-place document modification via AI
+    // ════════════════════════════════════════════════════════════════════════
+
+    public String editDocument(String content, String instruction, String email) {
+        if (email != null) {
+            subscriptionService.incrementUsage(email, "ai_request");
+        }
+        String prompt = """
+                You are a world-class professional document editor.
+                
+                CURRENT DOCUMENT CONTENT (Markdown):
+                %s
+
+                USER EDIT INSTRUCTION:
+                %s
+
+                TASK:
+                Apply the instruction precisely to the document.
+                Output ONLY the complete updated Markdown document text.
+                Do NOT include explanations, greetings, or backticks around the entire document. Just the raw, formatted Markdown.
+                """.formatted(content, instruction);
+
+        String result = chatClient.prompt()
+                .system("You are an expert document editor. You strictly return the full modified markdown document with the user's requested changes applied. No filler, no conversational text.")
+                .user(prompt)
+                .call()
+                .content();
+
+        if (result != null) {
+            result = result.replaceAll("^```markdown\\s*", "")
+                           .replaceAll("^```\\s*", "")
+                           .replaceAll("\\s*```$", "");
+        }
+        return result != null ? result : content;
+    }
 }

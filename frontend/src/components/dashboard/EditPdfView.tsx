@@ -2,23 +2,27 @@
 
 import React, { useState, useEffect } from 'react';
 import { generateAndDownloadPdf } from '@/lib/pdf.service';
-import { Send, Sparkles } from 'lucide-react';
+import { updateSessionPdf, editDocumentWithAi } from '@/lib/chat.service';
+import { Send, Sparkles, Loader2, CheckCircle2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 
 // Dynamically import the MDX Editor since it uses browser APIs
 const MdxEditorComponent = dynamic(
   () => import('./MdxEditorComponent'),
-  { ssr: false, loading: () => <div className="p-8 text-center text-gray-500 font-medium">Loading Word Editor...</div> }
+  { ssr: false, loading: () => <div className="p-8 text-center text-gray-500 font-medium">Loading Document Studio...</div> }
 );
 
 export default function EditPdfView() {
   const router = useRouter();
   const [title, setTitle] = useState("Editing Document");
   const [content, setContent] = useState("");
+  const [sessionId, setSessionId] = useState<number | null>(null);
   const [editPrompt, setEditPrompt] = useState("");
   const [isCopied, setIsCopied] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isAiEditing, setIsAiEditing] = useState(false);
+  const [aiSuccessMessage, setAiSuccessMessage] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -26,8 +30,11 @@ export default function EditPdfView() {
     // Load from session storage
     const storedContent = sessionStorage.getItem('lumina_edit_pdf_content');
     const storedTitle = sessionStorage.getItem('lumina_edit_pdf_title');
+    const storedSessionId = sessionStorage.getItem('lumina_edit_pdf_session_id');
+
     if (storedContent) setContent(storedContent);
     if (storedTitle) setTitle(storedTitle);
+    if (storedSessionId) setSessionId(Number(storedSessionId));
   }, []);
 
   const handleDownload = async () => {
@@ -48,33 +55,66 @@ export default function EditPdfView() {
     setTimeout(() => setIsCopied(false), 2000);
   };
 
-  const handleSaveAndReturn = () => {
+  const handleSaveAndReturn = async () => {
+    // 1. Save to session storage
     sessionStorage.setItem('lumina_edit_pdf_content', content);
     sessionStorage.setItem('lumina_edit_pdf_title', title);
+
+    // 2. If part of an active chat session, persist update to backend database
+    if (sessionId) {
+      try {
+        await updateSessionPdf(sessionId, title, content);
+      } catch (err) {
+        console.warn("Could not sync PDF update with backend session, saved locally:", err);
+      }
+    }
+
+    // 3. Dispatch global event so chat cards update immediately
     window.dispatchEvent(new CustomEvent("lumina:pdf_saved", {
-      detail: { content, title }
+      detail: { content, title, sessionId }
     }));
+
+    // 4. Return to chat dashboard
     router.push('/dashboard');
   };
 
-  const handleSubmitEdit = (e: React.FormEvent) => {
+  // In-place AI Co-Pilot editing right inside Document Studio
+  const handleSubmitEdit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editPrompt.trim()) return;
+    if (!editPrompt.trim() || isAiEditing) return;
     
-    // Dispatch custom event to trigger AI edit from dashboard/page.tsx
-    const event = new CustomEvent("lumina:edit_pdf", {
-      detail: {
-        content: content,
-        instruction: editPrompt
-      }
-    });
-    window.dispatchEvent(event);
-    
-    // Save state and return to chat
-    sessionStorage.setItem('lumina_edit_pdf_content', content);
-    sessionStorage.setItem('lumina_edit_pdf_title', title);
+    const promptToApply = editPrompt.trim();
     setEditPrompt("");
-    router.push('/dashboard');
+    setIsAiEditing(true);
+    setAiSuccessMessage(null);
+
+    try {
+      // Call AI to edit the markdown text in-place
+      const updatedMarkdown = await editDocumentWithAi(content, promptToApply);
+      
+      if (updatedMarkdown && updatedMarkdown.trim()) {
+        setContent(updatedMarkdown);
+        sessionStorage.setItem('lumina_edit_pdf_content', updatedMarkdown);
+        sessionStorage.setItem('lumina_edit_pdf_title', title);
+        
+        // Sync with backend session if available
+        if (sessionId) {
+          updateSessionPdf(sessionId, title, updatedMarkdown).catch(() => {});
+        }
+
+        window.dispatchEvent(new CustomEvent("lumina:pdf_saved", {
+          detail: { content: updatedMarkdown, title, sessionId }
+        }));
+
+        setAiSuccessMessage(`AI applied: "${promptToApply.length > 40 ? promptToApply.substring(0, 37) + '...' : promptToApply}"`);
+        setTimeout(() => setAiSuccessMessage(null), 4000);
+      }
+    } catch (err: any) {
+      console.error("AI Edit error:", err);
+      alert(err?.response?.data?.message || "Failed to apply AI edit. Please try again.");
+    } finally {
+      setIsAiEditing(false);
+    }
   };
 
   const handleBack = () => {
@@ -93,7 +133,7 @@ export default function EditPdfView() {
             sessionStorage.setItem('lumina_edit_pdf_content', newMarkdown);
             sessionStorage.setItem('lumina_edit_pdf_title', title);
             window.dispatchEvent(new CustomEvent("lumina:pdf_saved", {
-              detail: { content: newMarkdown, title }
+              detail: { content: newMarkdown, title, sessionId }
             }));
           }} 
           title={title}
@@ -106,31 +146,46 @@ export default function EditPdfView() {
         />
       </div>
 
-      {/* Floating AI Input Box with curved pill design */}
+      {/* Floating AI Input Box with In-Place Execution */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 z-30 pointer-events-none">
         <div className="bg-white/95 backdrop-blur-md rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-200 overflow-hidden pointer-events-auto transition-all hover:shadow-[0_12px_40px_rgb(0,0,0,0.16)]">
+          
           <div className="px-4 py-1.5 bg-gray-50/80 text-xs font-medium text-gray-500 border-b border-gray-100 flex items-center justify-between">
             <span className="flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-purple-600" />
-              Tell AI what to change in the document...
+              {isAiEditing ? "AI is rewriting document..." : (aiSuccessMessage || "Tell AI what to change in the document...")}
             </span>
-            <span className="text-[10px] uppercase tracking-wider text-purple-600 font-bold bg-purple-100/80 px-2.5 py-0.5 rounded-full">AI Co-pilot</span>
+            {aiSuccessMessage ? (
+              <span className="text-[10px] uppercase tracking-wider text-emerald-600 font-bold bg-emerald-100/80 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3" /> Updated
+              </span>
+            ) : (
+              <span className="text-[10px] uppercase tracking-wider text-purple-600 font-bold bg-purple-100/80 px-2.5 py-0.5 rounded-full">
+                AI Co-pilot
+              </span>
+            )}
           </div>
+
           <form onSubmit={handleSubmitEdit} className="p-2 flex items-center gap-2">
             <input
               type="text"
               value={editPrompt}
               onChange={(e) => setEditPrompt(e.target.value)}
-              placeholder="e.g. 'Shorten the introduction' or 'Add a table summarizing key metrics'"
-              className="flex-1 bg-transparent border-none text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-0 px-3 py-1.5"
+              disabled={isAiEditing}
+              placeholder={isAiEditing ? "Applying AI edits in-place..." : "e.g. 'Add a section on Conclusion' or 'Make 2nd paragraph concise'"}
+              className="flex-1 bg-transparent border-none text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-0 px-3 py-1.5 disabled:opacity-50"
             />
             <button
               type="submit"
-              disabled={!editPrompt.trim()}
+              disabled={!editPrompt.trim() || isAiEditing}
               className="w-9 h-9 flex items-center justify-center rounded-full bg-black text-white hover:bg-gray-800 transition-transform active:scale-95 disabled:opacity-40 disabled:bg-gray-400 cursor-pointer shrink-0 shadow-sm"
               title="Apply AI Edits"
             >
-              <Send className="w-4 h-4 ml-0.5" />
+              {isAiEditing ? (
+                <Loader2 className="w-4 h-4 animate-spin text-white" />
+              ) : (
+                <Send className="w-4 h-4 ml-0.5" />
+              )}
             </button>
           </form>
         </div>

@@ -478,6 +478,33 @@ function DashboardContent() {
     return () => window.removeEventListener("lumina:edit_pdf", listener);
   }, [activeSession]);
 
+  // Synchronize chat messages in active session whenever PDF is saved/edited
+  useEffect(() => {
+    const handlePdfSaved = (e: any) => {
+      const { content, title } = e.detail || {};
+      if (!content || !activeSession) return;
+
+      setSessions(prev => prev.map(s => {
+        if (s.id !== activeSession.id) return s;
+        const updatedMessages = s.messages?.map(msg => {
+          if (msg.role === 'ASSISTANT' && msg.content.includes('<pdf_document')) {
+            const docTitle = title || 'Document';
+            const rep = `<pdf_document title="${docTitle}">\n${content}\n</pdf_document>`;
+            return {
+              ...msg,
+              content: msg.content.replace(/<pdf_document[^>]*>[\s\S]*?<\/pdf_document>/i, rep)
+            };
+          }
+          return msg;
+        });
+        return { ...s, messages: updatedMessages };
+      }));
+    };
+
+    window.addEventListener("lumina:pdf_saved", handlePdfSaved);
+    return () => window.removeEventListener("lumina:pdf_saved", handlePdfSaved);
+  }, [activeSession]);
+
   const handleRenameSubmit = async (id: number) => {
     if (!editingTitle.trim()) {
       setEditingId(null);
@@ -697,6 +724,7 @@ function DashboardContent() {
                       isUser={msg.role === 'USER'} 
                       animate={msg.role !== 'USER' && isLastMessage && isTypingAllowed} 
                       onRequestGeneratePdf={() => handleGeneratePdfFromMessage(msg.content)}
+                      sessionId={activeSession.id}
                     />
                   );
                 })}

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Edit3, Download, Maximize, Minimize, Copy, Check, Eye, FileText, ArrowRight } from 'lucide-react';
+import { Edit3, Download, Maximize, Minimize, Copy, Check, Eye, FileText } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
@@ -11,9 +11,10 @@ import { useRouter } from 'next/navigation';
 interface PdfDocumentCardProps {
   title: string;
   initialContent: string;
+  sessionId?: number;
 }
 
-export default function PdfDocumentCard({ title, initialContent }: PdfDocumentCardProps) {
+export default function PdfDocumentCard({ title, initialContent, sessionId }: PdfDocumentCardProps) {
   const router = useRouter();
   const [content, setContent] = useState(initialContent);
   const [isPreviewing, setIsPreviewing] = useState(false);
@@ -21,20 +22,27 @@ export default function PdfDocumentCard({ title, initialContent }: PdfDocumentCa
   const [isCopied, setIsCopied] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
 
-  // Synchronize with any auto-saved or saved changes from Edit view
+  // Sync state if initialContent changes from parent
   useEffect(() => {
-    const syncSavedContent = () => {
-      const storedTitle = sessionStorage.getItem('lumina_edit_pdf_title');
+    setContent(initialContent);
+  }, [initialContent]);
+
+  // Synchronize immediately with any auto-saved or saved changes from Studio / Edit view
+  useEffect(() => {
+    const syncSavedContent = (e?: any) => {
+      if (e?.detail?.content) {
+        setContent(e.detail.content);
+        return;
+      }
       const storedContent = sessionStorage.getItem('lumina_edit_pdf_content');
-      if (storedTitle === title && storedContent) {
+      if (storedContent) {
         setContent(storedContent);
       }
     };
 
-    syncSavedContent();
     window.addEventListener('lumina:pdf_saved', syncSavedContent);
     return () => window.removeEventListener('lumina:pdf_saved', syncSavedContent);
-  }, [title]);
+  }, []);
 
   const handleDownload = async () => {
     try {
@@ -61,6 +69,9 @@ export default function PdfDocumentCard({ title, initialContent }: PdfDocumentCa
   const handleOpenEdit = () => {
     sessionStorage.setItem('lumina_edit_pdf_content', content);
     sessionStorage.setItem('lumina_edit_pdf_title', title);
+    if (sessionId) {
+      sessionStorage.setItem('lumina_edit_pdf_session_id', String(sessionId));
+    }
     router.push('/dashboard?tab=edit-pdf');
   };
 

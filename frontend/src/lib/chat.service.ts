@@ -84,3 +84,20 @@ export async function regenerateResponse(sessionId: number): Promise<ChatMessage
   const { data } = await apiClient.post(`/chat/sessions/${sessionId}/regenerate`);
   return data;
 }
+
+export async function updateSessionPdf(
+  sessionId: number,
+  title: string,
+  content: string
+): Promise<any> {
+  const { data } = await apiClient.put(`/chat/sessions/${sessionId}/update-pdf`, { title, content });
+  return data;
+}
+
+export async function editDocumentWithAi(
+  content: string,
+  instruction: string
+): Promise<string> {
+  const { data } = await apiClient.post('/ai/edit-document', { content, instruction });
+  return data.content || content;
+}

@@ -78,4 +78,19 @@ public class AiController {
             @RequestBody String history, Authentication auth) {
         return service.chat(history, auth.getName());
     }
+
+    @PostMapping("/edit-document")
+    public java.util.Map<String, String> editDocument(
+            @RequestBody java.util.Map<String, String> body,
+            Authentication auth) {
+
+        String content = body.get("content");
+        String instruction = body.get("instruction");
+        String email = (auth != null) ? auth.getName() : null;
+
+        String updated = service.editDocument(content, instruction, email);
+        java.util.Map<String, String> response = new java.util.HashMap<>();
+        response.put("content", updated);
+        return response;
+    }
 }

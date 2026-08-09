@@ -12,9 +12,10 @@ interface RichMessageProps {
   isUser: boolean;
   animate?: boolean;
   onRequestGeneratePdf?: () => void;
+  sessionId?: number;
 }
 
-export function RichMessage({ content, isUser, animate = false, onRequestGeneratePdf }: RichMessageProps) {
+export function RichMessage({ content, isUser, animate = false, onRequestGeneratePdf, sessionId }: RichMessageProps) {
   const [displayedContent, setDisplayedContent] = useState(animate ? "" : content);
   const [isTyping, setIsTyping] = useState(animate);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
@@ -140,7 +141,7 @@ export function RichMessage({ content, isUser, animate = false, onRequestGenerat
           )}
           
           {hasPdf && (
-            <PdfDocumentCard title={pdfTitle} initialContent={pdfContent} />
+            <PdfDocumentCard title={pdfTitle} initialContent={pdfContent} sessionId={sessionId} />
           )}
 
           {isTyping && <span className="inline-block w-2 h-4 ml-1 bg-black animate-pulse" />}
