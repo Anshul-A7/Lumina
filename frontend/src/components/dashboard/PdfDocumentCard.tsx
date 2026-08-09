@@ -71,8 +71,10 @@ export default function PdfDocumentCard({ title, initialContent, sessionId }: Pd
     sessionStorage.setItem('lumina_edit_pdf_title', title);
     if (sessionId) {
       sessionStorage.setItem('lumina_edit_pdf_session_id', String(sessionId));
+      router.push(`/dashboard?tab=edit-pdf&session=${sessionId}`);
+    } else {
+      router.push('/dashboard?tab=edit-pdf');
     }
-    router.push('/dashboard?tab=edit-pdf');
   };
 
   // The artifact-style view for previewing

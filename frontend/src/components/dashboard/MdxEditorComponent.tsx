@@ -49,12 +49,12 @@ interface MdxEditorComponentProps {
   markdown: string;
   onChange: (markdown: string) => void;
   title: string;
-  onBack: () => void;
+  onBack: (latestMarkdown?: string) => void;
   onCopy: () => void;
   isCopied: boolean;
   onDownload: () => void;
   isDownloading: boolean;
-  onSaveAndReturn: () => void;
+  onSaveAndReturn: (latestMarkdown?: string) => void;
 }
 
 const HIGHLIGHT_COLORS = [
@@ -218,7 +218,7 @@ export default function MdxEditorComponent({
                 <div className="w-full flex items-center justify-between px-4 py-2 bg-[#1E293B] text-white border-b border-[#0F172A]">
                   <div className="flex items-center gap-3">
                     <button 
-                      onClick={onBack} 
+                      onClick={() => onBack(editorRef.current?.getMarkdown() || markdown)} 
                       className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors text-white cursor-pointer"
                       title="Back to Chat / Workspace"
                     >
@@ -260,7 +260,7 @@ export default function MdxEditorComponent({
 
                       {/* Prominent Curved Save & Return to Chat button */}
                       <button 
-                        onClick={onSaveAndReturn} 
+                        onClick={() => onSaveAndReturn(editorRef.current?.getMarkdown() || markdown)} 
                         className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white transition-all text-xs font-bold shadow-md hover:shadow-lg cursor-pointer transform active:scale-95"
                         title="Save changes and return to chat session"
                       >

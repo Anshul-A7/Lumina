@@ -55,15 +55,19 @@ export default function EditPdfView() {
     setTimeout(() => setIsCopied(false), 2000);
   };
 
-  const handleSaveAndReturn = async () => {
+  const handleSaveAndReturn = async (latestMarkdown?: string) => {
+    const finalContent = (typeof latestMarkdown === 'string' && latestMarkdown.trim()) ? latestMarkdown : content;
+    
     // 1. Save to session storage
-    sessionStorage.setItem('lumina_edit_pdf_content', content);
+    sessionStorage.setItem('lumina_edit_pdf_content', finalContent);
     sessionStorage.setItem('lumina_edit_pdf_title', title);
 
     // 2. If part of an active chat session, persist update to backend database
-    if (sessionId) {
+    const activeSessionId = sessionId || (typeof window !== 'undefined' ? Number(sessionStorage.getItem('lumina_edit_pdf_session_id')) : null);
+
+    if (activeSessionId) {
       try {
-        await updateSessionPdf(sessionId, title, content);
+        await updateSessionPdf(activeSessionId, title, finalContent);
       } catch (err) {
         console.warn("Could not sync PDF update with backend session, saved locally:", err);
       }
@@ -71,11 +75,15 @@ export default function EditPdfView() {
 
     // 3. Dispatch global event so chat cards update immediately
     window.dispatchEvent(new CustomEvent("lumina:pdf_saved", {
-      detail: { content, title, sessionId }
+      detail: { content: finalContent, title, sessionId: activeSessionId }
     }));
 
-    // 4. Return to chat dashboard
-    router.push('/dashboard');
+    // 4. Return to chat dashboard preserving session ID
+    if (activeSessionId) {
+      router.push(`/dashboard?session=${activeSessionId}`);
+    } else {
+      router.push('/dashboard');
+    }
   };
 
   // In-place AI Co-Pilot editing right inside Document Studio
@@ -98,12 +106,13 @@ export default function EditPdfView() {
         sessionStorage.setItem('lumina_edit_pdf_title', title);
         
         // Sync with backend session if available
-        if (sessionId) {
-          updateSessionPdf(sessionId, title, updatedMarkdown).catch(() => {});
+        const activeSessionId = sessionId || (typeof window !== 'undefined' ? Number(sessionStorage.getItem('lumina_edit_pdf_session_id')) : null);
+        if (activeSessionId) {
+          updateSessionPdf(activeSessionId, title, updatedMarkdown).catch(() => {});
         }
 
         window.dispatchEvent(new CustomEvent("lumina:pdf_saved", {
-          detail: { content: updatedMarkdown, title, sessionId }
+          detail: { content: updatedMarkdown, title, sessionId: activeSessionId }
         }));
 
         setAiSuccessMessage(`AI applied: "${promptToApply.length > 40 ? promptToApply.substring(0, 37) + '...' : promptToApply}"`);
@@ -117,8 +126,8 @@ export default function EditPdfView() {
     }
   };
 
-  const handleBack = () => {
-    handleSaveAndReturn();
+  const handleBack = (latestMarkdown?: string) => {
+    handleSaveAndReturn(latestMarkdown);
   };
 
   if (!isClient) return null;

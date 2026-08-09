@@ -240,7 +240,7 @@ public class ChatService {
             ChatMessage msg = messages.get(i);
             if (msg.getRole() == ChatMessage.Role.ASSISTANT && msg.getContent().contains("<pdf_document")) {
                 String replacement = String.format("<pdf_document title=\"%s\">\n%s\n</pdf_document>", title, newPdfContent);
-                String updatedContent = msg.getContent().replaceAll("(?s)<pdf_document[^>]*>.*?</pdf_document>", replacement);
+                String updatedContent = msg.getContent().replaceAll("(?s)<pdf_document[^>]*>.*?</pdf_document>", java.util.regex.Matcher.quoteReplacement(replacement));
                 msg.setContent(updatedContent);
                 return messageRepository.save(msg);
             }

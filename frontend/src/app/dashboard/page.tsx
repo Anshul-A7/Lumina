@@ -92,15 +92,32 @@ function DashboardContent() {
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // Load initial notes from service
+  // Load initial notes and sessions
   const loadSessions = async () => {
     try {
       const data = await ChatService.getSessions();
       setSessions(data);
+      const sessionParam = searchParams.get("session");
+      if (sessionParam) {
+        const id = Number(sessionParam);
+        if (!isNaN(id)) {
+          setActiveSessionId(id);
+        }
+      }
     } catch (err) {
       console.error("[Dashboard] Error loading sessions:", err);
     }
   };
+
+  useEffect(() => {
+    const sessionParam = searchParams.get("session");
+    if (sessionParam) {
+      const id = Number(sessionParam);
+      if (!isNaN(id)) {
+        setActiveSessionId(id);
+      }
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     loadSessions();
@@ -481,11 +498,13 @@ function DashboardContent() {
   // Synchronize chat messages in active session whenever PDF is saved/edited
   useEffect(() => {
     const handlePdfSaved = (e: any) => {
-      const { content, title } = e.detail || {};
-      if (!content || !activeSession) return;
+      const { content, title, sessionId } = e.detail || {};
+      if (!content) return;
+
+      const targetId = sessionId || activeSessionId;
 
       setSessions(prev => prev.map(s => {
-        if (s.id !== activeSession.id) return s;
+        if (targetId && s.id !== targetId) return s;
         const updatedMessages = s.messages?.map(msg => {
           if (msg.role === 'ASSISTANT' && msg.content.includes('<pdf_document')) {
             const docTitle = title || 'Document';
@@ -503,7 +522,7 @@ function DashboardContent() {
 
     window.addEventListener("lumina:pdf_saved", handlePdfSaved);
     return () => window.removeEventListener("lumina:pdf_saved", handlePdfSaved);
-  }, [activeSession]);
+  }, [activeSessionId]);
 
   const handleRenameSubmit = async (id: number) => {
     if (!editingTitle.trim()) {
