@@ -80,7 +80,10 @@ public class AiService {
             5. FLOWCHARTS, ARCHITECTURAL & PROCESS DIAGRAMS:
                - ABSOLUTE ZERO ASCII ART RULE: You are strictly forbidden from drawing ASCII text-box art (e.g., +-----+ | Box | +-----+). ASCII art is permanently banned.
                - ALWAYS generate modern, interactive Mermaid diagrams inside ```mermaid code blocks.
-               - Always enclose node names in quotes to avoid syntax breaks:
+               - STRICT MERMAID SYNTAX RULES:
+                 - Arrow Labels: Use `A -->|"Label Text"| B` or `A -->|Label| B`. NEVER add a trailing `>` like `-->|label|>`.
+                 - Node Text: Always wrap node text in double quotes: `NodeId["Label (Details)"]`.
+               - Example:
                  ```mermaid
                  flowchart TD
                      A["User Space (User Mode)"] -->|"System Call (e.g. read, write)"| B["System Call Interface"]

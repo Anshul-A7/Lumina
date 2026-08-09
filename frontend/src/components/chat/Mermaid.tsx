@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import mermaid from "mermaid";
 import { Copy, Check, Sparkles } from "lucide-react";
+import { sanitizeMermaid } from "@/lib/sanitizeMermaid";
 
 mermaid.initialize({
   startOnLoad: false,
@@ -45,7 +46,7 @@ export const Mermaid = ({ chart }: { chart: string }) => {
     const renderChart = async () => {
       try {
         const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
-        const safeChart = String(chart || '').trim();
+        const safeChart = sanitizeMermaid(String(chart || ''));
         if (!safeChart) return;
         
         // Validate syntax before rendering to prevent error SVGs from leaking into DOM
