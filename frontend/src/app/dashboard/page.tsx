@@ -916,8 +916,8 @@ function DashboardContent() {
         </div>
 
         {/* Chat History / Empty State */}
-        <div className="flex-1 overflow-y-auto w-full flex flex-col items-center">
-          <div className="w-full max-w-3xl flex-1 flex flex-col pt-14 pb-32 px-4 sm:px-6">
+        <div className="flex-1 overflow-y-auto w-full flex flex-col items-center overscroll-y-contain touch-pan-y">
+          <div className="w-full max-w-3xl flex-1 flex flex-col pt-12 sm:pt-16 pb-36 px-3 sm:px-6">
             
             {(!activeSession) ? (
               // Empty State - Center Screen
@@ -985,7 +985,7 @@ function DashboardContent() {
         {/* ───────────────────────────────────────────────────────────────────────
             FIXED BOTTOM INPUT (Like ChatGPT)
             ─────────────────────────────────────────────────────────────────────── */}
-        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-white via-white to-transparent pt-10 pb-6 px-4 flex justify-center">
+        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-background via-background/95 to-transparent pt-8 sm:pt-10 pb-4 sm:pb-6 px-3 sm:px-4 flex justify-center z-20">
           <div className="w-full max-w-3xl relative">
             <form 
               onSubmit={handleChatSubmit}
@@ -1024,7 +1024,7 @@ function DashboardContent() {
                           } 
                         }
                       }}
-                      className="absolute bottom-14 left-0 w-[420px] bg-background rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-foreground/[0.08] p-1.5 z-50 text-foreground flex flex-col"
+                      className="absolute bottom-14 left-0 w-[calc(100vw-32px)] sm:w-[420px] max-w-[420px] bg-background rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-foreground/[0.08] p-1.5 z-50 text-foreground flex flex-col"
                       onClick={(e) => e.stopPropagation()}
                     >
                       {[

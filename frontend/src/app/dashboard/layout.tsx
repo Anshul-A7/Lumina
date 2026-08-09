@@ -144,7 +144,7 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex flex-col h-screen w-full bg-background text-foreground font-sans antialiased overflow-hidden select-none">
+    <div className="flex flex-col h-dvh w-full bg-background text-foreground font-sans antialiased overflow-hidden">
       
       {/* ───────────────────────────────────────────────────────────────────────
           1. HEADER (Fixed, High-Contrast, Full Width)
