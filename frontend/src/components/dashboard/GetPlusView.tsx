@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Sparkles, Check, Zap, Infinity, Loader2, Star, ShieldCheck } from "lucide-react";
 import { purchasePlan, getSubscription, SubscriptionDetails } from "@/lib/subscription.service";
+import toast from "react-hot-toast";
 
 export default function GetPlusView() {
   const [sub, setSub] = useState<SubscriptionDetails | null>(null);
@@ -20,12 +21,12 @@ export default function GetPlusView() {
     try {
       setPurchasing(true);
       await purchasePlan(plan, billingCycle);
-      alert(`Successfully upgraded to Lumina ${plan}!`);
+      toast.success(`Successfully upgraded to Lumina ${plan}!`);
       const updatedSub = await getSubscription();
       setSub(updatedSub);
     } catch (err) {
       console.error(err);
-      alert("Failed to upgrade plan.");
+      toast.error("Failed to upgrade plan.");
     } finally {
       setPurchasing(false);
     }

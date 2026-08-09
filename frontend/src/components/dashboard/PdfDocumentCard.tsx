@@ -5,7 +5,8 @@ import { Edit3, Download, Maximize, Minimize, Copy, Check, Eye, FileText } from 
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
-import { generateAndDownloadPdf } from '@/lib/pdf.service';
+import { generateAndDownloadPdf, deletePdf } from '@/lib/pdf.service';
+import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
 interface PdfDocumentCardProps {
@@ -48,9 +49,10 @@ export default function PdfDocumentCard({ title, initialContent, sessionId }: Pd
     try {
       setIsDownloading(true);
       await generateAndDownloadPdf(content, title);
+      toast.success("PDF generated successfully!");
     } catch (error) {
       console.error("Failed to generate PDF", error);
-      alert("Failed to generate PDF. Please try again.");
+      toast.error("Failed to generate PDF. Please try again.");
     } finally {
       setIsDownloading(false);
     }

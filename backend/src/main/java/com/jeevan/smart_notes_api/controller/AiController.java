@@ -86,9 +86,10 @@ public class AiController {
 
         String content = body.get("content");
         String instruction = body.get("instruction");
+        String selectedText = body.get("selectedText");
         String email = (auth != null) ? auth.getName() : null;
 
-        String updated = service.editDocument(content, instruction, email);
+        String updated = service.editDocument(content, instruction, selectedText, email);
         java.util.Map<String, String> response = new java.util.HashMap<>();
         response.put("content", updated);
         return response;

@@ -6,6 +6,7 @@ import remarkGfm from "remark-gfm";
 import { Download, Sparkles, Copy, Share, RefreshCcw, MoreHorizontal, FileText, Check } from "lucide-react";
 import { Mermaid } from "./Mermaid";
 import PdfDocumentCard from "../dashboard/PdfDocumentCard";
+import toast from "react-hot-toast";
 
 interface RichMessageProps {
   content: string;
@@ -13,9 +14,10 @@ interface RichMessageProps {
   animate?: boolean;
   onRequestGeneratePdf?: () => void;
   sessionId?: number;
+  isPdfDisabled?: boolean;
 }
 
-export function RichMessage({ content, isUser, animate = false, onRequestGeneratePdf, sessionId }: RichMessageProps) {
+export function RichMessage({ content, isUser, animate = false, onRequestGeneratePdf, sessionId, isPdfDisabled = false }: RichMessageProps) {
   const [displayedContent, setDisplayedContent] = useState(animate ? "" : content);
   const [isTyping, setIsTyping] = useState(animate);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
@@ -41,20 +43,8 @@ export function RichMessage({ content, isUser, animate = false, onRequestGenerat
       return;
     }
 
-    let currentIndex = 0;
-    const charsPerTick = 30; // Very fast typing
-    const interval = setInterval(() => {
-      setDisplayedContent(content.slice(0, currentIndex + charsPerTick));
-      currentIndex += charsPerTick;
-      
-      if (currentIndex >= content.length) {
-        clearInterval(interval);
-        setDisplayedContent(content);
-        setIsTyping(false);
-      }
-    }, 1); // Extremely fast typing speed
-
-    return () => clearInterval(interval);
+    setDisplayedContent(content);
+    setIsTyping(false);
   }, [content, animate]);
 
   const handleGeneratePdf = async () => {
@@ -65,9 +55,10 @@ export function RichMessage({ content, isUser, animate = false, onRequestGenerat
       try {
         const PdfService = await import("@/lib/pdf.service");
         await PdfService.generateAndDownloadPdf(content, "ai-response");
+        toast.success("PDF generated successfully!");
       } catch (err) {
         console.error("Failed to generate PDF", err);
-        alert("Failed to generate PDF. Please try again.");
+        toast.error("Failed to generate PDF. Please try again.");
       }
     }
   };
@@ -185,10 +176,13 @@ export function RichMessage({ content, isUser, animate = false, onRequestGenerat
                   </div>
                   <button 
                     onClick={() => {
+                      if (isPdfDisabled) return;
                       setShowMoreMenu(false);
                       handleGeneratePdf();
                     }}
-                    className="w-full flex items-center gap-3 px-4 py-2 hover:bg-white/10 transition-colors text-left cursor-pointer"
+                    disabled={isPdfDisabled}
+                    title={isPdfDisabled ? "Daily PDF limit reached. Upgrade to generate more." : "Generate PDF"}
+                    className={`w-full flex items-center gap-3 px-4 py-2 text-left transition-colors ${isPdfDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-white/10 cursor-pointer"}`}
                   >
                     <FileText className="w-4 h-4" />
                     Generate PDF

@@ -40,6 +40,7 @@ import GetPlusView from "@/components/dashboard/GetPlusView";
 import WorkspaceView from "@/components/dashboard/WorkspaceView";
 import EditPdfView from "@/components/dashboard/EditPdfView";
 import { LuminaIcon } from "@/components/common/LuminaLogo";
+import toast from "react-hot-toast";
 
 // Extend Window interface for Google APIs
 declare global {
@@ -61,6 +62,7 @@ function DashboardContent() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [chatInput, setChatInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [pdfsGeneratedRemaining, setPdfsGeneratedRemaining] = useState<number | null>(null);
   
   // Chat state
   const [draftContent, setDraftContent] = useState("");
@@ -109,6 +111,15 @@ function DashboardContent() {
     }
   };
 
+  const loadUsageStats = async () => {
+    try {
+      const stats = await SubscriptionService.getUsageStats();
+      setPdfsGeneratedRemaining(stats.pdfsGeneratedRemaining);
+    } catch (err) {
+      console.error("[Dashboard] Error loading usage stats:", err);
+    }
+  };
+
   useEffect(() => {
     const sessionParam = searchParams.get("session");
     if (sessionParam) {
@@ -121,6 +132,7 @@ function DashboardContent() {
 
   useEffect(() => {
     loadSessions();
+    loadUsageStats();
     NotesService.getNotes().then(notes => {
       setAvailableNotes(notes);
       setFilteredNotes(notes);
@@ -401,8 +413,8 @@ function DashboardContent() {
         setSessions(prev => prev.map(s => s.id === updatedSession.id ? updatedSession : s));
       } catch (err: any) {
         console.error("AI Error:", err);
-        const errMsg = err?.response?.data?.message || "Failed to send message. Please try again.";
-        alert(errMsg);
+        const errMsg = err?.response?.data?.message || err?.response?.data?.error || "Failed to send message. Please try again.";
+        toast.error(errMsg);
         // Revert optimistic update by refreshing session
         const originalSession = await ChatService.getSession(activeSession.id);
         setSessions(prev => prev.map(s => s.id === originalSession.id ? originalSession : s));
@@ -438,10 +450,13 @@ function DashboardContent() {
         await ChatService.sendMessage(activeSession.id, prompt, []);
         const updatedSession = await ChatService.getSession(activeSession.id);
         setSessions(prev => prev.map(s => s.id === updatedSession.id ? updatedSession : s));
+        if (pdfsGeneratedRemaining !== null) {
+          setPdfsGeneratedRemaining(prev => (prev !== null && prev > 0 ? prev - 1 : prev));
+        }
       } catch (err: any) {
         console.error("AI Error:", err);
-        const errMsg = err?.response?.data?.message || "Failed to generate PDF. Please try again.";
-        alert(errMsg);
+        const errMsg = err?.response?.data?.message || err?.response?.data?.error || "Failed to generate PDF. Please try again.";
+        toast.error(errMsg);
         const originalSession = await ChatService.getSession(activeSession.id);
         setSessions(prev => prev.map(s => s.id === originalSession.id ? originalSession : s));
       } finally {
@@ -744,6 +759,7 @@ function DashboardContent() {
                       animate={msg.role !== 'USER' && isLastMessage && isTypingAllowed} 
                       onRequestGeneratePdf={() => handleGeneratePdfFromMessage(msg.content)}
                       sessionId={activeSession.id}
+                      isPdfDisabled={pdfsGeneratedRemaining !== null && pdfsGeneratedRemaining <= 0}
                     />
                   );
                 })}

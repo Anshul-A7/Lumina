@@ -143,6 +143,7 @@ public class ChatService {
                 aiResponseText = aiService.chat(conversationHistory, email);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             aiResponseText = "I encountered an issue processing your request. Please try again.";
         }
 

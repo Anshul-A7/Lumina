@@ -50,7 +50,8 @@ import {
   Heading2,
   Heading3,
   Quote,
-  Type
+  Type,
+  Sparkles
 } from 'lucide-react';
 
 interface MdxEditorComponentProps {
@@ -63,6 +64,7 @@ interface MdxEditorComponentProps {
   onDownload: () => void;
   isDownloading: boolean;
   onSaveAndReturn: (latestMarkdown?: string) => void;
+  onSelectSnippet?: (snippet: string) => void;
 }
 
 const HIGHLIGHT_COLORS = [
@@ -104,7 +106,8 @@ export default function MdxEditorComponent({
   isCopied, 
   onDownload, 
   isDownloading,
-  onSaveAndReturn 
+  onSaveAndReturn,
+  onSelectSnippet
 }: MdxEditorComponentProps) {
 
   const editorRef = useRef<MDXEditorMethods>(null);
@@ -116,6 +119,63 @@ export default function MdxEditorComponent({
   const [showTextColorPicker, setShowTextColorPicker] = useState(false);
   const [activeTextColor, setActiveTextColor] = useState('#DC2626');
 
+  // Floating AI action tooltip on selection
+  const [floatingBubble, setFloatingBubble] = useState<{ top: number; left: number } | null>(null);
+  const [selectedTextSnippet, setSelectedTextSnippet] = useState<string>('');
+
+  useEffect(() => {
+    const handleSelectionUpdate = () => {
+      if (typeof window === 'undefined') return;
+      const selection = window.getSelection();
+      if (!selection || selection.isCollapsed) {
+        setFloatingBubble(null);
+        setSelectedTextSnippet('');
+        return;
+      }
+
+      const text = selection.toString().trim();
+      if (!text || text.length < 2) {
+        setFloatingBubble(null);
+        setSelectedTextSnippet('');
+        return;
+      }
+
+      try {
+        const range = selection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          setFloatingBubble({
+            top: rect.top,
+            left: rect.left + rect.width / 2
+          });
+          setSelectedTextSnippet(text);
+        }
+      } catch (err) {
+        setFloatingBubble(null);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Support Alt+A or Alt+K to trigger AI on selection
+      if (e.altKey && (e.key === 'a' || e.key === 'A' || e.key === 'k' || e.key === 'K')) {
+        const selection = window.getSelection();
+        const text = selection ? selection.toString().trim() : '';
+        if (text && onSelectSnippet) {
+          e.preventDefault();
+          onSelectSnippet(text);
+          setFloatingBubble(null);
+        }
+      }
+    };
+
+    document.addEventListener('selectionchange', handleSelectionUpdate);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('selectionchange', handleSelectionUpdate);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onSelectSnippet]);
+
   // Close menus when clicking outside
   useEffect(() => {
     const handleOutsideClick = () => {
@@ -125,6 +185,20 @@ export default function MdxEditorComponent({
     window.addEventListener('click', handleOutsideClick);
     return () => window.removeEventListener('click', handleOutsideClick);
   }, []);
+
+  // Synchronize editor content when external markdown prop changes (e.g. via AI in-place edits)
+  useEffect(() => {
+    if (editorRef.current) {
+      try {
+        const currentEditorContent = editorRef.current.getMarkdown();
+        if (currentEditorContent !== cleanMarkdown) {
+          editorRef.current.setMarkdown(cleanMarkdown);
+        }
+      } catch (err) {
+        console.warn("[MdxEditorComponent] Could not sync markdown externally:", err);
+      }
+    }
+  }, [cleanMarkdown]);
 
   // Auto-save whenever markdown changes
   const handleEditorChange = (newMarkdown: string) => {
@@ -613,6 +687,28 @@ export default function MdxEditorComponent({
           })
         ]}
       />
+
+      {/* Floating Inline Selection AI Bubble */}
+      {floatingBubble && selectedTextSnippet && onSelectSnippet && (
+        <div 
+          style={{ 
+            top: `${Math.max(10, floatingBubble.top - 48)}px`, 
+            left: `${floatingBubble.left}px`,
+            position: 'fixed'
+          }}
+          className="z-50 -translate-x-1/2 flex items-center gap-1.5 bg-gray-900/95 text-white px-3 py-1.5 rounded-full shadow-[0_8px_25px_rgba(0,0,0,0.3)] border border-gray-700/80 backdrop-blur-md animate-in fade-in zoom-in-95 duration-150 select-none cursor-pointer hover:bg-black hover:scale-105 active:scale-95 transition-all"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onSelectSnippet(selectedTextSnippet);
+            setFloatingBubble(null);
+          }}
+        >
+          <Sparkles className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
+          <span className="text-[11px] font-semibold tracking-wide">Edit with AI</span>
+          <span className="text-[9px] bg-gray-800 text-gray-400 font-mono px-1.5 py-0.5 rounded border border-gray-700 ml-0.5">Alt+A</span>
+        </div>
+      )}
     </div>
   )
 }

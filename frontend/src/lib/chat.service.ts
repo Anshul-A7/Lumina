@@ -96,8 +96,13 @@ export async function updateSessionPdf(
 
 export async function editDocumentWithAi(
   content: string,
-  instruction: string
+  instruction: string,
+  selectedText?: string
 ): Promise<string> {
-  const { data } = await apiClient.post('/ai/edit-document', { content, instruction });
+  const { data } = await apiClient.post('/ai/edit-document', { 
+    content, 
+    instruction, 
+    selectedText: selectedText || undefined 
+  });
   return data.content || content;
 }
