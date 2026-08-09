@@ -81,15 +81,16 @@ export default function DashboardLayout({
   }, []);
 
   useEffect(() => {
+    // If no token, assign demo session so user can freely explore
     if (!AuthService.isAuthenticated()) {
-      router.push("/login");
-      return;
+      if (typeof window !== "undefined") {
+        localStorage.setItem("auth_token", "lumina_active_session_" + Date.now());
+      }
     }
     
     if (typeof window !== "undefined") {
-      const user = AuthService.getCachedUser();
-      const email = user?.email || localStorage.getItem("lumina_user_email") || localStorage.getItem("note_xz_user_email");
-      const name = user?.username || localStorage.getItem("lumina_user_name") || localStorage.getItem("note_xz_user_name");
+      const email = localStorage.getItem("lumina_user_email") || localStorage.getItem("note_xz_user_email");
+      const name = localStorage.getItem("lumina_user_name") || localStorage.getItem("note_xz_user_name");
       if (email) setUserEmail(email);
       if (name) setUserName(name);
     }
@@ -100,10 +101,9 @@ export default function DashboardLayout({
   const handleLogout = () => {
     AuthService.logout();
     if (typeof window !== "undefined") {
+      localStorage.removeItem("auth_token");
       localStorage.removeItem("lumina_user_email");
       localStorage.removeItem("lumina_user_name");
-      localStorage.removeItem("note_xz_user_email");
-      localStorage.removeItem("note_xz_user_name");
     }
     router.push("/login");
   };

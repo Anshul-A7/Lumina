@@ -15,9 +15,50 @@ const outfit = Outfit({
   subsets: ["latin"],
 });
 
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://lumina-notes-sepia.vercel.app';
+const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-XXXXXXXXXX';
+
 export const metadata: Metadata = {
-  title: "Lumina | The Sovereign Workspace for Deep Thinkers",
-  description: "Lumina is a premium full-stack application built with Next.js and Spring Boot. A distraction-free sanctuary for thoughts.",
+  metadataBase: new URL(BASE_URL),
+  title: {
+    default: "Lumina | The Sovereign Workspace for Deep Thinkers",
+    template: "%s | Lumina"
+  },
+  description: "Lumina is a premium full-stack note-taking sanctuary and AI study platform. Generate publication-grade notes, interactive diagrams, and publication-ready PDFs.",
+  keywords: ["AI Notes", "Study Workspace", "Markdown Editor", "PDF Generation", "Lumina Notes", "Deep Thinking", "Document Studio"],
+  authors: [{ name: "Anshul-A7" }],
+  creator: "Lumina",
+  publisher: "Lumina",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+    other: {
+      'msvalidate.01': process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION ? [process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION] : [],
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: BASE_URL,
+    siteName: "Lumina Notes",
+    title: "Lumina | The Sovereign Workspace for Deep Thinkers",
+    description: "A distraction-free sanctuary for deep thinkers, researchers, and students to build and export publication-grade notes.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Lumina | The Sovereign Workspace for Deep Thinkers",
+    description: "A distraction-free sanctuary for deep thinkers, researchers, and students.",
+  },
   icons: {
     icon: [
       { url: "/icon.svg", type: "image/svg+xml" },
@@ -62,11 +103,32 @@ export default function RootLayout({
         >
           {children}
           <Toaster position="top-right" />
+          
           {/* Google Identity Services — loaded globally for OAuth on all auth pages */}
           <Script
             src="https://accounts.google.com/gsi/client"
             strategy="afterInteractive"
           />
+
+          {/* Google Analytics (GA4) */}
+          {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+            <>
+              <Script
+                src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}
+                strategy="afterInteractive"
+              />
+              <Script id="google-analytics" strategy="afterInteractive">
+                {`
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}', {
+                    page_path: window.location.pathname,
+                  });
+                `}
+              </Script>
+            </>
+          )}
         </ThemeProvider>
       </body>
     </html>
