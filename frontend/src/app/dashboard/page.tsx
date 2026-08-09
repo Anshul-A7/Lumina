@@ -571,41 +571,51 @@ function DashboardContent() {
   };
 
   const handleGeneratePdfFromMessage = async (content: string) => {
-    const prompt = `Generate a PDF of the following content:\n\n${content}`;
-    
-    if (activeSession) {
-      const tempUserMessage: ChatMessage = {
-        id: Date.now(),
-        role: 'USER',
-        content: prompt,
-        attachmentNames: null,
-        createdAt: new Date().toISOString()
-      };
-      
-      const updatedSessionOptimistic = {
-        ...activeSession,
-        messages: [...(activeSession.messages || []), tempUserMessage]
-      };
-      setSessions(prev => prev.map(s => s.id === activeSession.id ? updatedSessionOptimistic : s));
+    if (!activeSession) return;
 
-      setIsThinking(true);
-      setIsTypingAllowed(true);
-      try {
-        await ChatService.sendMessage(activeSession.id, prompt, []);
-        const updatedSession = await ChatService.getSession(activeSession.id);
-        setSessions(prev => prev.map(s => s.id === updatedSession.id ? updatedSession : s));
-        if (pdfsGeneratedRemaining !== null) {
-          setPdfsGeneratedRemaining(prev => (prev !== null && prev > 0 ? prev - 1 : prev));
+    const userDisplayText = "Generate PDF";
+    const prompt = `Please generate a formatted PDF document based on the previous response:\n\n${content}\n\nOutput the full content formatted inside a <pdf_document title="Document"> tag.`;
+    
+    const tempUserMessage: ChatMessage = {
+      id: Date.now(),
+      role: 'USER',
+      content: userDisplayText,
+      attachmentNames: null,
+      createdAt: new Date().toISOString()
+    };
+    
+    const updatedSessionOptimistic = {
+      ...activeSession,
+      messages: [...(activeSession.messages || []), tempUserMessage]
+    };
+    setSessions(prev => prev.map(s => s.id === activeSession.id ? updatedSessionOptimistic : s));
+
+    setIsThinking(true);
+    setIsTypingAllowed(true);
+    try {
+      await ChatService.sendMessage(activeSession.id, prompt, []);
+      const updatedSession = await ChatService.getSession(activeSession.id);
+      
+      // Clean up the user message display so it doesn't show the huge backend prompt
+      if (updatedSession.messages) {
+        const lastUser = updatedSession.messages.filter(m => m.role === 'USER').pop();
+        if (lastUser && (lastUser.content.startsWith('Please generate a formatted PDF') || lastUser.content.startsWith('Generate a PDF of the following'))) {
+          lastUser.content = userDisplayText;
         }
-      } catch (err: any) {
-        console.error("AI Error:", err);
-        const errMsg = err?.response?.data?.message || err?.response?.data?.error || "Failed to generate PDF. Please try again.";
-        toast.error(errMsg);
-        const originalSession = await ChatService.getSession(activeSession.id);
-        setSessions(prev => prev.map(s => s.id === originalSession.id ? originalSession : s));
-      } finally {
-        setIsThinking(false);
       }
+
+      setSessions(prev => prev.map(s => s.id === updatedSession.id ? updatedSession : s));
+      if (pdfsGeneratedRemaining !== null) {
+        setPdfsGeneratedRemaining(prev => (prev !== null && prev > 0 ? prev - 1 : prev));
+      }
+    } catch (err: any) {
+      console.error("AI Error:", err);
+      const errMsg = err?.response?.data?.message || err?.response?.data?.error || "Failed to generate PDF. Please try again.";
+      toast.error(errMsg);
+      const originalSession = await ChatService.getSession(activeSession.id);
+      setSessions(prev => prev.map(s => s.id === originalSession.id ? originalSession : s));
+    } finally {
+      setIsThinking(false);
     }
   };
 
@@ -915,8 +925,8 @@ function DashboardContent() {
         </div>
 
         {/* Chat History / Empty State */}
-        <div className="flex-1 overflow-y-auto w-full flex flex-col items-center">
-          <div className="w-full max-w-3xl flex-1 flex flex-col pt-16 pb-32 px-4 sm:px-6">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden w-full flex flex-col items-center min-w-0">
+          <div className="w-full max-w-3xl flex-1 flex flex-col pt-16 pb-32 px-4 sm:px-6 min-w-0 overflow-x-hidden">
             
             {(!activeSession) ? (
               // Empty State - Center Screen
@@ -933,7 +943,7 @@ function DashboardContent() {
               </div>
             ) : (
               // Chat History
-              <div className="w-full flex flex-col gap-6">
+              <div className="w-full flex flex-col gap-6 min-w-0 max-w-full overflow-x-hidden">
                 {activeSession.messages?.map((msg, idx) => {
                   const isLastMessage = idx === activeSession.messages!.length - 1;
                   const displayContent = msg.attachmentNames 

@@ -164,6 +164,15 @@
 }
 
 /* Markdown styling for rich AI responses */
+.markdown-content {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  max-width: 100%;
+}
+.markdown-content p, .markdown-content li, .markdown-content h1, .markdown-content h2, .markdown-content h3, .markdown-content h4 {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
 .markdown-content h1, .markdown-content h2, .markdown-content h3, .markdown-content h4 {
   font-weight: 700;
   margin-top: 1.5em;
@@ -198,6 +207,8 @@
   border-radius: 0.25rem;
   font-family: monospace;
   font-size: 0.875em;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .markdown-content pre {
@@ -208,12 +219,15 @@
   overflow-x: auto;
   margin-top: 1em;
   margin-bottom: 1em;
+  max-width: 100%;
 }
 .markdown-content pre code {
   background-color: transparent;
   padding: 0;
   color: inherit;
   font-size: 0.85em;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 .markdown-content blockquote {
@@ -229,6 +243,9 @@
   width: 100%;
   border-collapse: collapse;
   margin: 1em 0;
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
 }
 .markdown-content th, .markdown-content td {
   border: 1px solid var(--border-color);

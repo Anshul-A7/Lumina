@@ -65,10 +65,10 @@ export function RichMessage({ content, isUser, animate = false, onRequestGenerat
 
   if (isUser) {
     return (
-      <div className="flex w-full justify-end">
-        <div className="max-w-[85%] rounded-3xl px-5 py-3.5 text-[15px] leading-relaxed shadow-sm bg-secondary text-foreground border border-foreground/[0.02]">
+      <div className="flex w-full justify-end min-w-0 max-w-full">
+        <div className="max-w-[85%] sm:max-w-[75%] rounded-3xl px-5 py-3.5 text-[15px] leading-relaxed shadow-sm bg-secondary text-foreground border border-foreground/[0.02] break-words [overflow-wrap:anywhere] min-w-0">
           {content.split("\n").map((line, i) => (
-            <p key={i} className="mb-1.5 last:mb-0">
+            <p key={i} className="mb-1.5 last:mb-0 break-words [overflow-wrap:anywhere]">
               {line}
             </p>
           ))}
@@ -100,14 +100,14 @@ export function RichMessage({ content, isUser, animate = false, onRequestGenerat
   }
 
   return (
-    <div className="flex w-full justify-start relative group">
-      <div className="w-full max-w-full lg:max-w-[90%] xl:max-w-[85%]">
+    <div className="flex w-full justify-start relative group min-w-0 max-w-full overflow-hidden">
+      <div className="w-full max-w-full lg:max-w-[90%] xl:max-w-[85%] min-w-0">
         <div 
           ref={contentRef}
-          className="text-[15px] leading-relaxed text-black"
+          className="text-[15px] leading-relaxed text-black break-words [overflow-wrap:anywhere] min-w-0 max-w-full"
         >
           {preText && (
-            <div className="markdown-content mb-3">
+            <div className="markdown-content mb-3 break-words [overflow-wrap:anywhere] min-w-0 max-w-full">
               <ReactMarkdown 
                 remarkPlugins={[remarkGfm]}
                 components={{
