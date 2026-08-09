@@ -143,6 +143,15 @@ export async function sendMessageStream(
     });
 
     if (!response.ok) {
+      if (response.status === 401) {
+        callbacks.onError('Your session has expired. Redirecting to login...');
+        if (typeof window !== 'undefined') {
+          setTimeout(() => {
+            window.location.href = '/login';
+          }, 1000);
+        }
+        return;
+      }
       const errorText = await response.text();
       callbacks.onError(errorText || `Request failed with status ${response.status}`);
       return;
