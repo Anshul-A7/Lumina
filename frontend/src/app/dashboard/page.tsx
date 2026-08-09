@@ -574,7 +574,7 @@ function DashboardContent() {
     if (!activeSession) return;
 
     const userDisplayText = "Generate PDF";
-    const prompt = "Generate a PDF for the response above";
+    const prompt = `Please format and compile the following exact response into a publication-grade PDF document enclosed in <pdf_document title="Document"> tags:\n\n${content}`;
     
     const tempUserMessage: ChatMessage = {
       id: Date.now(),
