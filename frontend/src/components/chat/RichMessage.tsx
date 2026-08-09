@@ -94,6 +94,11 @@ export function RichMessage({ content, isUser, animate = false, onRequestGenerat
     pdfContent = pdfMatch[3].trim();
   }
 
+  // Do not render empty assistant messages while waiting for initial tokens
+  if ((!preText || preText.trim().length === 0) && !hasPdf && !isTyping) {
+    return null;
+  }
+
   return (
     <div className="flex w-full justify-start relative group">
       <div className="w-full max-w-full lg:max-w-[90%] xl:max-w-[85%]">
@@ -138,8 +143,8 @@ export function RichMessage({ content, isUser, animate = false, onRequestGenerat
           {isTyping && <span className="inline-block w-2 h-4 ml-1 bg-black animate-pulse" />}
         </div>
 
-        {/* Footer Actions (Only visible after typing) */}
-        {!isTyping && (
+        {/* Footer Actions (Only visible after typing and when content is non-empty) */}
+        {!isTyping && (displayedContent.trim().length > 0 || hasPdf) && (
           <div className="mt-4 flex items-center gap-2 text-black/40">
             <button 
               onClick={() => {

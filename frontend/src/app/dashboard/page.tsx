@@ -467,7 +467,7 @@ function DashboardContent() {
     setAttachments([]);
 
     if (activeSession) {
-      // Optimistically append user message
+      // Optimistically prepare user message
       const tempUserMessage: ChatMessage = {
         id: Date.now(),
         role: 'USER',
@@ -475,12 +475,6 @@ function DashboardContent() {
         attachmentNames: currentFiles.length > 0 ? currentFiles.map(f => f.name).join(", ") : null,
         createdAt: new Date().toISOString()
       };
-      
-      const updatedSessionOptimistic = {
-        ...activeSession,
-        messages: [...(activeSession.messages || []), tempUserMessage]
-      };
-      setSessions(prev => prev.map(s => s.id === activeSession.id ? updatedSessionOptimistic : s));
 
       setIsThinking(true);
       setIsTypingAllowed(true);
@@ -497,7 +491,7 @@ function DashboardContent() {
           createdAt: new Date().toISOString()
         };
 
-        // Append empty assistant message that will be filled by streaming tokens
+        // Append user message AND empty assistant message that will be filled by streaming tokens
         setSessions(prev => prev.map(s => {
           if (s.id !== activeSession.id) return s;
           return { ...s, messages: [...(s.messages || []), tempUserMessage, tempAssistantMessage] };
@@ -553,6 +547,10 @@ function DashboardContent() {
         }
       } else {
         // ── Multipart Upload Path (files attached) ──
+        setSessions(prev => prev.map(s => {
+          if (s.id !== activeSession.id) return s;
+          return { ...s, messages: [...(s.messages || []), tempUserMessage] };
+        }));
         try {
           await ChatService.sendMessage(activeSession.id, userInput, currentFiles);
           const updatedSession = await ChatService.getSession(activeSession.id);
