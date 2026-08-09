@@ -90,6 +90,14 @@ const BLOCK_TYPES = [
   { label: 'Quote', value: 'quote', prefix: '> ' }
 ];
 
+// Sanitize markdown to ensure MDX parser compatibility (no broken nested quotes in attributes)
+const sanitizeMarkdown = (raw: string): string => {
+  if (!raw) return '';
+  return raw
+    .replace(/style="([^"]*?)"/gi, (_, inner) => `style="${inner.replace(/"/g, '')}"`)
+    .replace(/<span style="font-family:\s*([^"]*?);?">/gi, (_, f) => `<span style="font-family: ${f.replace(/"/g, '')};">`);
+};
+
 export default function MdxEditorComponent({ 
   markdown, 
   onChange, 
@@ -103,6 +111,7 @@ export default function MdxEditorComponent({
 }: MdxEditorComponentProps) {
 
   const editorRef = useRef<MDXEditorMethods>(null);
+  const cleanMarkdown = useMemo(() => sanitizeMarkdown(markdown), [markdown]);
 
   // Selected Block / Typography states
   const [selectedBlockType, setSelectedBlockType] = useState('Paragraph');
@@ -137,7 +146,7 @@ export default function MdxEditorComponent({
 
   // Compute live word & character stats
   const stats = useMemo(() => {
-    const text = markdown.trim();
+    const text = (markdown || '').trim();
     const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
     const chars = text.length;
     const readTime = Math.max(1, Math.ceil(words / 200));
@@ -172,7 +181,8 @@ export default function MdxEditorComponent({
   const handleFontFamilyChange = (font: string) => {
     formatSelection((selected) => {
       const text = selected.trim() ? selected : 'Selected Text';
-      return `<span style="font-family: ${font};">${text}</span>`;
+      const cleanFont = font.replace(/["']/g, '');
+      return `<span style="font-family: ${cleanFont};">${text}</span>`;
     });
   };
 
@@ -256,7 +266,7 @@ export default function MdxEditorComponent({
     <div className="w-full h-full flex flex-col bg-[#F3F4F6] select-text">
       <MDXEditor
         ref={editorRef}
-        markdown={markdown}
+        markdown={cleanMarkdown}
         onChange={handleEditorChange}
         className="w-full flex-1 flex flex-col font-sans"
         contentEditableClassName="prose prose-sm sm:prose-base max-w-none !px-28 !py-20 min-h-[1056px] focus:outline-none bg-white shadow-lg border border-gray-200 mt-6 mb-36 mx-auto w-full max-w-[850px] rounded-2xl transition-all"
@@ -384,13 +394,13 @@ export default function MdxEditorComponent({
                               title="Apply Font Family to selected text"
                             >
                               <option value="Font" disabled>Font Family</option>
-                              <option value='Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'>Inter</option>
-                              <option value='Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif'>Calibri</option>
-                              <option value='"Times New Roman", Times, Georgia, serif'>Times New Roman</option>
-                              <option value='Arial, Helvetica, sans-serif'>Arial</option>
-                              <option value='Georgia, serif'>Georgia</option>
-                              <option value='"Courier New", Courier, monospace'>Courier New</option>
-                              <option value='"JetBrains Mono", Menlo, Monaco, Consolas, monospace'>JetBrains Mono</option>
+                              <option value="Inter, sans-serif">Inter</option>
+                              <option value="Calibri, Arial, sans-serif">Calibri</option>
+                              <option value="Times New Roman, Times, serif">Times New Roman</option>
+                              <option value="Arial, Helvetica, sans-serif">Arial</option>
+                              <option value="Georgia, serif">Georgia</option>
+                              <option value="Courier New, Courier, monospace">Courier New</option>
+                              <option value="JetBrains Mono, monospace">JetBrains Mono</option>
                             </select>
                           </div>
                           <div className="relative">

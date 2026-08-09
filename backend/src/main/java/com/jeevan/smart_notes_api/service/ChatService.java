@@ -236,15 +236,27 @@ public class ChatService {
         getSessionById(sessionId, email);
         List<ChatMessage> messages = messageRepository.findBySessionIdOrderByCreatedAtAsc(sessionId);
 
+        // 1. Search for assistant message containing <pdf_document
         for (int i = messages.size() - 1; i >= 0; i--) {
             ChatMessage msg = messages.get(i);
-            if (msg.getRole() == ChatMessage.Role.ASSISTANT && msg.getContent().contains("<pdf_document")) {
-                String replacement = String.format("<pdf_document title=\"%s\">\n%s\n</pdf_document>", title, newPdfContent);
-                String updatedContent = msg.getContent().replaceAll("(?s)<pdf_document[^>]*>.*?</pdf_document>", java.util.regex.Matcher.quoteReplacement(replacement));
+            if (msg.getRole() == ChatMessage.Role.ASSISTANT && msg.getContent() != null && msg.getContent().toLowerCase().contains("<pdf_document")) {
+                String replacement = String.format("<pdf_document title=\"%s\">\n%s\n</pdf_document>", title != null ? title : "Document", newPdfContent);
+                String updatedContent = msg.getContent().replaceAll("(?is)<pdf_document[^>]*>.*?</pdf_document>", java.util.regex.Matcher.quoteReplacement(replacement));
                 msg.setContent(updatedContent);
                 return messageRepository.save(msg);
             }
         }
+
+        // 2. Fallback: If no message had <pdf_document tag, update the latest ASSISTANT message
+        for (int i = messages.size() - 1; i >= 0; i--) {
+            ChatMessage msg = messages.get(i);
+            if (msg.getRole() == ChatMessage.Role.ASSISTANT) {
+                String replacement = String.format("<pdf_document title=\"%s\">\n%s\n</pdf_document>", title != null ? title : "Document", newPdfContent);
+                msg.setContent(replacement);
+                return messageRepository.save(msg);
+            }
+        }
+
         return null;
     }
 

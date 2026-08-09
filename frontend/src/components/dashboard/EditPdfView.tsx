@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { generateAndDownloadPdf } from '@/lib/pdf.service';
 import { updateSessionPdf, editDocumentWithAi } from '@/lib/chat.service';
 import { Send, Sparkles, Loader2, CheckCircle2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 
 // Dynamically import the MDX Editor since it uses browser APIs
@@ -13,9 +13,10 @@ const MdxEditorComponent = dynamic(
   { ssr: false, loading: () => <div className="p-8 text-center text-gray-500 font-medium">Loading Document Studio...</div> }
 );
 
-export default function EditPdfView() {
+function EditPdfViewContent() {
   const router = useRouter();
-  const [title, setTitle] = useState("Editing Document");
+  const searchParams = useSearchParams();
+  const [title, setTitle] = useState("Document");
   const [content, setContent] = useState("");
   const [sessionId, setSessionId] = useState<number | null>(null);
   const [editPrompt, setEditPrompt] = useState("");
@@ -23,19 +24,25 @@ export default function EditPdfView() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isAiEditing, setIsAiEditing] = useState(false);
   const [aiSuccessMessage, setAiSuccessMessage] = useState<string | null>(null);
-  const [isClient, setIsClient] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
-    // Load from session storage
-    const storedContent = sessionStorage.getItem('lumina_edit_pdf_content');
-    const storedTitle = sessionStorage.getItem('lumina_edit_pdf_title');
-    const storedSessionId = sessionStorage.getItem('lumina_edit_pdf_session_id');
+    // Load from session storage and URL query params
+    const storedContent = sessionStorage.getItem('lumina_edit_pdf_content') || '';
+    const storedTitle = sessionStorage.getItem('lumina_edit_pdf_title') || 'Document';
+    const paramSession = searchParams.get('session');
+    const storedSessionId = paramSession 
+      ? Number(paramSession) 
+      : (sessionStorage.getItem('lumina_edit_pdf_session_id') ? Number(sessionStorage.getItem('lumina_edit_pdf_session_id')) : null);
 
-    if (storedContent) setContent(storedContent);
-    if (storedTitle) setTitle(storedTitle);
-    if (storedSessionId) setSessionId(Number(storedSessionId));
-  }, []);
+    setContent(storedContent);
+    setTitle(storedTitle);
+    if (storedSessionId) {
+      setSessionId(storedSessionId);
+      sessionStorage.setItem('lumina_edit_pdf_session_id', String(storedSessionId));
+    }
+    setIsLoaded(true);
+  }, [searchParams]);
 
   const handleDownload = async () => {
     try {
@@ -55,6 +62,7 @@ export default function EditPdfView() {
     setTimeout(() => setIsCopied(false), 2000);
   };
 
+  // Immediate and Permanent Save to SessionStorage, Database & Active State
   const handleSaveAndReturn = async (latestMarkdown?: string) => {
     const finalContent = (typeof latestMarkdown === 'string' && latestMarkdown.trim()) ? latestMarkdown : content;
     
@@ -62,18 +70,19 @@ export default function EditPdfView() {
     sessionStorage.setItem('lumina_edit_pdf_content', finalContent);
     sessionStorage.setItem('lumina_edit_pdf_title', title);
 
-    // 2. If part of an active chat session, persist update to backend database
+    // 2. Persist update directly into the database
     const activeSessionId = sessionId || (typeof window !== 'undefined' ? Number(sessionStorage.getItem('lumina_edit_pdf_session_id')) : null);
 
     if (activeSessionId) {
       try {
         await updateSessionPdf(activeSessionId, title, finalContent);
+        console.log("[Lumina Studio] Successfully saved document to database for session:", activeSessionId);
       } catch (err) {
-        console.warn("Could not sync PDF update with backend session, saved locally:", err);
+        console.warn("[Lumina Studio] Database update error (saved locally):", err);
       }
     }
 
-    // 3. Dispatch global event so chat cards update immediately
+    // 3. Dispatch global event so chat cards in memory update immediately
     window.dispatchEvent(new CustomEvent("lumina:pdf_saved", {
       detail: { content: finalContent, title, sessionId: activeSessionId }
     }));
@@ -97,7 +106,6 @@ export default function EditPdfView() {
     setAiSuccessMessage(null);
 
     try {
-      // Call AI to edit the markdown text in-place
       const updatedMarkdown = await editDocumentWithAi(content, promptToApply);
       
       if (updatedMarkdown && updatedMarkdown.trim()) {
@@ -105,7 +113,7 @@ export default function EditPdfView() {
         sessionStorage.setItem('lumina_edit_pdf_content', updatedMarkdown);
         sessionStorage.setItem('lumina_edit_pdf_title', title);
         
-        // Sync with backend session if available
+        // Sync with database
         const activeSessionId = sessionId || (typeof window !== 'undefined' ? Number(sessionStorage.getItem('lumina_edit_pdf_session_id')) : null);
         if (activeSessionId) {
           updateSessionPdf(activeSessionId, title, updatedMarkdown).catch(() => {});
@@ -130,12 +138,19 @@ export default function EditPdfView() {
     handleSaveAndReturn(latestMarkdown);
   };
 
-  if (!isClient) return null;
+  if (!isLoaded) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-[#F3F4F6]">
+        <Loader2 className="w-6 h-6 animate-spin text-purple-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 flex flex-col h-full bg-[#F3F4F6] relative overflow-hidden">
       <div className="flex-1 overflow-y-auto w-full flex flex-col items-center relative z-10">
         <MdxEditorComponent 
+          key={`mdx-editor-${title}-${sessionId || 'draft'}`}
           markdown={content} 
           onChange={(newMarkdown) => {
             setContent(newMarkdown);
@@ -200,5 +215,17 @@ export default function EditPdfView() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function EditPdfView() {
+  return (
+    <Suspense fallback={
+      <div className="flex-1 flex items-center justify-center bg-[#F3F4F6]">
+        <Loader2 className="w-6 h-6 animate-spin text-purple-600" />
+      </div>
+    }>
+      <EditPdfViewContent />
+    </Suspense>
   );
 }
