@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo, useRef, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { 
@@ -57,6 +57,7 @@ const SERIF = "'Playfair Display', Georgia, serif";
 function DashboardContent() {
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab");
+  const router = useRouter();
 
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [activeSessionId, setActiveSessionId] = useState<number | null>(null);
@@ -308,6 +309,9 @@ function DashboardContent() {
   const selectSession = (session: ChatSession) => {
     setActiveSessionId(session.id);
     setIsTypingAllowed(false);
+    if (activeTab) {
+      router.push("/dashboard");
+    }
   };
 
   const handleCreateNewSession = async (initialText?: string, files?: File[]) => {
@@ -544,6 +548,7 @@ function DashboardContent() {
         } catch (err: any) {
           console.error("Stream Error:", err);
           toast.error("Failed to stream response. Falling back...");
+        } finally {
           setIsThinking(false);
         }
       } else {
@@ -887,7 +892,7 @@ function DashboardContent() {
           ) : (
             <>
               {/* Chat Header for Get Plus and New Chat */}
-        <div className="w-full flex items-center justify-between p-3 absolute top-0 left-0 right-0 z-10 pointer-events-none">
+        <div className="w-full flex items-start justify-between p-3 absolute top-0 left-0 right-0 z-10 pointer-events-none bg-gradient-to-b from-background via-background/95 to-transparent pb-8">
           <Link 
             href="/dashboard?tab=get-plus"
             className="flex items-center gap-1.5 px-3 py-1.5 bg-accent hover:bg-muted text-foreground text-[12px] font-bold rounded-full transition-colors cursor-pointer pointer-events-auto"
@@ -910,7 +915,7 @@ function DashboardContent() {
 
         {/* Chat History / Empty State */}
         <div className="flex-1 overflow-y-auto w-full flex flex-col items-center">
-          <div className="w-full max-w-3xl flex-1 flex flex-col pt-8 pb-32 px-4 sm:px-6">
+          <div className="w-full max-w-3xl flex-1 flex flex-col pt-16 pb-32 px-4 sm:px-6">
             
             {(!activeSession) ? (
               // Empty State - Center Screen
@@ -1144,7 +1149,7 @@ function DashboardContent() {
                     }
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
-                      if (!uploadProgress) handleChatSubmit();
+                      if (!uploadProgress && !isThinking) handleChatSubmit();
                     }
                   }}
                   placeholder={uploadProgress ? "Uploading file..." : "Ask anything... (type @ to insert snippet)"}
@@ -1158,7 +1163,7 @@ function DashboardContent() {
               {/* Submit Button */}
               <button 
                 type="submit"
-                disabled={(!chatInput.trim() && attachments.length === 0) || uploadProgress}
+                disabled={(!chatInput.trim() && attachments.length === 0) || uploadProgress || isThinking}
                 className="absolute right-3 bottom-2 w-9 h-9 rounded-full flex items-center justify-center bg-black text-white hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
               >
                 <ArrowUp className="w-5 h-5" />

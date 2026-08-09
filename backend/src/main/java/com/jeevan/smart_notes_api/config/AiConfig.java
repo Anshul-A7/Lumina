@@ -41,7 +41,7 @@ public class AiConfig {
     @Value("${gemini.base-url:${GEMINI_BASE_URL:https://generativelanguage.googleapis.com/v1beta/openai}}")
     private String geminiBaseUrl;
 
-    @Value("${gemini.model:${GEMINI_MODEL:gemini-3.6-flash}}")
+    @Value("${gemini.model:${GEMINI_MODEL:gemini-1.5-flash}}")
     private String geminiModel;
 
     // OpenAI
@@ -91,10 +91,15 @@ public class AiConfig {
             apiKey = "dummy-key-for-init";
         }
 
-        OpenAiApi openAiApi = OpenAiApi.builder()
+        OpenAiApi.Builder builder = OpenAiApi.builder()
                 .apiKey(apiKey)
-                .baseUrl(baseUrl)
-                .build();
+                .baseUrl(baseUrl);
+
+        if ("GEMINI".equals(provider)) {
+            builder.completionsPath("/chat/completions");
+        }
+
+        OpenAiApi openAiApi = builder.build();
 
         OpenAiChatOptions options = OpenAiChatOptions.builder()
                 .model(modelName)
