@@ -41,9 +41,9 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "2lQFyNH4uMmhPZ27koQeMTA5N1P-O1O8o_u9nxCnaO4",
     other: {
-      'msvalidate.01': process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION ? [process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION] : [],
+      'msvalidate.01': [process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION || "ED67D5569E31D74242ECBCCB58C6CE8C"],
     },
   },
   openGraph: {
