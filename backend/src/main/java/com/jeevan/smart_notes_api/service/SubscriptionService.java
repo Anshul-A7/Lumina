@@ -32,16 +32,16 @@ public class SubscriptionService {
     @Autowired
     private RazorpayService razorpayService;
 
-    @Value("${razorpay.plan.plus-monthly:${RAZORPAY_PLAN_PLUS_MONTHLY:}}")
+    @Value("${RAZORPAY_PLAN_PLUS_MONTHLY:}")
     private String planPlusMonthly;
 
-    @Value("${razorpay.plan.plus-yearly:${RAZORPAY_PLAN_PLUS_YEARLY:}}")
+    @Value("${RAZORPAY_PLAN_PLUS_YEARLY:}")
     private String planPlusYearly;
 
-    @Value("${razorpay.plan.pro-monthly:${RAZORPAY_PLAN_PRO_MONTHLY:}}")
+    @Value("${RAZORPAY_PLAN_PRO_MONTHLY:}")
     private String planProMonthly;
 
-    @Value("${razorpay.plan.pro-yearly:${RAZORPAY_PLAN_PRO_YEARLY:}}")
+    @Value("${RAZORPAY_PLAN_PRO_YEARLY:}")
     private String planProYearly;
 
     // ════════════════════════════════════════════════════════════════════════
