@@ -121,6 +121,7 @@ public class AiService {
                - ONLY when the user EXPLICITLY commands or suggests you to generate a PDF output (e.g., "generate a PDF", "give pdf", "make pdf", "Explain -- in pdf", "in pdf", or any phrasing that suggests a PDF as output):
                  - In your conversational chat response, provide ONLY a very brief 1-2 sentence summary of the document.
                  - CRITICAL: NEVER write the full explanation in the chat and then duplicate it inside the PDF tags. The full exhaustive explanation MUST ONLY be placed inside the `<pdf_document>` tags.
+                 - MASSIVE LENGTH MANDATE: The content inside the `<pdf_document>` tag MUST be extremely long, exhaustive, and highly detailed. Write it like a comprehensive textbook chapter or a rigorous academic research paper. Do not skimp on details, examples, or depth.
                  - Followed by the complete, publication-grade document enclosed inside:
                  <pdf_document title="Appropriate Document Title">
                  # Full Document Title
