@@ -877,20 +877,6 @@ function DashboardContent() {
                   <span className="text-[13px] font-semibold text-foreground">Settings</span>
                 </Link>
 
-                <div className="relative">
-                  <button
-                    onClick={() => setShowNotifications(!showNotifications)}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-foreground/[0.05] transition-colors text-left cursor-pointer"
-                  >
-                    <Bell className="w-[18px] h-[18px] text-foreground/60 shrink-0" />
-                    <span className="text-[13px] font-semibold text-foreground">Notifications</span>
-                  </button>
-                  <AnimatePresence>
-                    {showNotifications && (
-                      <NotificationTray onClose={() => setShowNotifications(false)} />
-                    )}
-                  </AnimatePresence>
-                </div>
 
                 <button
                   onClick={() => {

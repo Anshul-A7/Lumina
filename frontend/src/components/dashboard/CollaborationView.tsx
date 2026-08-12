@@ -69,7 +69,8 @@ export default function CollaborationView({ onOpenDocument }: { onOpenDocument: 
       setNewWorkspaceDesc("");
       fetchWorkspaces();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Failed to create workspace. Check plan limits.");
+      setIsCreating(false);
+      // The api.ts interceptor handles 403 and 429 and displays a custom toast, so we don't need toast.error here
     }
   };
 
@@ -94,7 +95,8 @@ export default function CollaborationView({ onOpenDocument }: { onOpenDocument: 
       setInviteEmail("");
       fetchWorkspaceDetails(selectedWorkspace.id);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Failed to send invite");
+      setIsInviting(false);
+      // The api.ts interceptor handles limits and displays a custom toast
     }
   };
 
@@ -166,15 +168,9 @@ export default function CollaborationView({ onOpenDocument }: { onOpenDocument: 
         <div className="p-4 border-b border-gray-200 flex justify-between items-center">
           <h2 className="font-bold text-gray-800">Workspaces</h2>
           <button 
-            onClick={() => {
-              if (userPlan === 'FREE') {
-                toast.error("Workspace Creation Disabled: Workspaces are a premium feature. Please upgrade to the Plus plan.");
-                return;
-              }
-              setIsCreating(true);
-            }} 
-            className={`p-1 rounded ${userPlan === 'FREE' ? 'opacity-50 cursor-not-allowed bg-gray-50' : 'hover:bg-gray-100'}`}
-            title={userPlan === 'FREE' ? "Upgrade to Plus to create workspaces" : "Create Workspace"}
+            onClick={() => setIsCreating(true)} 
+            className="p-1 rounded hover:bg-gray-100"
+            title="Create Workspace"
           >
             <Plus className="w-5 h-5 text-gray-600" />
           </button>
@@ -303,15 +299,9 @@ export default function CollaborationView({ onOpenDocument }: { onOpenDocument: 
             <p>Select a workspace or create a new one to collaborate.</p>
             <div className="flex items-center gap-3 mt-4">
               <button 
-                onClick={() => {
-                  if (userPlan === 'FREE') {
-                    toast.error("Workspace Creation Disabled: Workspaces are a premium feature. Please upgrade to the Plus plan.");
-                    return;
-                  }
-                  setIsCreating(true);
-                }} 
-                className={`px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-colors ${userPlan === 'FREE' ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-black text-white hover:bg-gray-800'}`}
-                title={userPlan === 'FREE' ? "Upgrade to Plus to create workspaces" : "Create Workspace"}
+                onClick={() => setIsCreating(true)} 
+                className="px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-colors bg-black text-white hover:bg-gray-800"
+                title="Create Workspace"
               >
                 <Plus className="w-4 h-4" /> Create Workspace
               </button>

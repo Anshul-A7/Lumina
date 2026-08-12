@@ -13,6 +13,15 @@ export default function NotificationTray({ onClose }: NotificationTrayProps) {
 
   useEffect(() => {
     fetchNotifications();
+    
+    const handleRefresh = () => {
+      fetchNotifications();
+    };
+    
+    window.addEventListener('refresh-notifications', handleRefresh);
+    return () => {
+      window.removeEventListener('refresh-notifications', handleRefresh);
+    };
   }, []);
 
   const fetchNotifications = async () => {

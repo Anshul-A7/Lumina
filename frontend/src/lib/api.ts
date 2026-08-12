@@ -1,4 +1,7 @@
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
+import React from 'react';
+import { toast } from 'react-hot-toast';
+import { CustomToast } from '@/components/common/CustomToast';
 
 // ============================================================================
 // LUMINA — API INTEGRATION LAYER
@@ -185,20 +188,26 @@ apiClient.interceptors.response.use(
     // Handle other error codes
     if (error.response?.status === 403) {
       console.warn('[API] 403 Forbidden: Missing permissions for this resource.');
-      if (error.response.data && error.response.data.message) {
+      const responseData = error.response?.data as any;
+      if (responseData && responseData.message) {
         if (typeof window !== 'undefined') {
           const { toast } = require('react-hot-toast');
-          toast.error(error.response.data.message, { duration: 5000 });
+          const { CustomToast } = require('@/components/common/CustomToast');
+          toast.custom((t: any) => React.createElement(CustomToast, { t, message: responseData.message }), { duration: 6000 });
+          window.dispatchEvent(new Event('refresh-notifications'));
         }
       }
     }
     
     if (error.response?.status === 429) {
       console.warn('[API] 429 Too Many Requests.');
-      if (error.response.data && error.response.data.message) {
+      const responseData = error.response?.data as any;
+      if (responseData && responseData.message) {
         if (typeof window !== 'undefined') {
           const { toast } = require('react-hot-toast');
-          toast.error(error.response.data.message, { duration: 5000 });
+          const { CustomToast } = require('@/components/common/CustomToast');
+          toast.custom((t: any) => React.createElement(CustomToast, { t, message: responseData.message }), { duration: 6000 });
+          window.dispatchEvent(new Event('refresh-notifications'));
         }
       }
     }
