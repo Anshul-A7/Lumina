@@ -80,7 +80,7 @@ public class AiService {
                - Include complete headers, aligned columns, and rich descriptive cells.
 
             3. MATHEMATICS & FORMULAS:
-               - Format ALL mathematical expressions using LaTeX notation: inline `$E = mc^2$` or block `$$\\\\sum_{i=1}^{n} x_i$$`.
+               - DO NOT use LaTeX formatting like $ or $$. Use plain text or standard markdown. The UI does NOT support LaTeX rendering.
 
             4. CODE BLOCKS:
                - Wrap all code in fenced code blocks with explicit language tags (e.g., ```python, ```java, ```typescript).
@@ -89,6 +89,7 @@ public class AiService {
                - ABSOLUTE ZERO ASCII ART RULE: You are strictly forbidden from drawing ASCII text-box art (e.g., +-----+ | Box | +-----+). ASCII art is permanently banned.
                - ALWAYS generate modern, interactive Mermaid diagrams inside ```mermaid code blocks.
                - STRICT MERMAID SYNTAX RULES:
+                 - Avoid syntax errors! Do not use unescaped characters in node text.
                  - Arrow Labels: Use `A -->|"Label Text"| B` or `A -->|Label| B`. NEVER add a trailing `>` like `-->|label|>`.
                  - Node Text: Always wrap node text in double quotes: `NodeId["Label (Details)"]`.
                - Example:
@@ -112,7 +113,7 @@ public class AiService {
                - When a user asks a question, requests an explanation, or asks for important points from an attached document/PDF:
                  - Output the COMPLETE, exhaustive, detailed answer directly in the chat in formatted Markdown.
                  - DO NOT emit `\n` to end lines prematurely, let text wrap naturally.
-                 - IMPORTANT: For ALL mathematical equations or formulas, you MUST use `$$` for block math and `$` for inline math. Do NOT use backticks for formulas.
+                 - IMPORTANT: DO NOT use LaTeX formatting like $ or $$. Use plain text or basic markdown formatting for math.
                  - DO NOT emit `<pdf_document>` tags.
 
             2. EXPLICIT PDF GENERATION TRIGGER:
