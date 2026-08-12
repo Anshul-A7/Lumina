@@ -39,11 +39,12 @@ public class RazorpayService {
             customerRequest.put("name", user.getUsername());
             
             // To bypass Razorpay's strict "Customer already exists" constraint on emails
-            // especially after database resets, we append +userId to the email handle.
-            // For example: anshulrathod76+1@gmail.com. This acts as a unique email to Razorpay
+            // especially after database resets, we append a short UUID to the email handle.
+            // For example: anshulrathod76+8a2b3c4d@gmail.com. This acts as a unique email to Razorpay
             // but still routes to the user's real inbox (supported by Gmail, Outlook, etc).
             String[] emailParts = user.getEmail().split("@");
-            String uniqueEmail = emailParts[0] + "+" + user.getId() + "@" + emailParts[1];
+            String shortUuid = java.util.UUID.randomUUID().toString().substring(0, 8);
+            String uniqueEmail = emailParts[0] + "+" + shortUuid + "@" + emailParts[1];
             customerRequest.put("email", uniqueEmail);
 
             customerRequest.put("fail_existing", 0);

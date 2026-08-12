@@ -1,713 +1,592 @@
-2026-08-12T17:20:36.670668549Z [inf]  Starting Container
-2026-08-12T17:20:37.655175379Z [inf]  
-2026-08-12T17:20:37.655178509Z [inf]    .   ____          _            __ _ _
-2026-08-12T17:20:37.655181069Z [inf]   /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-2026-08-12T17:20:37.655183459Z [inf]  ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
-2026-08-12T17:20:37.655186089Z [inf]   \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-2026-08-12T17:20:37.655188829Z [inf]    '  |____| .__|_| |_|_| |_\__, | / / / /
-2026-08-12T17:20:37.655192829Z [inf]   =========|_|==============|___/=/_/_/_/
-2026-08-12T17:20:37.655195469Z [inf]  
-2026-08-12T17:20:37.655198229Z [inf]   :: Spring Boot ::               (v3.5.14)
-2026-08-12T17:20:37.655201359Z [inf]  
-2026-08-12T17:20:37.655203729Z [inf]  2026-08-12T17:20:37.337Z  INFO 1 --- [smart-notes-api] [           main] c.j.s.SmartNotesApiApplication           : Starting SmartNotesApiApplication v0.0.1-SNAPSHOT using Java 21.0.11 with PID 1 (/app/app.jar started by spring in /app)
-2026-08-12T17:20:37.655206389Z [inf]  2026-08-12T17:20:37.339Z  INFO 1 --- [smart-notes-api] [           main] c.j.s.SmartNotesApiApplication           : No active profile set, falling back to 1 default profile: "default"
-2026-08-12T17:20:38.518729857Z [inf]  2026-08-12T17:20:38.501Z  INFO 1 --- [smart-notes-api] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-08-12T17:20:38.656663920Z [inf]  2026-08-12T17:20:38.646Z  INFO 1 --- [smart-notes-api] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 138 ms. Found 18 JPA repository interfaces.
-2026-08-12T17:20:39.102328267Z [inf]  2026-08-12T17:20:39.094Z  INFO 1 --- [smart-notes-api] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2026-08-12T17:20:39.106715159Z [inf]  2026-08-12T17:20:39.105Z  INFO 1 --- [smart-notes-api] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-08-12T17:20:39.106719949Z [inf]  2026-08-12T17:20:39.105Z  INFO 1 --- [smart-notes-api] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.54]
-2026-08-12T17:20:39.149237674Z [inf]  2026-08-12T17:20:39.134Z  INFO 1 --- [smart-notes-api] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-08-12T17:20:39.149243684Z [inf]  2026-08-12T17:20:39.135Z  INFO 1 --- [smart-notes-api] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1736 ms
-2026-08-12T17:20:39.289949136Z [inf]  2026-08-12T17:20:39.269Z  INFO 1 --- [smart-notes-api] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-08-12T17:20:39.310483862Z [inf]  2026-08-12T17:20:39.303Z  INFO 1 --- [smart-notes-api] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.49.Final
-2026-08-12T17:20:39.331530141Z [inf]  2026-08-12T17:20:39.326Z  INFO 1 --- [smart-notes-api] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-08-12T17:20:39.487822643Z [inf]  2026-08-12T17:20:39.471Z  INFO 1 --- [smart-notes-api] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-08-12T17:20:39.497054952Z [inf]  2026-08-12T17:20:39.491Z  INFO 1 --- [smart-notes-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-08-12T17:20:41.795600277Z [inf]  2026-08-12T17:20:41.472Z  INFO 1 --- [smart-notes-api] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@3e63bd6b
-2026-08-12T17:20:41.795604067Z [inf]  2026-08-12T17:20:41.473Z  INFO 1 --- [smart-notes-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-08-12T17:20:42.448260774Z [inf]  2026-08-12T17:20:42.426Z  INFO 1 --- [smart-notes-api] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-2026-08-12T17:20:42.448265044Z [inf]  	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
-2026-08-12T17:20:42.448269044Z [inf]  	Database driver: undefined/unknown
-2026-08-12T17:20:42.448272764Z [inf]  	Database version: 18.4
-2026-08-12T17:20:42.448276094Z [inf]  	Autocommit mode: undefined/unknown
-2026-08-12T17:20:42.448279244Z [inf]  	Isolation level: undefined/unknown
-2026-08-12T17:20:42.448282684Z [inf]  	Minimum pool size: undefined/unknown
-2026-08-12T17:20:42.448286694Z [inf]  	Maximum pool size: undefined/unknown
-2026-08-12T17:20:43.195736685Z [inf]  2026-08-12T17:20:43.148Z  INFO 1 --- [smart-notes-api] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-08-12T17:21:03.194243283Z [inf]  2026-08-12T17:20:53.972Z  INFO 1 --- [smart-notes-api] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-08-12T17:21:03.194248483Z [inf]  2026-08-12T17:20:54.372Z  INFO 1 --- [smart-notes-api] [           main] c.j.smart_notes_api.config.AiConfig      : ✅ Added Gemini slot [AQ.A...AuFw]
-2026-08-12T17:21:03.194253173Z [inf]  2026-08-12T17:20:54.373Z  INFO 1 --- [smart-notes-api] [           main] c.j.smart_notes_api.config.AiConfig      : ✅ Added Gemini slot [AQ.A...0wGg]
-2026-08-12T17:21:03.194257083Z [inf]  2026-08-12T17:20:54.374Z  INFO 1 --- [smart-notes-api] [           main] c.j.smart_notes_api.config.AiConfig      : ✅ Added Groq slot [gsk_...yhvA]
-2026-08-12T17:21:03.194261272Z [inf]  2026-08-12T17:20:54.375Z  INFO 1 --- [smart-notes-api] [           main] c.j.s.config.AiProviderPool              : ═══════════════════════════════════════════════════════════════
-2026-08-12T17:21:03.194266012Z [inf]  2026-08-12T17:20:54.375Z  INFO 1 --- [smart-notes-api] [           main] c.j.s.config.AiProviderPool              : 🚀 AI Provider Pool initialized with 3 total slots:
-2026-08-12T17:21:03.194270022Z [inf]  2026-08-12T17:20:54.375Z  INFO 1 --- [smart-notes-api] [           main] c.j.s.config.AiProviderPool              :    ├─ GEMINI [AQ.A****AuFw]
-2026-08-12T17:21:03.194275112Z [inf]  2026-08-12T17:20:54.375Z  INFO 1 --- [smart-notes-api] [           main] c.j.s.config.AiProviderPool              :    ├─ GEMINI [AQ.A****0wGg]
-2026-08-12T17:21:03.194279932Z [inf]  2026-08-12T17:20:54.375Z  INFO 1 --- [smart-notes-api] [           main] c.j.s.config.AiProviderPool              :    ├─ GROQ [gsk_****yhvA]
-2026-08-12T17:21:03.194284972Z [inf]  2026-08-12T17:20:54.375Z  INFO 1 --- [smart-notes-api] [           main] c.j.s.config.AiProviderPool              : ═══════════════════════════════════════════════════════════════
-2026-08-12T17:21:03.194695247Z [inf]  2026-08-12T17:20:54.408Z  INFO 1 --- [smart-notes-api] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-08-12T17:21:03.194699457Z [inf]  2026-08-12T17:20:54.844Z  INFO 1 --- [smart-notes-api] [           main] c.j.smart_notes_api.service.AiService    : 🤖 AiService initialized with AiProviderPool (failover enabled)
-2026-08-12T17:21:03.194702127Z [inf]  2026-08-12T17:20:54.890Z  INFO 1 --- [smart-notes-api] [           main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
-2026-08-12T17:21:03.194705167Z [inf]  2026-08-12T17:20:54.890Z  WARN 1 --- [smart-notes-api] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
-2026-08-12T17:21:03.194707867Z [inf]  2026-08-12T17:20:55.297Z  WARN 1 --- [smart-notes-api] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-08-12T17:21:03.194711527Z [inf]  2026-08-12T17:20:55.999Z  INFO 1 --- [smart-notes-api] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
-2026-08-12T17:21:03.194713717Z [inf]  2026-08-12T17:20:56.000Z  INFO 1 --- [smart-notes-api] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@385376c]]
-2026-08-12T17:21:03.195286102Z [inf]  2026-08-12T17:20:56.000Z  INFO 1 --- [smart-notes-api] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
-2026-08-12T17:21:03.195292551Z [inf]  2026-08-12T17:20:56.011Z  INFO 1 --- [smart-notes-api] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2026-08-12T17:21:03.195296161Z [inf]  2026-08-12T17:20:56.024Z  INFO 1 --- [smart-notes-api] [           main] c.j.s.SmartNotesApiApplication           : Started SmartNotesApiApplication in 19.127 seconds (process running for 19.623)
-2026-08-12T17:21:23.110155009Z [inf]  2026-08-12T17:21:18.995Z  INFO 1 --- [smart-notes-api] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-08-12T17:21:23.110160989Z [inf]  2026-08-12T17:21:18.996Z  INFO 1 --- [smart-notes-api] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-08-12T17:21:23.110165019Z [inf]  2026-08-12T17:21:18.997Z  INFO 1 --- [smart-notes-api] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-2026-08-12T17:21:23.110170379Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
-2026-08-12T17:21:23.110173859Z [inf]  Hibernate: select ut1_0.id,ut1_0.ai_requests,ut1_0.images_attached,ut1_0.images_generated,ut1_0.pdfs_attached,ut1_0.pdfs_generated,ut1_0.usage_date,ut1_0.user_id from usage_tracker ut1_0 left join users u1_0 on u1_0.id=ut1_0.user_id where u1_0.email=? and ut1_0.usage_date=?
-2026-08-12T17:21:23.110177439Z [inf]  Hibernate: update usage_tracker set ai_requests=?,images_attached=?,images_generated=?,pdfs_attached=?,pdfs_generated=?,usage_date=?,user_id=? where id=?
-2026-08-12T17:21:30.890428709Z [inf]  2026-08-12T17:21:30.861Z  WARN 1 --- [smart-notes-api] [or-http-epoll-3] r.netty.http.client.HttpClientConnect    : [eb3486a0-1, L:/10.204.93.30:36130 - R:generativelanguage.googleapis.com/172.217.113.4:443] The connection observed an error
-2026-08-12T17:21:30.890431649Z [inf]  
-2026-08-12T17:21:30.890435109Z [inf]  io.netty.handler.timeout.ReadTimeoutException
-2026-08-12T17:21:30.890437539Z [inf]  
-2026-08-12T17:21:30.890440309Z [inf]  2026-08-12T17:21:30.866Z  WARN 1 --- [smart-notes-api] [nio-8080-exec-2] o.springframework.ai.retry.RetryUtils    : Retry error. Retry count:1
-2026-08-12T17:21:30.890443519Z [inf]  
-2026-08-12T17:21:30.890446189Z [inf]  org.springframework.web.client.ResourceAccessException: I/O error on POST request for "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions": null
-2026-08-12T17:21:30.890448889Z [inf]  	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.createResourceAccessException(DefaultRestClient.java:704) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.890451429Z [inf]  	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.exchangeInternal(DefaultRestClient.java:589) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.890454049Z [inf]  	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.exchange(DefaultRestClient.java:540) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.890456459Z [inf]  	at org.springframework.web.client.RestClient$RequestHeadersSpec.exchange(RestClient.java:677) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.890458719Z [inf]  	at org.springframework.web.client.DefaultRestClient$DefaultResponseSpec.executeAndExtract(DefaultRestClient.java:821) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.890461479Z [inf]  	at org.springframework.web.client.DefaultRestClient$DefaultResponseSpec.toEntityInternal(DefaultRestClient.java:781) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.891711805Z [inf]  	at org.springframework.web.client.DefaultRestClient$DefaultResponseSpec.toEntity(DefaultRestClient.java:770) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.891720865Z [inf]  	at org.springframework.ai.openai.api.OpenAiApi.chatCompletionEntity(OpenAiApi.java:187) ~[spring-ai-openai-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:30.891725565Z [inf]  	at org.springframework.ai.openai.OpenAiChatModel.lambda$internalCall$1(OpenAiChatModel.java:199) ~[spring-ai-openai-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:30.891728655Z [inf]  	at org.springframework.retry.support.RetryTemplate.doExecute(RetryTemplate.java:357) ~[spring-retry-2.0.12.jar!/:na]
-2026-08-12T17:21:30.891733495Z [inf]  	at org.springframework.retry.support.RetryTemplate.execute(RetryTemplate.java:230) ~[spring-retry-2.0.12.jar!/:na]
-2026-08-12T17:21:30.891736785Z [inf]  	at org.springframework.ai.openai.OpenAiChatModel.lambda$internalCall$3(OpenAiChatModel.java:199) ~[spring-ai-openai-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:30.891740425Z [inf]  	at io.micrometer.observation.Observation.observe(Observation.java:564) ~[micrometer-observation-1.15.11.jar!/:1.15.11]
-2026-08-12T17:21:30.891746095Z [inf]  	at org.springframework.ai.openai.OpenAiChatModel.internalCall(OpenAiChatModel.java:196) ~[spring-ai-openai-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:30.891749115Z [inf]  	at org.springframework.ai.openai.OpenAiChatModel.call(OpenAiChatModel.java:181) ~[spring-ai-openai-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:30.891752565Z [inf]  	at org.springframework.ai.chat.client.advisor.ChatModelCallAdvisor.adviseCall(ChatModelCallAdvisor.java:54) ~[spring-ai-client-chat-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:30.891756635Z [inf]  	at org.springframework.ai.chat.client.advisor.DefaultAroundAdvisorChain.lambda$nextCall$1(DefaultAroundAdvisorChain.java:110) ~[spring-ai-client-chat-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:30.891760214Z [inf]  	at io.micrometer.observation.Observation.observe(Observation.java:564) ~[micrometer-observation-1.15.11.jar!/:1.15.11]
-2026-08-12T17:21:30.892790193Z [inf]  	at org.springframework.ai.chat.client.advisor.DefaultAroundAdvisorChain.nextCall(DefaultAroundAdvisorChain.java:110) ~[spring-ai-client-chat-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:30.892793323Z [inf]  	at org.springframework.ai.chat.client.DefaultChatClient$DefaultCallResponseSpec.lambda$doGetObservableChatClientResponse$1(DefaultChatClient.java:469) ~[spring-ai-client-chat-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:30.892795673Z [inf]  	at io.micrometer.observation.Observation.observe(Observation.java:564) ~[micrometer-observation-1.15.11.jar!/:1.15.11]
-2026-08-12T17:21:30.892798003Z [inf]  	at org.springframework.ai.chat.client.DefaultChatClient$DefaultCallResponseSpec.doGetObservableChatClientResponse(DefaultChatClient.java:467) ~[spring-ai-client-chat-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:30.892800573Z [inf]  	at org.springframework.ai.chat.client.DefaultChatClient$DefaultCallResponseSpec.doGetObservableChatClientResponse(DefaultChatClient.java:446) ~[spring-ai-client-chat-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:30.892802893Z [inf]  	at org.springframework.ai.chat.client.DefaultChatClient$DefaultCallResponseSpec.content(DefaultChatClient.java:441) ~[spring-ai-client-chat-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:30.892805093Z [inf]  	at com.jeevan.smart_notes_api.service.AiService.lambda$editDocument$16(AiService.java:723) ~[!/:0.0.1-SNAPSHOT]
-2026-08-12T17:21:30.892807123Z [inf]  	at com.jeevan.smart_notes_api.config.AiProviderPool.callWithFailover(AiProviderPool.java:290) ~[!/:0.0.1-SNAPSHOT]
-2026-08-12T17:21:30.892809703Z [inf]  	at com.jeevan.smart_notes_api.service.AiService.editDocument(AiService.java:718) ~[!/:0.0.1-SNAPSHOT]
-2026-08-12T17:21:30.892812233Z [inf]  	at com.jeevan.smart_notes_api.controller.AiController.editDocument(AiController.java:92) ~[!/:0.0.1-SNAPSHOT]
-2026-08-12T17:21:30.892814393Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
-2026-08-12T17:21:30.892817873Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
-2026-08-12T17:21:30.894098249Z [inf]  	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.894102469Z [inf]  	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.894105589Z [inf]  	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.894108259Z [inf]  	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:991) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.894111579Z [inf]  	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:896) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.894114569Z [inf]  	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.894117819Z [inf]  	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.894120669Z [inf]  	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.894123179Z [inf]  	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.894125469Z [inf]  	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.894127809Z [inf]  	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.895284426Z [inf]  	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.895288766Z [inf]  	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.895291896Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.895300346Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.895303866Z [inf]  	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.54.jar!/:na]
-2026-08-12T17:21:30.895307116Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.895311256Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.895313976Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.895316556Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.895319466Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.895322196Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.895324816Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.896155337Z [inf]  	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.896158077Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:370) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.896160317Z [inf]  	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.896162977Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.896165707Z [inf]  	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:125) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.896168317Z [inf]  	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.896170707Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.896173007Z [inf]  	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.896175947Z [inf]  	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.896179377Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.896182337Z [inf]  	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.897140226Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.897143236Z [inf]  	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.897145976Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.897148986Z [inf]  	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.897151216Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.897153486Z [inf]  	at com.jeevan.smart_notes_api.security.jwt.JwtFilter.doFilterInternal(JwtFilter.java:74) ~[!/:0.0.1-SNAPSHOT]
-2026-08-12T17:21:30.897155646Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.897157896Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.897160226Z [inf]  	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.897166656Z [inf]  	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.897171345Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.898428052Z [inf]  	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.898431362Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.898434912Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.898439122Z [inf]  	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.898442512Z [inf]  	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.898446512Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.898450042Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.898453332Z [inf]  	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.898456832Z [inf]  	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.898460892Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.898464972Z [inf]  	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.899590559Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.899596329Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.899600459Z [inf]  	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.899604759Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.899608279Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.899612059Z [inf]  	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.899616309Z [inf]  	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.899620549Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.899624549Z [inf]  	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.899628139Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.899631849Z [inf]  	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.899635789Z [inf]  	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319) ~[spring-security-config-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.900512270Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.900517400Z [inf]  	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$4(HandlerMappingIntrospector.java:267) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.900521160Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.900524170Z [inf]  	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.900527570Z [inf]  	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:240) ~[spring-security-config-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:30.900530949Z [inf]  	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.900534009Z [inf]  	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.900537269Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.900540699Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.900543929Z [inf]  	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.900547389Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.901249471Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.901253741Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.901256561Z [inf]  	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.901259511Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.901262161Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.901264881Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.901267341Z [inf]  	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.901271341Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.901273931Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.901276661Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.901280141Z [inf]  	at org.springframework.web.filter.ForwardedHeaderFilter.doFilterInternal(ForwardedHeaderFilter.java:173) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.901284151Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.902057023Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.902061493Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.902065663Z [inf]  	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.902069603Z [inf]  	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:88) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.902073102Z [inf]  	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.902076732Z [inf]  	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.902080212Z [inf]  	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.902083692Z [inf]  	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.902087072Z [inf]  	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.902091302Z [inf]  	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.902096062Z [inf]  	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.902099632Z [inf]  	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.902102532Z [inf]  	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1797) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.903069962Z [inf]  	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.903073712Z [inf]  	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:973) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.903077102Z [inf]  	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:491) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.903081632Z [inf]  	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:30.903086132Z [inf]  	at java.base/java.lang.Thread.run(Unknown Source) ~[na:na]
-2026-08-12T17:21:30.903089742Z [inf]  Caused by: java.io.IOException
-2026-08-12T17:21:30.903093712Z [inf]  	at org.springframework.http.client.ReactorClientHttpRequest.convertException(ReactorClientHttpRequest.java:181) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.903097392Z [inf]  	at org.springframework.http.client.ReactorClientHttpRequest.executeInternal(ReactorClientHttpRequest.java:149) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.903100501Z [inf]  	at org.springframework.http.client.AbstractStreamingClientHttpRequest.executeInternal(AbstractStreamingClientHttpRequest.java:88) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.903104461Z [inf]  	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:81) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.903108021Z [inf]  	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.exchangeInternal(DefaultRestClient.java:583) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:30.903111911Z [inf]  	... 137 common frames omitted
-2026-08-12T17:21:30.903114931Z [inf]  Caused by: io.netty.handler.timeout.ReadTimeoutException
-2026-08-12T17:21:30.903118311Z [inf]  
-2026-08-12T17:21:30.903666265Z [inf]  2026-08-12T17:21:30.868Z ERROR 1 --- [smart-notes-api] [nio-8080-exec-2] c.j.s.config.AiProviderPool              : ❌ Non-rate-limit error on GEMINI [AQ.A****AuFw]: I/O error on POST request for "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions": null
-2026-08-12T17:21:31.114804057Z [inf]    "error": {
-2026-08-12T17:21:31.114815957Z [inf]      "code": 429,
-2026-08-12T17:21:31.114818127Z [inf]  2026-08-12T17:21:31.111Z  WARN 1 --- [smart-notes-api] [nio-8080-exec-2] o.springframework.ai.retry.RetryUtils    : Retry error. Retry count:1
-2026-08-12T17:21:31.114824027Z [inf]      "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\nPlease retry in 28.912939087s.",
-2026-08-12T17:21:31.114824877Z [inf]        {
-2026-08-12T17:21:31.114826447Z [inf]  
-2026-08-12T17:21:31.114829487Z [inf]      "status": "RESOURCE_EXHAUSTED",
-2026-08-12T17:21:31.114831647Z [inf]  org.springframework.ai.retry.NonTransientAiException: 429 - [{
-2026-08-12T17:21:31.114833877Z [inf]      "details": [
-2026-08-12T17:21:31.114838156Z [inf]        {
-2026-08-12T17:21:31.114842126Z [inf]          "@type": "type.googleapis.com/google.rpc.Help",
-2026-08-12T17:21:31.114860636Z [inf]          "links": [
-2026-08-12T17:21:31.114871336Z [inf]            {
-2026-08-12T17:21:31.114876996Z [inf]              "description": "Learn more about Gemini API quotas",
-2026-08-12T17:21:31.114881766Z [inf]              "url": "https://ai.google.dev/gemini-api/docs/rate-limits"
-2026-08-12T17:21:31.114886066Z [inf]            }
-2026-08-12T17:21:31.114891196Z [inf]          ]
-2026-08-12T17:21:31.114897596Z [inf]          "@type": "type.googleapis.com/google.rpc.QuotaFailure",
-2026-08-12T17:21:31.114899096Z [inf]        },
-2026-08-12T17:21:31.114904326Z [inf]          "violations": [
-2026-08-12T17:21:31.114909176Z [inf]            {
-2026-08-12T17:21:31.114913066Z [inf]              "quotaMetric": "generativelanguage.googleapis.com/generate_content_free_tier_requests",
-2026-08-12T17:21:31.116096333Z [inf]              "quotaId": "GenerateRequestsPerDayPerProjectPerModel-FreeTier",
-2026-08-12T17:21:31.116106583Z [inf]              "quotaDimensions": {
-2026-08-12T17:21:31.116112453Z [inf]                "model": "gemini-3.6-flash",
-2026-08-12T17:21:31.116120553Z [inf]                "location": "global"
-2026-08-12T17:21:31.116127372Z [inf]              },
-2026-08-12T17:21:31.116133532Z [inf]              "quotaValue": "20"
-2026-08-12T17:21:31.116138882Z [inf]            }
-2026-08-12T17:21:31.116144222Z [inf]          ]
-2026-08-12T17:21:31.116149262Z [inf]        },
-2026-08-12T17:21:31.116153632Z [inf]        {
-2026-08-12T17:21:31.116158682Z [inf]          "@type": "type.googleapis.com/google.rpc.RetryInfo",
-2026-08-12T17:21:31.116163192Z [inf]          "retryDelay": "28s"
-2026-08-12T17:21:31.116168632Z [inf]        }
-2026-08-12T17:21:31.116178332Z [inf]      ]
-2026-08-12T17:21:31.116183382Z [inf]    }
-2026-08-12T17:21:31.116188702Z [inf]  }
-2026-08-12T17:21:31.116194202Z [inf]  ]
-2026-08-12T17:21:31.116199572Z [inf]  	at org.springframework.ai.retry.RetryUtils$1.handleError(RetryUtils.java:63) ~[spring-ai-retry-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:31.116212251Z [inf]  	at org.springframework.web.client.ResponseErrorHandler.handleError(ResponseErrorHandler.java:58) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.116217421Z [inf]  	at org.springframework.web.client.StatusHandler.lambda$fromErrorHandler$1(StatusHandler.java:71) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.116222391Z [inf]  	at org.springframework.web.client.StatusHandler.handle(StatusHandler.java:146) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.116228501Z [inf]  	at org.springframework.web.client.DefaultRestClient$DefaultResponseSpec.applyStatusHandlers(DefaultRestClient.java:838) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.116233491Z [inf]  	at org.springframework.web.client.DefaultRestClient$DefaultResponseSpec.lambda$readBody$4(DefaultRestClient.java:827) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.117432058Z [inf]  	at org.springframework.web.client.DefaultRestClient.readWithMessageConverters(DefaultRestClient.java:216) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.117435028Z [inf]  	at org.springframework.web.client.DefaultRestClient$DefaultResponseSpec.readBody(DefaultRestClient.java:826) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.117437418Z [inf]  	at org.springframework.web.client.DefaultRestClient$DefaultResponseSpec.lambda$toEntityInternal$2(DefaultRestClient.java:782) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.117442488Z [inf]  	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.exchangeInternal(DefaultRestClient.java:586) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.117445288Z [inf]  	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.exchange(DefaultRestClient.java:540) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.117448948Z [inf]  	at org.springframework.web.client.RestClient$RequestHeadersSpec.exchange(RestClient.java:677) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.117452108Z [inf]  	at org.springframework.web.client.DefaultRestClient$DefaultResponseSpec.executeAndExtract(DefaultRestClient.java:821) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.117454548Z [inf]  	at org.springframework.web.client.DefaultRestClient$DefaultResponseSpec.toEntityInternal(DefaultRestClient.java:781) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.117457158Z [inf]  	at org.springframework.web.client.DefaultRestClient$DefaultResponseSpec.toEntity(DefaultRestClient.java:770) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.117460018Z [inf]  	at org.springframework.ai.openai.api.OpenAiApi.chatCompletionEntity(OpenAiApi.java:187) ~[spring-ai-openai-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:31.117462778Z [inf]  	at org.springframework.ai.openai.OpenAiChatModel.lambda$internalCall$1(OpenAiChatModel.java:199) ~[spring-ai-openai-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:31.118234119Z [inf]  	at org.springframework.retry.support.RetryTemplate.doExecute(RetryTemplate.java:357) ~[spring-retry-2.0.12.jar!/:na]
-2026-08-12T17:21:31.118238609Z [inf]  	at org.springframework.retry.support.RetryTemplate.execute(RetryTemplate.java:230) ~[spring-retry-2.0.12.jar!/:na]
-2026-08-12T17:21:31.118242429Z [inf]  	at org.springframework.ai.openai.OpenAiChatModel.lambda$internalCall$3(OpenAiChatModel.java:199) ~[spring-ai-openai-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:31.118247809Z [inf]  	at io.micrometer.observation.Observation.observe(Observation.java:564) ~[micrometer-observation-1.15.11.jar!/:1.15.11]
-2026-08-12T17:21:31.118251169Z [inf]  	at org.springframework.ai.openai.OpenAiChatModel.internalCall(OpenAiChatModel.java:196) ~[spring-ai-openai-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:31.118254429Z [inf]  	at org.springframework.ai.openai.OpenAiChatModel.call(OpenAiChatModel.java:181) ~[spring-ai-openai-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:31.118258209Z [inf]  	at org.springframework.ai.chat.client.advisor.ChatModelCallAdvisor.adviseCall(ChatModelCallAdvisor.java:54) ~[spring-ai-client-chat-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:31.118261479Z [inf]  	at org.springframework.ai.chat.client.advisor.DefaultAroundAdvisorChain.lambda$nextCall$1(DefaultAroundAdvisorChain.java:110) ~[spring-ai-client-chat-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:31.118265119Z [inf]  	at io.micrometer.observation.Observation.observe(Observation.java:564) ~[micrometer-observation-1.15.11.jar!/:1.15.11]
-2026-08-12T17:21:31.118268718Z [inf]  	at org.springframework.ai.chat.client.advisor.DefaultAroundAdvisorChain.nextCall(DefaultAroundAdvisorChain.java:110) ~[spring-ai-client-chat-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:31.118272088Z [inf]  	at org.springframework.ai.chat.client.DefaultChatClient$DefaultCallResponseSpec.lambda$doGetObservableChatClientResponse$1(DefaultChatClient.java:469) ~[spring-ai-client-chat-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:31.118275508Z [inf]  	at io.micrometer.observation.Observation.observe(Observation.java:564) ~[micrometer-observation-1.15.11.jar!/:1.15.11]
-2026-08-12T17:21:31.119497255Z [inf]  	at org.springframework.ai.chat.client.DefaultChatClient$DefaultCallResponseSpec.doGetObservableChatClientResponse(DefaultChatClient.java:467) ~[spring-ai-client-chat-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:31.119501235Z [inf]  	at org.springframework.ai.chat.client.DefaultChatClient$DefaultCallResponseSpec.doGetObservableChatClientResponse(DefaultChatClient.java:446) ~[spring-ai-client-chat-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:31.119503695Z [inf]  	at org.springframework.ai.chat.client.DefaultChatClient$DefaultCallResponseSpec.content(DefaultChatClient.java:441) ~[spring-ai-client-chat-1.0.0.jar!/:1.0.0]
-2026-08-12T17:21:31.119506705Z [inf]  	at com.jeevan.smart_notes_api.service.AiService.lambda$editDocument$16(AiService.java:723) ~[!/:0.0.1-SNAPSHOT]
-2026-08-12T17:21:31.119509385Z [inf]  	at com.jeevan.smart_notes_api.config.AiProviderPool.callWithFailover(AiProviderPool.java:290) ~[!/:0.0.1-SNAPSHOT]
-2026-08-12T17:21:31.119512805Z [inf]  	at com.jeevan.smart_notes_api.service.AiService.editDocument(AiService.java:718) ~[!/:0.0.1-SNAPSHOT]
-2026-08-12T17:21:31.119515325Z [inf]  	at com.jeevan.smart_notes_api.controller.AiController.editDocument(AiController.java:92) ~[!/:0.0.1-SNAPSHOT]
-2026-08-12T17:21:31.119519205Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
-2026-08-12T17:21:31.119521615Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
-2026-08-12T17:21:31.119523885Z [inf]  	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.119526925Z [inf]  	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.119529685Z [inf]  	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.120876910Z [inf]  	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:991) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.120882850Z [inf]  	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:896) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.120887340Z [inf]  	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.120891430Z [inf]  	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.120895400Z [inf]  	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.120899680Z [inf]  	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.120904520Z [inf]  	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.120908210Z [inf]  	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.120911590Z [inf]  	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.120915250Z [inf]  	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.120918330Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.120921929Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.121556563Z [inf]  	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.54.jar!/:na]
-2026-08-12T17:21:31.121560853Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.121564303Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.121567573Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.121571433Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.121574733Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.121578173Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.121585973Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.121589243Z [inf]  	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.121592793Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:370) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.121596183Z [inf]  	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.121599823Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.123109966Z [inf]  	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:125) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.123114546Z [inf]  	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.123120016Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.123124776Z [inf]  	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.123129036Z [inf]  	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.123132926Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.123136466Z [inf]  	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.123140126Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.123143776Z [inf]  	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.123147325Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.123152165Z [inf]  	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.124025696Z [inf]  	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.124035746Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.124041346Z [inf]  	at com.jeevan.smart_notes_api.security.jwt.JwtFilter.doFilterInternal(JwtFilter.java:74) ~[!/:0.0.1-SNAPSHOT]
-2026-08-12T17:21:31.124044766Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.124047746Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.124051466Z [inf]  	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.124054546Z [inf]  	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.124057546Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.124060646Z [inf]  	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.124063966Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.124067406Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.124070986Z [inf]  	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.125667158Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.125672858Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.125677078Z [inf]  	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.125680808Z [inf]  	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.125685038Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.125688378Z [inf]  	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.125691498Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.125695248Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.125698938Z [inf]  	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.125702168Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.125705468Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.126695007Z [inf]  	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.126698317Z [inf]  	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.126701877Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.126705017Z [inf]  	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.126709677Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.126713077Z [inf]  	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.126716577Z [inf]  	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319) ~[spring-security-config-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.126720527Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.126723677Z [inf]  	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$4(HandlerMappingIntrospector.java:267) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.126726717Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.126729677Z [inf]  	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.127653357Z [inf]  	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:240) ~[spring-security-config-6.5.10.jar!/:6.5.10]
-2026-08-12T17:21:31.127660797Z [inf]  	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.127666307Z [inf]  	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.127671657Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.127676657Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.127682466Z [inf]  	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.127689086Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.127694206Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.127700196Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.127706056Z [inf]  	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.127711616Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.127716766Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.128518367Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.128522477Z [inf]  	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.128525647Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.128529277Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.128532497Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.128536957Z [inf]  	at org.springframework.web.filter.ForwardedHeaderFilter.doFilterInternal(ForwardedHeaderFilter.java:173) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.128540136Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:21:31.128543036Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.128546366Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.128549856Z [inf]  	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.128554056Z [inf]  	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:88) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.128557316Z [inf]  	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.129208710Z [inf]  	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.129213850Z [inf]  	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.129217860Z [inf]  	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.129222179Z [inf]  	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.129225609Z [inf]  	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.129229399Z [inf]  	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.129232719Z [inf]  	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.129235879Z [inf]  	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1797) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.129239259Z [inf]  	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.129242669Z [inf]  	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:973) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.129246269Z [inf]  	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:491) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.129249809Z [inf]  	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:21:31.129252999Z [inf]  	at java.base/java.lang.Thread.run(Unknown Source) ~[na:na]
-2026-08-12T17:21:31.130473786Z [inf]  
-2026-08-12T17:21:31.130476806Z [inf]  2026-08-12T17:21:31.113Z  WARN 1 --- [smart-notes-api] [nio-8080-exec-2] c.j.s.config.AiProviderPool              : ⚠️ Rate-limited: GEMINI [AQ.A****0wGg] — cooldown 65s
-2026-08-12T17:21:31.130479446Z [inf]  2026-08-12T17:21:31.113Z  WARN 1 --- [smart-notes-api] [nio-8080-exec-2] c.j.s.config.AiProviderPool              : ⚠️ Rate limit hit on GEMINI [AQ.A****0wGg], rotating to next provider...
-2026-08-12T17:21:37.418952610Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
-2026-08-12T17:21:37.598476727Z [inf]  Hibernate: select cs1_0.id,cs1_0.created_at,cs1_0.pinned,cs1_0.title,cs1_0.updated_at,cs1_0.user_id from chat_sessions cs1_0 left join users u1_0 on u1_0.id=cs1_0.user_id where cs1_0.id=? and u1_0.email=?
-2026-08-12T17:21:37.857510478Z [inf]  Hibernate: select cm1_0.id,cm1_0.attachment_names,cm1_0.content,cm1_0.created_at,cm1_0.role,cm1_0.session_id from chat_messages cm1_0 left join chat_sessions s1_0 on s1_0.id=cm1_0.session_id where s1_0.id=? order by cm1_0.created_at
-2026-08-12T17:21:38.153965832Z [inf]  Hibernate: update chat_messages set attachment_names=?,content=?,role=?,session_id=? where id=?
-2026-08-12T17:21:44.798435791Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
-2026-08-12T17:21:45.295796882Z [inf]  Hibernate: select cs1_0.id,cs1_0.created_at,cs1_0.pinned,cs1_0.title,cs1_0.updated_at,cs1_0.user_id from chat_sessions cs1_0 left join users u1_0 on u1_0.id=cs1_0.user_id where cs1_0.id=? and u1_0.email=?
-2026-08-12T17:21:45.367789799Z [inf]  Hibernate: select cm1_0.id,cm1_0.attachment_names,cm1_0.content,cm1_0.created_at,cm1_0.role,cm1_0.session_id from chat_messages cm1_0 left join chat_sessions s1_0 on s1_0.id=cm1_0.session_id where s1_0.id=? order by cm1_0.created_at
-2026-08-12T17:21:45.724662008Z [inf]  Hibernate: update chat_messages set attachment_names=?,content=?,role=?,session_id=? where id=?
-2026-08-12T17:22:05.909157363Z [inf]  2026-08-12T17:21:55.999Z  INFO 1 --- [smart-notes-api] [MessageBroker-1] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 2, active threads = 1, queued tasks = 1, completed tasks = 0]
-2026-08-12T17:23:26.296746609Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
-2026-08-12T17:23:26.296751879Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
-2026-08-12T17:23:26.296755149Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
-2026-08-12T17:23:26.296757899Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
-2026-08-12T17:23:26.296779159Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
-2026-08-12T17:23:26.296782609Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
-2026-08-12T17:23:26.296785649Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
-2026-08-12T17:23:26.297058325Z [inf]  Hibernate: select cs1_0.id,cs1_0.created_at,cs1_0.pinned,cs1_0.title,cs1_0.updated_at,cs1_0.user_id from chat_sessions cs1_0 left join users u1_0 on u1_0.id=cs1_0.user_id where u1_0.email=? order by cs1_0.updated_at desc
-2026-08-12T17:23:26.297061045Z [inf]  Hibernate: select n1_0.id,n1_0.content,n1_0.created_at,n1_0.title,n1_0.user_id from notes n1_0 left join users u1_0 on u1_0.id=n1_0.user_id where u1_0.email=?
-2026-08-12T17:23:26.297063665Z [inf]  Hibernate: select s1_0.id,s1_0.active,s1_0.billing_cycle,s1_0.cancel_at_cycle_end,s1_0.created_at,s1_0.current_period_end,s1_0.current_period_start,s1_0.end_date,s1_0.plan,s1_0.razorpay_plan_id,s1_0.razorpay_subscription_id,s1_0.start_date,s1_0.status,s1_0.updated_at,s1_0.user_id from subscriptions s1_0 left join users u1_0 on u1_0.id=s1_0.user_id where u1_0.email=?
-2026-08-12T17:23:26.297066085Z [inf]  Hibernate: select s1_0.id,s1_0.active,s1_0.billing_cycle,s1_0.cancel_at_cycle_end,s1_0.created_at,s1_0.current_period_end,s1_0.current_period_start,s1_0.end_date,s1_0.plan,s1_0.razorpay_plan_id,s1_0.razorpay_subscription_id,s1_0.start_date,s1_0.status,s1_0.updated_at,s1_0.user_id from subscriptions s1_0 left join users u1_0 on u1_0.id=s1_0.user_id where u1_0.email=?
-2026-08-12T17:23:26.297068465Z [inf]  Hibernate: select n1_0.id,n1_0.created_at,n1_0.description,n1_0.is_read,n1_0.title,n1_0.type,n1_0.user_id from notifications n1_0 where n1_0.user_id=? order by n1_0.created_at desc
-2026-08-12T17:23:26.297071375Z [inf]  Hibernate: select ut1_0.id,ut1_0.ai_requests,ut1_0.images_attached,ut1_0.images_generated,ut1_0.pdfs_attached,ut1_0.pdfs_generated,ut1_0.usage_date,ut1_0.user_id from usage_tracker ut1_0 left join users u1_0 on u1_0.id=ut1_0.user_id where u1_0.email=? and ut1_0.usage_date=?
-2026-08-12T17:23:26.297074095Z [inf]  Hibernate: select s1_0.id,s1_0.active,s1_0.billing_cycle,s1_0.cancel_at_cycle_end,s1_0.created_at,s1_0.current_period_end,s1_0.current_period_start,s1_0.end_date,s1_0.plan,s1_0.razorpay_plan_id,s1_0.razorpay_subscription_id,s1_0.start_date,s1_0.status,s1_0.updated_at,s1_0.user_id from subscriptions s1_0 left join users u1_0 on u1_0.id=s1_0.user_id where u1_0.email=?
-2026-08-12T17:23:26.297753408Z [inf]  Hibernate: select ut1_0.id,ut1_0.ai_requests,ut1_0.images_attached,ut1_0.images_generated,ut1_0.pdfs_attached,ut1_0.pdfs_generated,ut1_0.usage_date,ut1_0.user_id from usage_tracker ut1_0 left join users u1_0 on u1_0.id=ut1_0.user_id where u1_0.email=? and ut1_0.usage_date=?
-2026-08-12T17:23:26.297756278Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
-2026-08-12T17:23:26.297758718Z [inf]  Hibernate: select cs1_0.id,cs1_0.created_at,cs1_0.pinned,cs1_0.title,cs1_0.updated_at,cs1_0.user_id from chat_sessions cs1_0 left join users u1_0 on u1_0.id=cs1_0.user_id where cs1_0.id=? and u1_0.email=?
-2026-08-12T17:23:26.297761228Z [inf]  Hibernate: select cs1_0.id,cs1_0.created_at,cs1_0.pinned,cs1_0.title,cs1_0.updated_at,cs1_0.user_id from chat_sessions cs1_0 left join users u1_0 on u1_0.id=cs1_0.user_id where cs1_0.id=? and u1_0.email=?
-2026-08-12T17:23:26.297763538Z [inf]  Hibernate: select cm1_0.id,cm1_0.attachment_names,cm1_0.content,cm1_0.created_at,cm1_0.role,cm1_0.session_id from chat_messages cm1_0 left join chat_sessions s1_0 on s1_0.id=cm1_0.session_id where s1_0.id=? order by cm1_0.created_at
-2026-08-12T17:23:46.432567232Z [inf]  Hibernate: select s1_0.id,s1_0.active,s1_0.billing_cycle,s1_0.cancel_at_cycle_end,s1_0.created_at,s1_0.current_period_end,s1_0.current_period_start,s1_0.end_date,s1_0.plan,s1_0.razorpay_plan_id,s1_0.razorpay_subscription_id,s1_0.start_date,s1_0.status,s1_0.updated_at,s1_0.user_id from subscriptions s1_0 left join users u1_0 on u1_0.id=s1_0.user_id where u1_0.email=?
-2026-08-12T17:23:46.432576752Z [inf]  Hibernate: select ut1_0.id,ut1_0.ai_requests,ut1_0.images_attached,ut1_0.images_generated,ut1_0.pdfs_attached,ut1_0.pdfs_generated,ut1_0.usage_date,ut1_0.user_id from usage_tracker ut1_0 left join users u1_0 on u1_0.id=ut1_0.user_id where u1_0.email=? and ut1_0.usage_date=?
-2026-08-12T17:23:46.432577742Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
-2026-08-12T17:23:46.432582112Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
-2026-08-12T17:23:46.432582762Z [inf]  Hibernate: select s1_0.id,s1_0.active,s1_0.billing_cycle,s1_0.cancel_at_cycle_end,s1_0.created_at,s1_0.current_period_end,s1_0.current_period_start,s1_0.end_date,s1_0.plan,s1_0.razorpay_plan_id,s1_0.razorpay_subscription_id,s1_0.start_date,s1_0.status,s1_0.updated_at,s1_0.user_id from subscriptions s1_0 left join users u1_0 on u1_0.id=s1_0.user_id where u1_0.email=?
-2026-08-12T17:23:46.432588842Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
-2026-08-12T17:23:47.270814819Z [inf]  Hibernate: update users set auth_provider=?,email=?,email_verified=?,password=?,profile_image_url=?,razorpay_customer_id=?,role=?,subscription_plan=?,updated_at=?,username=? where id=?
-2026-08-12T17:23:47.448100366Z [inf]  Hibernate: select s1_0.id,s1_0.active,s1_0.billing_cycle,s1_0.cancel_at_cycle_end,s1_0.created_at,s1_0.current_period_end,s1_0.current_period_start,s1_0.end_date,s1_0.plan,s1_0.razorpay_plan_id,s1_0.razorpay_subscription_id,s1_0.start_date,s1_0.status,s1_0.updated_at,s1_0.user_id from subscriptions s1_0 left join users u1_0 on u1_0.id=s1_0.user_id where u1_0.email=?
-2026-08-12T17:23:47.792910956Z [inf]  2026-08-12T17:23:47.787Z ERROR 1 --- [smart-notes-api] [nio-8080-exec-3] c.j.s.service.RazorpayService            : Failed to create Razorpay subscription for customer cust_TOwJNxdiFiGxCl and plan plan_TOuvcE0VB6FIrq
-2026-08-12T17:23:47.792915286Z [inf]  
-2026-08-12T17:23:47.792923306Z [inf]  com.razorpay.RazorpayException: BAD_REQUEST_ERROR:The ID provided is invalid or could not be found.
-2026-08-12T17:23:47.792928246Z [inf]  	at com.razorpay.ApiClient.throwException(ApiClient.java:228) ~[razorpay-java-1.4.6.jar!/:na]
-2026-08-12T17:23:47.792932366Z [inf]  	at com.razorpay.ApiClient.processResponse(ApiClient.java:180) ~[razorpay-java-1.4.6.jar!/:na]
-2026-08-12T17:23:47.792938186Z [inf]  	at com.razorpay.ApiClient.post(ApiClient.java:55) ~[razorpay-java-1.4.6.jar!/:na]
-2026-08-12T17:23:47.792942446Z [inf]  	at com.razorpay.SubscriptionClient.post(SubscriptionClient.java:7) ~[razorpay-java-1.4.6.jar!/:na]
-2026-08-12T17:23:47.792946736Z [inf]  	at com.razorpay.ApiClient.post(ApiClient.java:50) ~[razorpay-java-1.4.6.jar!/:na]
-2026-08-12T17:23:47.792950366Z [inf]  	at com.razorpay.SubscriptionClient.post(SubscriptionClient.java:7) ~[razorpay-java-1.4.6.jar!/:na]
-2026-08-12T17:23:47.792956226Z [inf]  	at com.razorpay.SubscriptionClient.create(SubscriptionClient.java:14) ~[razorpay-java-1.4.6.jar!/:na]
-2026-08-12T17:23:47.792960396Z [inf]  	at com.jeevan.smart_notes_api.service.RazorpayService.createSubscription(RazorpayService.java:71) ~[!/:0.0.1-SNAPSHOT]
-2026-08-12T17:23:47.792964016Z [inf]  	at com.jeevan.smart_notes_api.service.SubscriptionService.createCheckoutSession(SubscriptionService.java:178) ~[!/:0.0.1-SNAPSHOT]
-2026-08-12T17:23:47.792967736Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
-2026-08-12T17:23:47.792971646Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
-2026-08-12T17:23:47.792977127Z [inf]  	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360) ~[spring-aop-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.793272083Z [inf]  	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.793277153Z [inf]  	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.793280443Z [inf]  	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380) ~[spring-tx-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.793284403Z [inf]  	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.793287113Z [inf]  	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.793290263Z [inf]  	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728) ~[spring-aop-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.793292723Z [inf]  	at com.jeevan.smart_notes_api.service.SubscriptionService$$SpringCGLIB$$0.createCheckoutSession(<generated>) ~[!/:0.0.1-SNAPSHOT]
-2026-08-12T17:23:47.793295073Z [inf]  	at com.jeevan.smart_notes_api.controller.SubscriptionController.createCheckoutSession(SubscriptionController.java:50) ~[!/:0.0.1-SNAPSHOT]
-2026-08-12T17:23:47.793297453Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
-2026-08-12T17:23:47.793300223Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
-2026-08-12T17:23:47.793302703Z [inf]  	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.793305033Z [inf]  	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.793663279Z [inf]  	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.793667359Z [inf]  	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:991) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.793670889Z [inf]  	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:896) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.793674838Z [inf]  	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.793678798Z [inf]  	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.793682308Z [inf]  	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.793685418Z [inf]  	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.793688328Z [inf]  	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.793691588Z [inf]  	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.793694658Z [inf]  	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.793698228Z [inf]  	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.793701678Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.794335462Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.794338432Z [inf]  	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.54.jar!/:na]
-2026-08-12T17:23:47.794342692Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.794346582Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.794350732Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.794353592Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.794356432Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.794359452Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.794362502Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.794365061Z [inf]  	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.794367411Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:370) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.794370041Z [inf]  	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.794718797Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.794721207Z [inf]  	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:125) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.794723637Z [inf]  	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.794726687Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.794730077Z [inf]  	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.794733017Z [inf]  	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.794735527Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.794737867Z [inf]  	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.794740377Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.794742657Z [inf]  	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.795324320Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.795327860Z [inf]  	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.795331610Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.795335050Z [inf]  	at com.jeevan.smart_notes_api.security.jwt.JwtFilter.doFilterInternal(JwtFilter.java:74) ~[!/:0.0.1-SNAPSHOT]
-2026-08-12T17:23:47.795338530Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.795341870Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.795345000Z [inf]  	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.795348780Z [inf]  	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.795352780Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.795355990Z [inf]  	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.795359560Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.795362530Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.795878555Z [inf]  	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.795882495Z [inf]  	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.795885565Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.795888625Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.795891985Z [inf]  	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.795895405Z [inf]  	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.795898695Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.795902015Z [inf]  	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.795905315Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.795908635Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.795911835Z [inf]  	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.796422969Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.796429729Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.796434599Z [inf]  	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.796438509Z [inf]  	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.796442908Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.796447338Z [inf]  	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.796451248Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.796456598Z [inf]  	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.796460618Z [inf]  	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319) ~[spring-security-config-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.796464548Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.796468898Z [inf]  	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$4(HandlerMappingIntrospector.java:267) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.797055552Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.797059582Z [inf]  	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.797063532Z [inf]  	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:240) ~[spring-security-config-6.5.10.jar!/:6.5.10]
-2026-08-12T17:23:47.797067332Z [inf]  	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.797074772Z [inf]  	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.797078672Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.797081682Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.797085772Z [inf]  	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.797089402Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.797092672Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.797095662Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.797098702Z [inf]  	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.797578126Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.797580926Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.797583546Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.797586026Z [inf]  	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.797588596Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.797591186Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.797594126Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.797596326Z [inf]  	at org.springframework.web.filter.ForwardedHeaderFilter.doFilterInternal(ForwardedHeaderFilter.java:173) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.797598326Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
-2026-08-12T17:23:47.797600496Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.797602636Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.798070751Z [inf]  	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.798074471Z [inf]  	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:88) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.798078341Z [inf]  	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.798082530Z [inf]  	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.798086350Z [inf]  	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.798089930Z [inf]  	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.798093350Z [inf]  	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.798096230Z [inf]  	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.798099320Z [inf]  	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.798102510Z [inf]  	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.798105370Z [inf]  	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1797) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.798108510Z [inf]  	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.798112870Z [inf]  	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:973) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.798511897Z [inf]  	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:491) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.798514846Z [inf]  	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.54.jar!/:na]
-2026-08-12T17:23:47.798517516Z [inf]  	at java.base/java.lang.Thread.run(Unknown Source) ~[na:na]
-2026-08-12T17:23:47.798519986Z [inf]  
-2026-08-12T17:23:47.976086560Z [err]  java.lang.RuntimeException: Failed to create Razorpay subscription
-2026-08-12T17:23:47.976093160Z [err]  	at com.jeevan.smart_notes_api.service.RazorpayService.createSubscription(RazorpayService.java:74)
-2026-08-12T17:23:47.976099250Z [err]  	at com.jeevan.smart_notes_api.service.SubscriptionService.createCheckoutSession(SubscriptionService.java:178)
-2026-08-12T17:23:47.976103190Z [err]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
-2026-08-12T17:23:47.976107360Z [err]  	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
-2026-08-12T17:23:47.976111190Z [err]  	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360)
-2026-08-12T17:23:47.976115600Z [err]  	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
-2026-08-12T17:23:47.976119100Z [err]  	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
-2026-08-12T17:23:47.976122260Z [err]  	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380)
-2026-08-12T17:23:47.976125610Z [err]  	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
-2026-08-12T17:23:47.976129110Z [err]  	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
-2026-08-12T17:23:47.976132270Z [err]  	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728)
-2026-08-12T17:23:47.976140939Z [err]  	at com.jeevan.smart_notes_api.service.SubscriptionService$$SpringCGLIB$$0.createCheckoutSession(<generated>)
-2026-08-12T17:23:47.976143979Z [err]  	at com.jeevan.smart_notes_api.controller.SubscriptionController.createCheckoutSession(SubscriptionController.java:50)
-2026-08-12T17:23:47.976692184Z [err]  	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
-2026-08-12T17:23:47.976718934Z [err]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
-2026-08-12T17:23:47.976726774Z [err]  	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
-2026-08-12T17:23:47.976731444Z [err]  	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)
-2026-08-12T17:23:47.976734834Z [err]  	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191)
-2026-08-12T17:23:47.976739064Z [err]  	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
-2026-08-12T17:23:47.976742474Z [err]  	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:991)
-2026-08-12T17:23:47.976745913Z [err]  	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:896)
-2026-08-12T17:23:47.976750283Z [err]  	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
-2026-08-12T17:23:47.976753293Z [err]  	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
-2026-08-12T17:23:47.976758213Z [err]  	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
-2026-08-12T17:23:47.976761693Z [err]  	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
-2026-08-12T17:23:47.976764883Z [err]  	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
-2026-08-12T17:23:47.976768823Z [err]  	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
-2026-08-12T17:23:47.977322987Z [err]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
-2026-08-12T17:23:47.977323647Z [err]  	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
-2026-08-12T17:23:47.977330507Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
-2026-08-12T17:23:47.977333197Z [err]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
-2026-08-12T17:23:47.977336117Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
-2026-08-12T17:23:47.977339847Z [err]  	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
-2026-08-12T17:23:47.977342827Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
-2026-08-12T17:23:47.977346947Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
-2026-08-12T17:23:47.977349387Z [err]  	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
-2026-08-12T17:23:47.977352836Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110)
-2026-08-12T17:23:47.977355726Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:370)
-2026-08-12T17:23:47.977359116Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
-2026-08-12T17:23:47.977361786Z [err]  	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101)
-2026-08-12T17:23:47.977364976Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
-2026-08-12T17:23:47.977368776Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
-2026-08-12T17:23:47.977779743Z [err]  	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:125)
-2026-08-12T17:23:47.977783242Z [err]  	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119)
-2026-08-12T17:23:47.977786552Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
-2026-08-12T17:23:47.977793462Z [err]  	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131)
-2026-08-12T17:23:47.977796702Z [err]  	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
-2026-08-12T17:23:47.977800282Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
-2026-08-12T17:23:47.977803932Z [err]  	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
-2026-08-12T17:23:47.977807102Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
-2026-08-12T17:23:47.977810082Z [err]  	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
-2026-08-12T17:23:47.977813012Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
-2026-08-12T17:23:47.977816322Z [err]  	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
-2026-08-12T17:23:47.977820252Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
-2026-08-12T17:23:47.977823132Z [err]  	at com.jeevan.smart_notes_api.security.jwt.JwtFilter.doFilterInternal(JwtFilter.java:74)
-2026-08-12T17:23:47.978388925Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-2026-08-12T17:23:47.978392965Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
-2026-08-12T17:23:47.978395775Z [err]  	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
-2026-08-12T17:23:47.978398465Z [err]  	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
-2026-08-12T17:23:47.978401525Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
-2026-08-12T17:23:47.978405175Z [err]  	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
-2026-08-12T17:23:47.978408265Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-2026-08-12T17:23:47.978411745Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
-2026-08-12T17:23:47.978414355Z [err]  	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
-2026-08-12T17:23:47.978417125Z [err]  	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
-2026-08-12T17:23:47.978419525Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-2026-08-12T17:23:47.978422185Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
-2026-08-12T17:23:47.978424685Z [err]  	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
-2026-08-12T17:23:47.978427365Z [err]  	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
-2026-08-12T17:23:47.978866060Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
-2026-08-12T17:23:47.978868760Z [err]  	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
-2026-08-12T17:23:47.978871030Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-2026-08-12T17:23:47.978873650Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
-2026-08-12T17:23:47.978876240Z [err]  	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
-2026-08-12T17:23:47.978878690Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-2026-08-12T17:23:47.978881450Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
-2026-08-12T17:23:47.978884010Z [err]  	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
-2026-08-12T17:23:47.978886180Z [err]  	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
-2026-08-12T17:23:47.978889580Z [err]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-2026-08-12T17:23:47.978892010Z [err]  	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52)
-2026-08-12T17:23:47.978895160Z [err]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-2026-08-12T17:23:47.978897961Z [err]  	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
-2026-08-12T17:23:47.978900081Z [err]  	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319)
-2026-08-12T17:23:47.979529503Z [err]  	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
-2026-08-12T17:23:47.979532293Z [err]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-2026-08-12T17:23:47.979536683Z [err]  	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$4(HandlerMappingIntrospector.java:267)
-2026-08-12T17:23:47.979539463Z [err]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-2026-08-12T17:23:47.979542113Z [err]  	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
-2026-08-12T17:23:47.979544843Z [err]  	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:240)
-2026-08-12T17:23:47.979547323Z [err]  	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362)
-2026-08-12T17:23:47.979550223Z [err]  	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278)
-2026-08-12T17:23:47.979553203Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
-2026-08-12T17:23:47.979556263Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
-2026-08-12T17:23:47.979559073Z [err]  	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-2026-08-12T17:23:47.979561533Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-2026-08-12T17:23:47.979564093Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
-2026-08-12T17:23:47.979567103Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
-2026-08-12T17:23:47.980184546Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-2026-08-12T17:23:47.980191786Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
-2026-08-12T17:23:47.980195896Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
-2026-08-12T17:23:47.980199477Z [err]  	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
-2026-08-12T17:23:47.980202907Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-2026-08-12T17:23:47.980206316Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
-2026-08-12T17:23:47.980209686Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
-2026-08-12T17:23:47.980213306Z [err]  	at org.springframework.web.filter.ForwardedHeaderFilter.doFilterInternal(ForwardedHeaderFilter.java:173)
-2026-08-12T17:23:47.980216456Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-2026-08-12T17:23:47.980221066Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
-2026-08-12T17:23:47.980224546Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
-2026-08-12T17:23:47.980228406Z [err]  	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165)
-2026-08-12T17:23:47.980232466Z [err]  	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:88)
-2026-08-12T17:23:47.980236036Z [err]  	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492)
-2026-08-12T17:23:47.980240016Z [err]  	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113)
-2026-08-12T17:23:47.980914728Z [err]  	at com.razorpay.ApiClient.throwException(ApiClient.java:228)
-2026-08-12T17:23:47.980921888Z [err]  	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83)
-2026-08-12T17:23:47.980922308Z [err]  	at com.razorpay.ApiClient.processResponse(ApiClient.java:180)
-2026-08-12T17:23:47.980930258Z [err]  	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72)
-2026-08-12T17:23:47.980933098Z [err]  	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342)
-2026-08-12T17:23:47.980935768Z [err]  	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
-2026-08-12T17:23:47.980938508Z [err]  	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
-2026-08-12T17:23:47.980941158Z [err]  	at com.razorpay.ApiClient.post(ApiClient.java:55)
-2026-08-12T17:23:47.980947418Z [err]  	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
-2026-08-12T17:23:47.980948188Z [err]  	at com.razorpay.SubscriptionClient.post(SubscriptionClient.java:7)
-2026-08-12T17:23:47.980952618Z [err]  	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1797)
-2026-08-12T17:23:47.980955438Z [err]  	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-2026-08-12T17:23:47.980957928Z [err]  	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:973)
-2026-08-12T17:23:47.980960418Z [err]  	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:491)
-2026-08-12T17:23:47.980962938Z [err]  	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
-2026-08-12T17:23:47.980966008Z [err]  	at java.base/java.lang.Thread.run(Unknown Source)
-2026-08-12T17:23:47.980968868Z [err]  Caused by: com.razorpay.RazorpayException: BAD_REQUEST_ERROR:The ID provided is invalid or could not be found.
-2026-08-12T17:23:47.981222585Z [err]  	at com.razorpay.ApiClient.post(ApiClient.java:50)
-2026-08-12T17:23:47.981232755Z [err]  	at com.razorpay.SubscriptionClient.post(SubscriptionClient.java:7)
-2026-08-12T17:23:47.981235165Z [err]  	at com.razorpay.SubscriptionClient.create(SubscriptionClient.java:14)
-2026-08-12T17:23:47.981238235Z [err]  	at com.jeevan.smart_notes_api.service.RazorpayService.createSubscription(RazorpayService.java:71)
-2026-08-12T17:23:47.981241295Z [err]  	... 123 more
+2026-08-12T17:37:51.919108101Z [inf]  2026-08-12T17:37:51.896Z  INFO 1 --- [smart-notes-api] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-08-12T17:38:11.335803981Z [inf]  2026-08-12T17:38:02.490Z  INFO 1 --- [smart-notes-api] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-12T17:38:11.335814940Z [inf]  2026-08-12T17:38:03.436Z  INFO 1 --- [smart-notes-api] [           main] c.j.smart_notes_api.config.AiConfig      : ✅ Added Gemini slot [AQ.A...AuFw]
+2026-08-12T17:38:11.335821592Z [inf]  2026-08-12T17:38:03.449Z  INFO 1 --- [smart-notes-api] [           main] c.j.smart_notes_api.config.AiConfig      : ✅ Added Gemini slot [AQ.A...0wGg]
+2026-08-12T17:38:11.335827550Z [inf]  2026-08-12T17:38:03.451Z  INFO 1 --- [smart-notes-api] [           main] c.j.smart_notes_api.config.AiConfig      : ✅ Added Groq slot [gsk_...yhvA]
+2026-08-12T17:38:11.335840031Z [inf]  2026-08-12T17:38:03.453Z  INFO 1 --- [smart-notes-api] [           main] c.j.s.config.AiProviderPool              : ═══════════════════════════════════════════════════════════════
+2026-08-12T17:38:11.335847071Z [inf]  2026-08-12T17:38:03.453Z  INFO 1 --- [smart-notes-api] [           main] c.j.s.config.AiProviderPool              : 🚀 AI Provider Pool initialized with 3 total slots:
+2026-08-12T17:38:11.335860642Z [inf]  2026-08-12T17:38:03.453Z  INFO 1 --- [smart-notes-api] [           main] c.j.s.config.AiProviderPool              :    ├─ GEMINI [AQ.A****AuFw]
+2026-08-12T17:38:11.335868748Z [inf]  2026-08-12T17:38:03.453Z  INFO 1 --- [smart-notes-api] [           main] c.j.s.config.AiProviderPool              :    ├─ GEMINI [AQ.A****0wGg]
+2026-08-12T17:38:11.335875586Z [inf]  2026-08-12T17:38:03.453Z  INFO 1 --- [smart-notes-api] [           main] c.j.s.config.AiProviderPool              :    ├─ GROQ [gsk_****yhvA]
+2026-08-12T17:38:11.335884082Z [inf]  2026-08-12T17:38:03.453Z  INFO 1 --- [smart-notes-api] [           main] c.j.s.config.AiProviderPool              : ═══════════════════════════════════════════════════════════════
+2026-08-12T17:38:11.337885944Z [inf]  2026-08-12T17:38:03.520Z  INFO 1 --- [smart-notes-api] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-08-12T17:38:11.337893593Z [inf]  2026-08-12T17:38:04.459Z  INFO 1 --- [smart-notes-api] [           main] c.j.smart_notes_api.service.AiService    : 🤖 AiService initialized with AiProviderPool (failover enabled)
+2026-08-12T17:38:11.337899952Z [inf]  2026-08-12T17:38:04.628Z  INFO 1 --- [smart-notes-api] [           main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-08-12T17:38:11.337916309Z [inf]  2026-08-12T17:38:04.629Z  WARN 1 --- [smart-notes-api] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-08-12T17:38:11.337923981Z [inf]  2026-08-12T17:38:05.592Z  WARN 1 --- [smart-notes-api] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-08-12T17:38:11.337931459Z [inf]  2026-08-12T17:38:07.334Z  INFO 1 --- [smart-notes-api] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2026-08-12T17:38:11.337938987Z [inf]  2026-08-12T17:38:07.335Z  INFO 1 --- [smart-notes-api] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@648be86e]]
+2026-08-12T17:38:11.341973965Z [inf]  2026-08-12T17:38:07.337Z  INFO 1 --- [smart-notes-api] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2026-08-12T17:38:11.341982681Z [inf]  2026-08-12T17:38:07.353Z  INFO 1 --- [smart-notes-api] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-08-12T17:38:11.341990923Z [inf]  2026-08-12T17:38:07.369Z  INFO 1 --- [smart-notes-api] [           main] c.j.s.SmartNotesApiApplication           : Started SmartNotesApiApplication in 26.047 seconds (process running for 26.955)
+2026-08-12T17:38:17.284597112Z [inf]  2026-08-12T17:38:17.129Z  INFO 1 --- [smart-notes-api] [nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-08-12T17:38:17.284612076Z [inf]  2026-08-12T17:38:17.131Z  INFO 1 --- [smart-notes-api] [nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-08-12T17:38:17.284728228Z [inf]  2026-08-12T17:38:17.128Z  INFO 1 --- [smart-notes-api] [nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-08-12T17:38:18.630662105Z [inf]  2026-08-12T17:38:17.621Z  INFO 1 --- [smart-notes-api] [nio-8080-exec-2] c.j.s.service.GoogleTokenVerifier        : [GoogleTokenVerifier] Successfully verified Google user: Anshul Rathod (anshulrathod76@gmail.com)
+2026-08-12T17:38:18.630669939Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
+2026-08-12T17:38:18.630677601Z [inf]  2026-08-12T17:38:18.171Z  INFO 1 --- [smart-notes-api] [nio-8080-exec-2] c.j.smart_notes_api.service.AuthService  : [AuthService] Google user logged in: anshulrathod76@gmail.com
+2026-08-12T17:38:18.630685848Z [inf]  Hibernate: select rt1_0.id,rt1_0.email,rt1_0.expiry_date,rt1_0.token from refresh_tokens rt1_0 where rt1_0.email=?
+2026-08-12T17:38:18.630693960Z [inf]  Hibernate: update refresh_tokens set email=?,expiry_date=?,token=? where id=?
+2026-08-12T17:38:20.953500667Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
+2026-08-12T17:38:20.953506736Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
+2026-08-12T17:38:22.146586393Z [inf]  Hibernate: select cs1_0.id,cs1_0.created_at,cs1_0.pinned,cs1_0.title,cs1_0.updated_at,cs1_0.user_id from chat_sessions cs1_0 left join users u1_0 on u1_0.id=cs1_0.user_id where u1_0.email=? order by cs1_0.updated_at desc
+2026-08-12T17:38:22.146602328Z [inf]  Hibernate: select n1_0.id,n1_0.content,n1_0.created_at,n1_0.title,n1_0.user_id from notes n1_0 left join users u1_0 on u1_0.id=n1_0.user_id where u1_0.email=?
+2026-08-12T17:38:22.146614336Z [inf]  Hibernate: select s1_0.id,s1_0.active,s1_0.billing_cycle,s1_0.cancel_at_cycle_end,s1_0.created_at,s1_0.current_period_end,s1_0.current_period_start,s1_0.end_date,s1_0.plan,s1_0.razorpay_plan_id,s1_0.razorpay_subscription_id,s1_0.start_date,s1_0.status,s1_0.updated_at,s1_0.user_id from subscriptions s1_0 left join users u1_0 on u1_0.id=s1_0.user_id where u1_0.email=?
+2026-08-12T17:38:22.146638043Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
+2026-08-12T17:38:22.146652743Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
+2026-08-12T17:38:22.146661256Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
+2026-08-12T17:38:22.146670603Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
+2026-08-12T17:38:22.146679281Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
+2026-08-12T17:38:23.369754705Z [inf]  Hibernate: select ut1_0.id,ut1_0.ai_requests,ut1_0.images_attached,ut1_0.images_generated,ut1_0.pdfs_attached,ut1_0.pdfs_generated,ut1_0.usage_date,ut1_0.user_id from usage_tracker ut1_0 left join users u1_0 on u1_0.id=ut1_0.user_id where u1_0.email=? and ut1_0.usage_date=?
+2026-08-12T17:38:23.369898116Z [inf]  Hibernate: select s1_0.id,s1_0.active,s1_0.billing_cycle,s1_0.cancel_at_cycle_end,s1_0.created_at,s1_0.current_period_end,s1_0.current_period_start,s1_0.end_date,s1_0.plan,s1_0.razorpay_plan_id,s1_0.razorpay_subscription_id,s1_0.start_date,s1_0.status,s1_0.updated_at,s1_0.user_id from subscriptions s1_0 left join users u1_0 on u1_0.id=s1_0.user_id where u1_0.email=?
+2026-08-12T17:38:23.369907845Z [inf]  Hibernate: select n1_0.id,n1_0.created_at,n1_0.description,n1_0.is_read,n1_0.title,n1_0.type,n1_0.user_id from notifications n1_0 where n1_0.user_id=? order by n1_0.created_at desc
+2026-08-12T17:38:23.369915704Z [inf]  Hibernate: select ut1_0.id,ut1_0.ai_requests,ut1_0.images_attached,ut1_0.images_generated,ut1_0.pdfs_attached,ut1_0.pdfs_generated,ut1_0.usage_date,ut1_0.user_id from usage_tracker ut1_0 left join users u1_0 on u1_0.id=ut1_0.user_id where u1_0.email=? and ut1_0.usage_date=?
+2026-08-12T17:38:23.369923182Z [inf]  Hibernate: select s1_0.id,s1_0.active,s1_0.billing_cycle,s1_0.cancel_at_cycle_end,s1_0.created_at,s1_0.current_period_end,s1_0.current_period_start,s1_0.end_date,s1_0.plan,s1_0.razorpay_plan_id,s1_0.razorpay_subscription_id,s1_0.start_date,s1_0.status,s1_0.updated_at,s1_0.user_id from subscriptions s1_0 left join users u1_0 on u1_0.id=s1_0.user_id where u1_0.email=?
+2026-08-12T17:38:24.321990663Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
+2026-08-12T17:38:24.322000058Z [inf]  Hibernate: select s1_0.id,s1_0.active,s1_0.billing_cycle,s1_0.cancel_at_cycle_end,s1_0.created_at,s1_0.current_period_end,s1_0.current_period_start,s1_0.end_date,s1_0.plan,s1_0.razorpay_plan_id,s1_0.razorpay_subscription_id,s1_0.start_date,s1_0.status,s1_0.updated_at,s1_0.user_id from subscriptions s1_0 left join users u1_0 on u1_0.id=s1_0.user_id where u1_0.email=?
+2026-08-12T17:38:24.322008564Z [inf]  Hibernate: select s1_0.id,s1_0.active,s1_0.billing_cycle,s1_0.cancel_at_cycle_end,s1_0.created_at,s1_0.current_period_end,s1_0.current_period_start,s1_0.end_date,s1_0.plan,s1_0.razorpay_plan_id,s1_0.razorpay_subscription_id,s1_0.start_date,s1_0.status,s1_0.updated_at,s1_0.user_id from subscriptions s1_0 left join users u1_0 on u1_0.id=s1_0.user_id where u1_0.email=?
+2026-08-12T17:38:24.322017503Z [inf]  Hibernate: select ut1_0.id,ut1_0.ai_requests,ut1_0.images_attached,ut1_0.images_generated,ut1_0.pdfs_attached,ut1_0.pdfs_generated,ut1_0.usage_date,ut1_0.user_id from usage_tracker ut1_0 left join users u1_0 on u1_0.id=ut1_0.user_id where u1_0.email=? and ut1_0.usage_date=?
+2026-08-12T17:38:26.428739002Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
+2026-08-12T17:38:26.461734431Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
+2026-08-12T17:38:27.419304153Z [inf]  2026-08-12T17:38:27.353Z ERROR 1 --- [smart-notes-api] [nio-8080-exec-6] c.j.s.service.RazorpayService            : Failed to create Razorpay customer for user 1
+2026-08-12T17:38:27.419317929Z [inf]  
+2026-08-12T17:38:27.419329216Z [inf]  com.razorpay.RazorpayException: BAD_REQUEST_ERROR:Customer already exists for the merchant
+2026-08-12T17:38:27.419337877Z [inf]  	at com.razorpay.ApiClient.throwException(ApiClient.java:228) ~[razorpay-java-1.4.6.jar!/:na]
+2026-08-12T17:38:27.419345630Z [inf]  	at com.razorpay.ApiClient.processResponse(ApiClient.java:180) ~[razorpay-java-1.4.6.jar!/:na]
+2026-08-12T17:38:27.419347670Z [inf]  	at com.razorpay.ApiClient.post(ApiClient.java:55) ~[razorpay-java-1.4.6.jar!/:na]
+2026-08-12T17:38:27.419361411Z [inf]  	at com.razorpay.CustomerClient.post(CustomerClient.java:7) ~[razorpay-java-1.4.6.jar!/:na]
+2026-08-12T17:38:27.419374023Z [inf]  	at com.razorpay.ApiClient.post(ApiClient.java:50) ~[razorpay-java-1.4.6.jar!/:na]
+2026-08-12T17:38:27.419381485Z [inf]  	at com.razorpay.CustomerClient.post(CustomerClient.java:7) ~[razorpay-java-1.4.6.jar!/:na]
+2026-08-12T17:38:27.419389123Z [inf]  	at com.razorpay.CustomerClient.create(CustomerClient.java:14) ~[razorpay-java-1.4.6.jar!/:na]
+2026-08-12T17:38:27.419398278Z [inf]  	at com.jeevan.smart_notes_api.service.RazorpayService.getOrCreateCustomer(RazorpayService.java:51) ~[!/:0.0.1-SNAPSHOT]
+2026-08-12T17:38:27.419404475Z [inf]  	at com.jeevan.smart_notes_api.service.SubscriptionService.createCheckoutSession(SubscriptionService.java:163) ~[!/:0.0.1-SNAPSHOT]
+2026-08-12T17:38:27.419409771Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
+2026-08-12T17:38:27.419416484Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+2026-08-12T17:38:27.419424494Z [inf]  	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360) ~[spring-aop-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.421763549Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+2026-08-12T17:38:27.421773593Z [inf]  	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.421779495Z [inf]  	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.421823884Z [inf]  	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.421829394Z [inf]  	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.421834434Z [inf]  	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380) ~[spring-tx-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.421846174Z [inf]  	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.421851040Z [inf]  	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.421855651Z [inf]  	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728) ~[spring-aop-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.421862253Z [inf]  	at com.jeevan.smart_notes_api.service.SubscriptionService$$SpringCGLIB$$0.createCheckoutSession(<generated>) ~[!/:0.0.1-SNAPSHOT]
+2026-08-12T17:38:27.421867618Z [inf]  	at com.jeevan.smart_notes_api.controller.SubscriptionController.createCheckoutSession(SubscriptionController.java:50) ~[!/:0.0.1-SNAPSHOT]
+2026-08-12T17:38:27.421874088Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
+2026-08-12T17:38:27.423599922Z [inf]  	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.423633571Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.423672723Z [inf]  	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.423679626Z [inf]  	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:991) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.423684739Z [inf]  	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:896) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.423692663Z [inf]  	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.423699807Z [inf]  	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.423707849Z [inf]  	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.423712483Z [inf]  	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.423751919Z [inf]  	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.423760163Z [inf]  	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.423765462Z [inf]  	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.431291536Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.431306766Z [inf]  	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.54.jar!/:na]
+2026-08-12T17:38:27.431316783Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.431324707Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.431339234Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.431351379Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.431358046Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.431365329Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.431454611Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.431459236Z [inf]  	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.431463810Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:370) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.431468246Z [inf]  	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.434616125Z [inf]  	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.434629555Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.434638046Z [inf]  	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.434640841Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.434646853Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.434653262Z [inf]  	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:125) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.434660732Z [inf]  	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.434666793Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.434674419Z [inf]  	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.434686422Z [inf]  	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.434701277Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.439562558Z [inf]  	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.439575169Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.439583961Z [inf]  	at com.jeevan.smart_notes_api.security.jwt.JwtFilter.doFilterInternal(JwtFilter.java:74) ~[!/:0.0.1-SNAPSHOT]
+2026-08-12T17:38:27.439591990Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.439599964Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.439606564Z [inf]  	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.439612678Z [inf]  	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.439618744Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.439626218Z [inf]  	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.439631784Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.439636564Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.441927140Z [inf]  	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.441945445Z [inf]  	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.441954569Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.441962361Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.441969347Z [inf]  	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.441976327Z [inf]  	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.441982789Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.441989702Z [inf]  	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.441997266Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.442006974Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.442018557Z [inf]  	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.446109266Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.446125520Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.446147899Z [inf]  	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.446156693Z [inf]  	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.446168593Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.446177160Z [inf]  	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.446184156Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.446194652Z [inf]  	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.446202654Z [inf]  	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319) ~[spring-security-config-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.446210631Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.446232028Z [inf]  	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$4(HandlerMappingIntrospector.java:267) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.449476435Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.449491042Z [inf]  	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.449502230Z [inf]  	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:240) ~[spring-security-config-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:27.449510570Z [inf]  	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.449519966Z [inf]  	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.449529293Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.449535832Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.449545858Z [inf]  	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.449552315Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.449560741Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.449567969Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.449575079Z [inf]  	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.451306171Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.451316130Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.451322974Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.451333227Z [inf]  	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.451340052Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.451347468Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.451355130Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.451362824Z [inf]  	at org.springframework.web.filter.ForwardedHeaderFilter.doFilterInternal(ForwardedHeaderFilter.java:173) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.451369914Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:27.451379398Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.451385659Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.451393214Z [inf]  	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.453986451Z [inf]  	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:973) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.454005422Z [inf]  	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:88) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.454012903Z [inf]  	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.454019098Z [inf]  	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.454024718Z [inf]  	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.454031052Z [inf]  	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.454038453Z [inf]  	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.454046565Z [inf]  	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.454056844Z [inf]  	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.454063694Z [inf]  	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.454072323Z [inf]  	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1797) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.454078521Z [inf]  	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.456286120Z [inf]  	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:491) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.456294335Z [inf]  	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:27.456301633Z [inf]  	at java.base/java.lang.Thread.run(Unknown Source) ~[na:na]
+2026-08-12T17:38:27.456307020Z [inf]  
+2026-08-12T17:38:27.541868523Z [err]  java.lang.RuntimeException: Failed to create Razorpay customer
+2026-08-12T17:38:27.541886307Z [err]  	at com.jeevan.smart_notes_api.service.RazorpayService.getOrCreateCustomer(RazorpayService.java:55)
+2026-08-12T17:38:27.541896600Z [err]  	at com.jeevan.smart_notes_api.service.SubscriptionService.createCheckoutSession(SubscriptionService.java:163)
+2026-08-12T17:38:27.541905373Z [err]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
+2026-08-12T17:38:27.541913908Z [err]  	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+2026-08-12T17:38:27.541928555Z [err]  	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360)
+2026-08-12T17:38:27.541940149Z [err]  	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+2026-08-12T17:38:27.541949484Z [err]  	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+2026-08-12T17:38:27.541959021Z [err]  	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380)
+2026-08-12T17:38:27.541968526Z [err]  	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+2026-08-12T17:38:27.541975852Z [err]  	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+2026-08-12T17:38:27.541985738Z [err]  	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728)
+2026-08-12T17:38:27.541994748Z [err]  	at com.jeevan.smart_notes_api.service.SubscriptionService$$SpringCGLIB$$0.createCheckoutSession(<generated>)
+2026-08-12T17:38:27.542001814Z [err]  	at com.jeevan.smart_notes_api.controller.SubscriptionController.createCheckoutSession(SubscriptionController.java:50)
+2026-08-12T17:38:27.545713745Z [err]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
+2026-08-12T17:38:27.545723090Z [err]  	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+2026-08-12T17:38:27.545727950Z [err]  	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)
+2026-08-12T17:38:27.545733969Z [err]  	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191)
+2026-08-12T17:38:27.545739805Z [err]  	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+2026-08-12T17:38:27.545745178Z [err]  	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:991)
+2026-08-12T17:38:27.545749960Z [err]  	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:896)
+2026-08-12T17:38:27.545754429Z [err]  	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+2026-08-12T17:38:27.545760742Z [err]  	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+2026-08-12T17:38:27.545771357Z [err]  	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+2026-08-12T17:38:27.545775845Z [err]  	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+2026-08-12T17:38:27.545780231Z [err]  	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
+2026-08-12T17:38:27.545785337Z [err]  	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
+2026-08-12T17:38:27.545792050Z [err]  	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+2026-08-12T17:38:27.549324131Z [err]  	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+2026-08-12T17:38:27.549342655Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+2026-08-12T17:38:27.549355096Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+2026-08-12T17:38:27.549364623Z [err]  	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+2026-08-12T17:38:27.549376377Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+2026-08-12T17:38:27.549386411Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+2026-08-12T17:38:27.549396190Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110)
+2026-08-12T17:38:27.549407044Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+2026-08-12T17:38:27.549415662Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+2026-08-12T17:38:27.549425189Z [err]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+2026-08-12T17:38:27.549434032Z [err]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+2026-08-12T17:38:27.549443493Z [err]  	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
+2026-08-12T17:38:27.549452446Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:370)
+2026-08-12T17:38:27.549460041Z [err]  	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101)
+2026-08-12T17:38:27.549469873Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:27.553521508Z [err]  	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:125)
+2026-08-12T17:38:27.553539389Z [err]  	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119)
+2026-08-12T17:38:27.553549324Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:27.553558397Z [err]  	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131)
+2026-08-12T17:38:27.553568086Z [err]  	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
+2026-08-12T17:38:27.553577746Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:27.553586958Z [err]  	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
+2026-08-12T17:38:27.553595930Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:27.553604572Z [err]  	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
+2026-08-12T17:38:27.553613965Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:27.553621956Z [err]  	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+2026-08-12T17:38:27.553631216Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:27.553639298Z [err]  	at com.jeevan.smart_notes_api.security.jwt.JwtFilter.doFilterInternal(JwtFilter.java:74)
+2026-08-12T17:38:27.559086236Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+2026-08-12T17:38:27.559099042Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:27.559107011Z [err]  	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
+2026-08-12T17:38:27.559113852Z [err]  	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
+2026-08-12T17:38:27.559120730Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:27.559128980Z [err]  	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+2026-08-12T17:38:27.559136086Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+2026-08-12T17:38:27.559141506Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:27.559146857Z [err]  	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+2026-08-12T17:38:27.559152921Z [err]  	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+2026-08-12T17:38:27.559174403Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+2026-08-12T17:38:27.559193395Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:27.559198314Z [err]  	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
+2026-08-12T17:38:27.559203588Z [err]  	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
+2026-08-12T17:38:27.564519894Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:27.564541433Z [err]  	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+2026-08-12T17:38:27.564567025Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+2026-08-12T17:38:27.564575751Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:27.564584687Z [err]  	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+2026-08-12T17:38:27.564597786Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+2026-08-12T17:38:27.564608771Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:27.564620715Z [err]  	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+2026-08-12T17:38:27.564628911Z [err]  	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+2026-08-12T17:38:27.564638003Z [err]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+2026-08-12T17:38:27.564645926Z [err]  	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52)
+2026-08-12T17:38:27.564654794Z [err]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+2026-08-12T17:38:27.564663777Z [err]  	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+2026-08-12T17:38:27.564674562Z [err]  	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319)
+2026-08-12T17:38:27.568277029Z [err]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+2026-08-12T17:38:27.568291092Z [err]  	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$4(HandlerMappingIntrospector.java:267)
+2026-08-12T17:38:27.568299510Z [err]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+2026-08-12T17:38:27.568305704Z [err]  	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+2026-08-12T17:38:27.568313462Z [err]  	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:240)
+2026-08-12T17:38:27.568321476Z [err]  	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362)
+2026-08-12T17:38:27.568329021Z [err]  	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278)
+2026-08-12T17:38:27.568335305Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+2026-08-12T17:38:27.568341840Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+2026-08-12T17:38:27.568350174Z [err]  	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+2026-08-12T17:38:27.568357205Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+2026-08-12T17:38:27.568363456Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+2026-08-12T17:38:27.568369421Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+2026-08-12T17:38:27.568375828Z [err]  	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+2026-08-12T17:38:28.415741952Z [err]  	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:88)
+2026-08-12T17:38:28.415754127Z [err]  	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492)
+2026-08-12T17:38:28.415762371Z [err]  	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113)
+2026-08-12T17:38:28.415841513Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+2026-08-12T17:38:28.415847352Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+2026-08-12T17:38:28.415852678Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+2026-08-12T17:38:28.415858728Z [err]  	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+2026-08-12T17:38:28.415864613Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+2026-08-12T17:38:28.415870987Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+2026-08-12T17:38:28.415877437Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+2026-08-12T17:38:28.415884784Z [err]  	at org.springframework.web.filter.ForwardedHeaderFilter.doFilterInternal(ForwardedHeaderFilter.java:173)
+2026-08-12T17:38:28.415891946Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+2026-08-12T17:38:28.415898125Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+2026-08-12T17:38:28.415904059Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+2026-08-12T17:38:28.415910653Z [err]  	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165)
+2026-08-12T17:38:28.420319105Z [err]  Caused by: com.razorpay.RazorpayException: BAD_REQUEST_ERROR:Customer already exists for the merchant
+2026-08-12T17:38:28.420340164Z [err]  	at com.razorpay.ApiClient.throwException(ApiClient.java:228)
+2026-08-12T17:38:28.420346771Z [err]  	at com.razorpay.ApiClient.processResponse(ApiClient.java:180)
+2026-08-12T17:38:28.420351851Z [err]  	at com.razorpay.ApiClient.post(ApiClient.java:55)
+2026-08-12T17:38:28.420357487Z [err]  	at com.razorpay.CustomerClient.post(CustomerClient.java:7)
+2026-08-12T17:38:28.420432511Z [err]  	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83)
+2026-08-12T17:38:28.420439735Z [err]  	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72)
+2026-08-12T17:38:28.420457420Z [err]  	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342)
+2026-08-12T17:38:28.420466420Z [err]  	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+2026-08-12T17:38:28.420473093Z [err]  	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+2026-08-12T17:38:28.420480133Z [err]  	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
+2026-08-12T17:38:28.420486884Z [err]  	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1797)
+2026-08-12T17:38:28.420495243Z [err]  	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+2026-08-12T17:38:28.420501573Z [err]  	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:973)
+2026-08-12T17:38:28.420508798Z [err]  	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:491)
+2026-08-12T17:38:28.420515836Z [err]  	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+2026-08-12T17:38:28.420523359Z [err]  	at java.base/java.lang.Thread.run(Unknown Source)
+2026-08-12T17:38:28.421069751Z [err]  	at com.razorpay.ApiClient.post(ApiClient.java:50)
+2026-08-12T17:38:28.421074625Z [err]  	at com.razorpay.CustomerClient.post(CustomerClient.java:7)
+2026-08-12T17:38:28.421080673Z [err]  	at com.razorpay.CustomerClient.create(CustomerClient.java:14)
+2026-08-12T17:38:28.421085700Z [err]  	at com.jeevan.smart_notes_api.service.RazorpayService.getOrCreateCustomer(RazorpayService.java:51)
+2026-08-12T17:38:28.421091844Z [err]  	... 123 more
+2026-08-12T17:38:29.399538578Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
+2026-08-12T17:38:29.399544234Z [inf]  Hibernate: select u1_0.id,u1_0.auth_provider,u1_0.created_at,u1_0.email,u1_0.email_verified,u1_0.password,u1_0.profile_image_url,u1_0.razorpay_customer_id,u1_0.role,u1_0.subscription_plan,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.email=?
+2026-08-12T17:38:31.625141751Z [inf]  2026-08-12T17:38:29.581Z ERROR 1 --- [smart-notes-api] [nio-8080-exec-7] c.j.s.service.RazorpayService            : Failed to create Razorpay customer for user 1
+2026-08-12T17:38:31.625147654Z [inf]  
+2026-08-12T17:38:31.625153443Z [inf]  com.razorpay.RazorpayException: BAD_REQUEST_ERROR:Customer already exists for the merchant
+2026-08-12T17:38:31.625158670Z [inf]  	at com.razorpay.ApiClient.throwException(ApiClient.java:228) ~[razorpay-java-1.4.6.jar!/:na]
+2026-08-12T17:38:31.625161288Z [inf]  	at com.razorpay.ApiClient.post(ApiClient.java:55) ~[razorpay-java-1.4.6.jar!/:na]
+2026-08-12T17:38:31.625162148Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+2026-08-12T17:38:31.625167004Z [inf]  	at com.razorpay.ApiClient.processResponse(ApiClient.java:180) ~[razorpay-java-1.4.6.jar!/:na]
+2026-08-12T17:38:31.625171773Z [inf]  	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360) ~[spring-aop-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:31.625176647Z [inf]  	at com.razorpay.CustomerClient.post(CustomerClient.java:7) ~[razorpay-java-1.4.6.jar!/:na]
+2026-08-12T17:38:31.625184117Z [inf]  	at com.razorpay.ApiClient.post(ApiClient.java:50) ~[razorpay-java-1.4.6.jar!/:na]
+2026-08-12T17:38:31.625193780Z [inf]  	at com.razorpay.CustomerClient.post(CustomerClient.java:7) ~[razorpay-java-1.4.6.jar!/:na]
+2026-08-12T17:38:31.625201129Z [inf]  	at com.razorpay.CustomerClient.create(CustomerClient.java:14) ~[razorpay-java-1.4.6.jar!/:na]
+2026-08-12T17:38:31.625208138Z [inf]  	at com.jeevan.smart_notes_api.service.RazorpayService.getOrCreateCustomer(RazorpayService.java:51) ~[!/:0.0.1-SNAPSHOT]
+2026-08-12T17:38:31.625214211Z [inf]  	at com.jeevan.smart_notes_api.service.SubscriptionService.createCheckoutSession(SubscriptionService.java:163) ~[!/:0.0.1-SNAPSHOT]
+2026-08-12T17:38:31.625220889Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
+2026-08-12T17:38:32.622573666Z [inf]  	at com.jeevan.smart_notes_api.service.SubscriptionService$$SpringCGLIB$$0.createCheckoutSession(<generated>) ~[!/:0.0.1-SNAPSHOT]
+2026-08-12T17:38:32.622585442Z [inf]  	at com.jeevan.smart_notes_api.controller.SubscriptionController.createCheckoutSession(SubscriptionController.java:50) ~[!/:0.0.1-SNAPSHOT]
+2026-08-12T17:38:32.622593347Z [inf]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
+2026-08-12T17:38:32.622597453Z [inf]  	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380) ~[spring-tx-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:32.622601372Z [inf]  	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+2026-08-12T17:38:32.622608023Z [inf]  	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:32.622610849Z [inf]  	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:32.622619358Z [inf]  	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:32.622620322Z [inf]  	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:32.622625783Z [inf]  	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728) ~[spring-aop-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:32.622663915Z [inf]  	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:32.622673206Z [inf]  	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:32.629050749Z [inf]  	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:32.629063758Z [inf]  	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:32.629072253Z [inf]  	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:32.629081617Z [inf]  	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:32.629088543Z [inf]  	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:32.629097564Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:32.629147941Z [inf]  	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:32.629156196Z [inf]  	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:991) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:32.629162865Z [inf]  	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:896) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:32.629170971Z [inf]  	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:32.629176670Z [inf]  	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:32.629182697Z [inf]  	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.567616732Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.567623767Z [inf]  	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.54.jar!/:na]
+2026-08-12T17:38:33.567629496Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.567634405Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.567640120Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.567650911Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.567654781Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.567659800Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.567664558Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.567670680Z [inf]  	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.567675122Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:370) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.567680295Z [inf]  	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.570210494Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.570215679Z [inf]  	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:125) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.570222179Z [inf]  	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.570227825Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.570235702Z [inf]  	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.570241864Z [inf]  	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.570248230Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.570254613Z [inf]  	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.570260446Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.570266332Z [inf]  	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.570274493Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.572073528Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.572085037Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.572093131Z [inf]  	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.572099715Z [inf]  	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.572106882Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.572114688Z [inf]  	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.572121913Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.572128729Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.572168556Z [inf]  	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.572175937Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.572182655Z [inf]  	at com.jeevan.smart_notes_api.security.jwt.JwtFilter.doFilterInternal(JwtFilter.java:74) ~[!/:0.0.1-SNAPSHOT]
+2026-08-12T17:38:33.577059329Z [inf]  	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.577072818Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.577083340Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.577089001Z [inf]  	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.577091303Z [inf]  	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.577108476Z [inf]  	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.577109832Z [inf]  	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.577118930Z [inf]  	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.577123129Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.577126837Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.577134353Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.579304884Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.579310856Z [inf]  	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$4(HandlerMappingIntrospector.java:267) ~[spring-webmvc-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.579428671Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.579438094Z [inf]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.579444885Z [inf]  	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.579452241Z [inf]  	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.579462547Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.579467835Z [inf]  	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.579474502Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.579481209Z [inf]  	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.579486782Z [inf]  	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319) ~[spring-security-config-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.582145117Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.582160458Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.582169957Z [inf]  	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.582179341Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.582193964Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.582203075Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.582213242Z [inf]  	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.582273042Z [inf]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.582280280Z [inf]  	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.582285591Z [inf]  	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:240) ~[spring-security-config-6.5.10.jar!/:6.5.10]
+2026-08-12T17:38:33.582291860Z [inf]  	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.582297247Z [inf]  	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.589218197Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.589239377Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.589247600Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.589256798Z [inf]  	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.589266551Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.589273669Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.589282245Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.589289548Z [inf]  	at org.springframework.web.filter.ForwardedHeaderFilter.doFilterInternal(ForwardedHeaderFilter.java:173) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.589296715Z [inf]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.18.jar!/:6.2.18]
+2026-08-12T17:38:33.589304546Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.589311245Z [inf]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.589319074Z [inf]  	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.592274506Z [inf]  	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:88) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.592283361Z [inf]  	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.592290382Z [inf]  	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.592296815Z [inf]  	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.592334576Z [inf]  	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.592341950Z [inf]  	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.592348168Z [inf]  	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.592354652Z [inf]  	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.592360399Z [inf]  	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.592368713Z [inf]  	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1797) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.592379415Z [inf]  	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.592385048Z [inf]  	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:973) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.596845720Z [inf]  	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:491) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.596845773Z [err]  	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+2026-08-12T17:38:33.596858605Z [err]  	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+2026-08-12T17:38:33.596861426Z [inf]  	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.54.jar!/:na]
+2026-08-12T17:38:33.596872345Z [inf]  	at java.base/java.lang.Thread.run(Unknown Source) ~[na:na]
+2026-08-12T17:38:33.596878080Z [err]  	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380)
+2026-08-12T17:38:33.596880071Z [inf]  
+2026-08-12T17:38:33.596885751Z [err]  	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+2026-08-12T17:38:33.596890756Z [err]  java.lang.RuntimeException: Failed to create Razorpay customer
+2026-08-12T17:38:33.596893110Z [err]  	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+2026-08-12T17:38:33.596901816Z [err]  	at com.jeevan.smart_notes_api.service.RazorpayService.getOrCreateCustomer(RazorpayService.java:55)
+2026-08-12T17:38:33.596911133Z [err]  	at com.jeevan.smart_notes_api.service.SubscriptionService.createCheckoutSession(SubscriptionService.java:163)
+2026-08-12T17:38:33.596918982Z [err]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
+2026-08-12T17:38:33.596925965Z [err]  	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+2026-08-12T17:38:33.596934195Z [err]  	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360)
+2026-08-12T17:38:33.599417465Z [err]  	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728)
+2026-08-12T17:38:33.599429220Z [err]  	at com.jeevan.smart_notes_api.service.SubscriptionService$$SpringCGLIB$$0.createCheckoutSession(<generated>)
+2026-08-12T17:38:33.599437018Z [err]  	at com.jeevan.smart_notes_api.controller.SubscriptionController.createCheckoutSession(SubscriptionController.java:50)
+2026-08-12T17:38:33.599443911Z [err]  	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
+2026-08-12T17:38:33.599453022Z [err]  	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+2026-08-12T17:38:33.599464636Z [err]  	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)
+2026-08-12T17:38:33.599471349Z [err]  	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191)
+2026-08-12T17:38:33.599478013Z [err]  	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+2026-08-12T17:38:33.599485111Z [err]  	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:991)
+2026-08-12T17:38:33.599492006Z [err]  	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:896)
+2026-08-12T17:38:33.599498491Z [err]  	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+2026-08-12T17:38:33.599504265Z [err]  	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+2026-08-12T17:38:33.599510603Z [err]  	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+2026-08-12T17:38:33.599517924Z [err]  	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+2026-08-12T17:38:33.602427589Z [err]  	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
+2026-08-12T17:38:33.602439254Z [err]  	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
+2026-08-12T17:38:33.602444730Z [err]  	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+2026-08-12T17:38:33.602449523Z [err]  	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+2026-08-12T17:38:33.602456976Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+2026-08-12T17:38:33.602461312Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+2026-08-12T17:38:33.602467896Z [err]  	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+2026-08-12T17:38:33.602472368Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+2026-08-12T17:38:33.602476288Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+2026-08-12T17:38:33.602480005Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110)
+2026-08-12T17:38:33.602484129Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+2026-08-12T17:38:33.602490800Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+2026-08-12T17:38:33.602495523Z [err]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+2026-08-12T17:38:33.602499924Z [err]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+2026-08-12T17:38:33.602504407Z [err]  	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
+2026-08-12T17:38:33.602509088Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:370)
+2026-08-12T17:38:33.609050910Z [err]  	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101)
+2026-08-12T17:38:33.609062404Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:33.609069945Z [err]  	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:125)
+2026-08-12T17:38:33.609076045Z [err]  	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119)
+2026-08-12T17:38:33.609084750Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:33.609091107Z [err]  	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131)
+2026-08-12T17:38:33.609096733Z [err]  	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
+2026-08-12T17:38:33.609102383Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:33.609119672Z [err]  	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
+2026-08-12T17:38:33.609128234Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:33.609135708Z [err]  	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
+2026-08-12T17:38:33.609142840Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:33.609148418Z [err]  	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+2026-08-12T17:38:33.613295036Z [err]  	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+2026-08-12T17:38:33.613306925Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+2026-08-12T17:38:33.613313972Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:33.613320584Z [err]  	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+2026-08-12T17:38:33.613322871Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:33.613332274Z [err]  	at com.jeevan.smart_notes_api.security.jwt.JwtFilter.doFilterInternal(JwtFilter.java:74)
+2026-08-12T17:38:33.613333485Z [err]  	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+2026-08-12T17:38:33.613342294Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+2026-08-12T17:38:33.613348070Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:33.613351709Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+2026-08-12T17:38:33.613355303Z [err]  	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
+2026-08-12T17:38:33.613359485Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:33.613366654Z [err]  	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
+2026-08-12T17:38:33.613373002Z [err]  	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
+2026-08-12T17:38:33.613382080Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:33.617931308Z [err]  	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
+2026-08-12T17:38:33.617948388Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:33.617960474Z [err]  	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+2026-08-12T17:38:33.617969785Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+2026-08-12T17:38:33.617980191Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:33.617990593Z [err]  	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+2026-08-12T17:38:33.618000975Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+2026-08-12T17:38:33.618009732Z [err]  	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:379)
+2026-08-12T17:38:33.618026895Z [err]  	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+2026-08-12T17:38:33.618038494Z [err]  	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+2026-08-12T17:38:33.618047737Z [err]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+2026-08-12T17:38:33.618056578Z [err]  	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52)
+2026-08-12T17:38:33.618064988Z [err]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+2026-08-12T17:38:33.618076690Z [err]  	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+2026-08-12T17:38:33.621268621Z [err]  	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319)
+2026-08-12T17:38:33.621277478Z [err]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+2026-08-12T17:38:33.621283339Z [err]  	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$4(HandlerMappingIntrospector.java:267)
+2026-08-12T17:38:33.621293172Z [err]  	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+2026-08-12T17:38:33.621298596Z [err]  	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+2026-08-12T17:38:33.621304919Z [err]  	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:240)
+2026-08-12T17:38:33.621311889Z [err]  	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362)
+2026-08-12T17:38:33.621319856Z [err]  	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278)
+2026-08-12T17:38:33.621328002Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+2026-08-12T17:38:33.621333501Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+2026-08-12T17:38:33.621338977Z [err]  	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+2026-08-12T17:38:33.621344692Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+2026-08-12T17:38:33.621350753Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+2026-08-12T17:38:33.621358649Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+2026-08-12T17:38:33.624177310Z [err]  	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+2026-08-12T17:38:33.624190665Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+2026-08-12T17:38:33.624198143Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+2026-08-12T17:38:33.624207920Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+2026-08-12T17:38:33.624214907Z [err]  	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+2026-08-12T17:38:33.624216207Z [err]  	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165)
+2026-08-12T17:38:33.624221779Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+2026-08-12T17:38:33.624233547Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+2026-08-12T17:38:33.624239986Z [err]  	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:88)
+2026-08-12T17:38:33.624241245Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+2026-08-12T17:38:33.624250693Z [err]  	at org.springframework.web.filter.ForwardedHeaderFilter.doFilterInternal(ForwardedHeaderFilter.java:173)
+2026-08-12T17:38:33.624254157Z [err]  	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492)
+2026-08-12T17:38:33.624259127Z [err]  	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+2026-08-12T17:38:33.624265414Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+2026-08-12T17:38:33.624272176Z [err]  	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+2026-08-12T17:38:33.629676667Z [err]  	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113)
+2026-08-12T17:38:33.629687754Z [err]  	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83)
+2026-08-12T17:38:33.629697064Z [err]  	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72)
+2026-08-12T17:38:33.629704055Z [err]  	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342)
+2026-08-12T17:38:33.629713749Z [err]  	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+2026-08-12T17:38:33.629720779Z [err]  	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+2026-08-12T17:38:33.629727513Z [err]  	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
+2026-08-12T17:38:33.629734449Z [err]  	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1797)
+2026-08-12T17:38:33.629741717Z [err]  	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+2026-08-12T17:38:33.629747618Z [err]  	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:973)
+2026-08-12T17:38:33.629756430Z [err]  	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:491)
+2026-08-12T17:38:33.629763821Z [err]  	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+2026-08-12T17:38:33.629770242Z [err]  	at java.base/java.lang.Thread.run(Unknown Source)
+2026-08-12T17:38:33.629777414Z [err]  Caused by: com.razorpay.RazorpayException: BAD_REQUEST_ERROR:Customer already exists for the merchant
+2026-08-12T17:38:33.629783224Z [err]  	at com.razorpay.ApiClient.throwException(ApiClient.java:228)
+2026-08-12T17:38:33.629791787Z [err]  	at com.razorpay.ApiClient.processResponse(ApiClient.java:180)
+2026-08-12T17:38:33.629797531Z [err]  	at com.razorpay.ApiClient.post(ApiClient.java:55)
+2026-08-12T17:38:33.629804137Z [err]  	at com.razorpay.CustomerClient.post(CustomerClient.java:7)
+2026-08-12T17:38:33.629810262Z [err]  	at com.razorpay.ApiClient.post(ApiClient.java:50)
+2026-08-12T17:38:33.629817898Z [err]  	at com.razorpay.CustomerClient.post(CustomerClient.java:7)
+2026-08-12T17:38:33.629828385Z [err]  	at com.razorpay.CustomerClient.create(CustomerClient.java:14)
+2026-08-12T17:38:33.629836269Z [err]  	at com.jeevan.smart_notes_api.service.RazorpayService.getOrCreateCustomer(RazorpayService.java:51)
+2026-08-12T17:38:33.629844408Z [err]  	... 123 more
