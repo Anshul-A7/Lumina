@@ -28,6 +28,16 @@ public class SubscriptionController {
     }
 
     /**
+     * GET /subscription/diagnostics — Diagnostics for Razorpay plans
+     */
+    @GetMapping("/diagnostics")
+    public ResponseEntity<Map<String, Object>> runDiagnostics(
+            @RequestParam(defaultValue = "PLUS") String plan,
+            @RequestParam(defaultValue = "MONTHLY") String billingCycle) {
+        return ResponseEntity.ok(subscriptionService.runDiagnostics(plan, billingCycle));
+    }
+
+    /**
      * POST /subscription/checkout — Initialize Razorpay Checkout Session
      * Body: { "plan": "PLUS", "billingCycle": "MONTHLY" }
      */

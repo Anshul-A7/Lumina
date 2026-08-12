@@ -110,4 +110,22 @@ public class RazorpayService {
             return false;
         }
     }
+
+    /**
+     * Diagnostic tool to verify plan accessibility without creating subscriptions.
+     */
+    public java.util.Map<String, Object> runDiagnostics(String planId) {
+        java.util.Map<String, Object> report = new java.util.HashMap<>();
+        report.put("tested_plan_id", planId);
+        try {
+            com.razorpay.Plan plan = razorpayClient.plans.fetch(planId);
+            report.put("plan_fetch_success", true);
+            report.put("plan_interval", plan.get("interval"));
+            report.put("plan_amount", plan.get("item").get("amount"));
+        } catch (Exception e) {
+            report.put("plan_fetch_success", false);
+            report.put("plan_error", e.getMessage());
+        }
+        return report;
+    }
 }

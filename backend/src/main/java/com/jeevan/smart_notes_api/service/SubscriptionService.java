@@ -152,6 +152,11 @@ public class SubscriptionService {
         return details;
     }
 
+    public java.util.Map<String, Object> runDiagnostics(String planName, String cycleName) {
+        String razorpayPlanId = getRazorpayPlanId(planName, cycleName);
+        return razorpayService.runDiagnostics(razorpayPlanId);
+    }
+
     /**
      * Initializes a checkout by creating a Razorpay Subscription and storing it locally in CREATED state.
      */
