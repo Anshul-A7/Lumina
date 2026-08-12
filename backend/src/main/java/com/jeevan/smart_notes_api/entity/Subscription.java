@@ -57,10 +57,10 @@ public class Subscription {
     private String razorpayPlanId;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
+    @Column(length = 30)
     private SubscriptionStatus status = SubscriptionStatus.ACTIVE;
 
-    @Column(name = "cancel_at_cycle_end", nullable = false)
+    @Column(name = "cancel_at_cycle_end")
     private boolean cancelAtCycleEnd = false;
 
     @Column(nullable = false)

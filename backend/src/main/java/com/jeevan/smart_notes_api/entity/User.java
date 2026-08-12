@@ -45,7 +45,7 @@ public class User {
     private String profileImageUrl;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "varchar(10) default 'FREE'")
+    @Column(nullable = false)
     private SubscriptionPlan subscriptionPlan = SubscriptionPlan.FREE;
 
     @Column(name = "razorpay_customer_id")
