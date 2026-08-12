@@ -164,6 +164,10 @@ public class ChatService {
         // Extract and save any generated images
         extractAndSaveImages(aiResponseText, email);
 
+        // Sanitize: If the AI mentions the tag in conversational text (e.g., `<pdf_document>`), strip it to avoid frontend parsing errors
+        aiResponseText = aiResponseText.replaceAll("`<pdf_document[^>]*>`", "PDF format");
+        aiResponseText = aiResponseText.replaceAll("`</pdf_document>`", "end of PDF format");
+
         // Fallback: If user explicitly asked for a PDF, but AI forgot the <pdf_document> tags, we inject them manually
         if (aiService.isPdfGenerationRequest(content) && !aiResponseText.contains("<pdf_document")) {
             aiResponseText = "<pdf_document title=\"Generated Document\">\n" + aiResponseText + "\n</pdf_document>";
