@@ -366,7 +366,7 @@ public class ChatService {
                         || content.toLowerCase().startsWith("please generate a formatted pdf");
 
                 if (isPdfCommand && i > 0) {
-                    history.append("**You:**\n").append("Generate a PDF. Please compile and format the immediately preceding response above into a complete, publication-grade study/research document enclosed inside a <pdf_document title=\"...\"> tag. Include all concepts, sections, formulas, and diagrams with complete fidelity.");
+                    history.append("**You:**\n").append("Generate a PDF. Please compile and format the immediately preceding response above into a complete, publication-grade study/research document enclosed inside a <pdf_document title=\"...\"> tag. Include all concepts, sections, formulas, and diagrams with complete fidelity. CRITICAL: Provide ONLY a very brief 1-sentence summary in your chat response. DO NOT duplicate the full explanation in the chat, place the full explanation exclusively inside the <pdf_document> tag.");
                 } else {
                     history.append("**You:**\n").append(content);
                 }

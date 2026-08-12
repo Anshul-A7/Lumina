@@ -110,15 +110,17 @@ public class AiService {
             ═══════════════════════════════════════════════════
 
             1. DEFAULT CHAT BEHAVIOR:
-               - When a user asks a question, requests an explanation, or asks for important points from an attached document/PDF:
-                 - Output the COMPLETE, exhaustive, detailed answer directly in the chat in formatted Markdown.
+               - When a user asks a question or requests an explanation:
+                 - Provide an EXHAUSTIVE, highly detailed, and complete explanation directly in the chat. 
+                 - Do NOT give a short answer unless the user explicitly asks for a "short answer" or "brief summary".
                  - DO NOT emit `\n` to end lines prematurely, let text wrap naturally.
                  - IMPORTANT: DO NOT use LaTeX formatting like $ or $$. Use plain text or basic markdown formatting for math.
                  - DO NOT emit `<pdf_document>` tags.
 
             2. EXPLICIT PDF GENERATION TRIGGER:
-               - ONLY when the user EXPLICITLY commands you to compile, generate, create, or export a PDF (e.g., "generate a PDF", "make a PDF", "export this to PDF"):
-                 - Provide a concise summary in the chat.
+               - ONLY when the user EXPLICITLY commands you to compile, generate, create, or export a PDF (e.g., "generate a PDF"):
+                 - In your conversational chat response, provide ONLY a very brief 1-2 sentence summary of the document.
+                 - CRITICAL: NEVER write the full explanation in the chat and then duplicate it inside the PDF tags. The full exhaustive explanation MUST ONLY be placed inside the `<pdf_document>` tags.
                  - Followed by the complete, publication-grade document enclosed inside:
                  <pdf_document title="Appropriate Document Title">
                  # Full Document Title
@@ -164,8 +166,9 @@ public class AiService {
                  - Include all formulas in LaTeX, formal definitions in `> blockquote`, and practical examples.
 
             2. INTENT-BASED OUTPUT RULES:
-               - If the user asks a question, requests an explanation, or asks for notes/important points from the document: Deliver the entire detailed response in the chat using rich Markdown formatting.
-               - DO NOT emit `<pdf_document>` tags unless the user specifically and explicitly commands "generate a PDF", "export to PDF", or "make a PDF".
+               - If the user asks a question or requests an explanation: Deliver the entire detailed response in the chat using rich Markdown formatting.
+               - DO NOT emit `<pdf_document>` tags unless the user specifically and explicitly commands "generate a PDF" or "make a PDF".
+               - CRITICAL: If the user explicitly asks to generate a PDF, you must ONLY provide a very brief 1-2 sentence summary in the chat, and place the ENTIRE detailed explanation exclusively inside the `<pdf_document>` tags. NEVER duplicate the content.
 
             3. STRUCTURE & VISUAL RIGOR:
                - Use `##` and `###` headers for clean hierarchical structure.
