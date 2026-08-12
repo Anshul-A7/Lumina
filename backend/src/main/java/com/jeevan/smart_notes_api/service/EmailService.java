@@ -65,6 +65,13 @@ public class EmailService {
     }
 
     /**
+     * Sends a simple text message.
+     */
+    public void sendSimpleMessage(String to, String subject, String text) {
+        sendEmail(to, subject, text.replace("\n", "<br>"));
+    }
+
+    /**
      * Core email sending method using Spring Mail (JavaMailSender).
      * Gracefully degrades if email is not configured.
      */

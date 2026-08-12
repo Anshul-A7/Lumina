@@ -101,7 +101,9 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/oauth2/**"
+                                "/oauth2/**",
+                                "/ws/**",
+                                "/api/v1/workspaces/invites/*/accept"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session ->

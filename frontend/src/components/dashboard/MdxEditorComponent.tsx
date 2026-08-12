@@ -26,8 +26,11 @@ import {
   ListsToggle,
   BlockTypeSelect,
   CreateLink,
-  InsertCodeBlock
+  InsertCodeBlock,
+  imagePlugin,
+  InsertImage
 } from '@mdxeditor/editor'
+import 'katex/dist/katex.min.css'
 import '@mdxeditor/editor/style.css'
 import { 
   ArrowLeft, 
@@ -51,7 +54,9 @@ import {
   Heading3,
   Quote,
   Type,
-  Sparkles
+  Sparkles,
+  Image as ImageIcon,
+  Pi
 } from 'lucide-react';
 
 interface MdxEditorComponentProps {
@@ -112,6 +117,20 @@ export default function MdxEditorComponent({
 
   const editorRef = useRef<MDXEditorMethods>(null);
   const cleanMarkdown = useMemo(() => sanitizeMdx(markdown), [markdown]);
+
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result as string;
+      editorRef.current?.insertMarkdown(`\n![Image](${base64})\n`);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
 
   // Color picker popover states
   const [showHighlightPicker, setShowHighlightPicker] = useState(false);
@@ -317,6 +336,15 @@ export default function MdxEditorComponent({
           tablePlugin(),
           linkPlugin(),
           linkDialogPlugin(),
+          imagePlugin({
+            imageUploadHandler: async (file) => {
+              return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result as string);
+                reader.readAsDataURL(file);
+              });
+            }
+          }),
           codeBlockPlugin({ defaultCodeBlockLanguage: 'javascript' }),
           codeMirrorPlugin({
             codeBlockLanguages: {
@@ -652,15 +680,50 @@ export default function MdxEditorComponent({
                           <InsertCodeBlock />
                         </div>
 
-                        {/* Real Link & Thematic Break */}
+                        {/* Real Link, Image & Thematic Break */}
                         <div className="flex flex-col gap-1.5">
                           <div className="flex items-center gap-1 bg-background border border-border rounded-xl px-1.5 py-0.5 shadow-2xs h-7 [&>button]:p-1 [&>button]:rounded-lg [&>button:hover]:bg-gray-100 [&>button]:text-foreground [&>button>svg]:w-3.5 [&>button>svg]:h-3.5">
                             <CreateLink />
                             <div className="w-px h-4 bg-gray-300 mx-0.5"></div>
+                            
+                            {/* Custom Image Upload Button */}
+                            <button 
+                              type="button" 
+                              onMouseDown={(e) => e.preventDefault()}
+                              onClick={() => imageInputRef.current?.click()} 
+                              title="Insert Image"
+                              className="p-1 hover:bg-gray-100 rounded-lg text-foreground hover:text-foreground transition-colors cursor-pointer"
+                            >
+                              <ImageIcon className="w-3.5 h-3.5" />
+                            </button>
+                            <input 
+                              type="file" 
+                              accept="image/*" 
+                              ref={imageInputRef} 
+                              onChange={handleImageUpload} 
+                              className="hidden" 
+                            />
+
+                            <div className="w-px h-4 bg-gray-300 mx-0.5"></div>
+                            
+                            {/* Custom Formula Insert Button */}
+                            <button 
+                              type="button" 
+                              onMouseDown={(e) => e.preventDefault()}
+                              onClick={() => {
+                                editorRef.current?.insertMarkdown('\n$$\n\\text{Formula}\n$$\n');
+                              }} 
+                              title="Insert Formula (Math)"
+                              className="p-1 hover:bg-gray-100 rounded-lg text-foreground hover:text-foreground transition-colors cursor-pointer"
+                            >
+                              <Pi className="w-3.5 h-3.5" />
+                            </button>
+
+                            <div className="w-px h-4 bg-gray-300 mx-0.5"></div>
                             <InsertThematicBreak />
                           </div>
                           <div className="text-[10px] text-gray-500 flex items-center justify-center gap-1 px-1 font-medium">
-                            <span>Link & Line</span>
+                            <span>Link, Image & Math</span>
                           </div>
                         </div>
                       </div>

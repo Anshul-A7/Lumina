@@ -185,6 +185,22 @@ apiClient.interceptors.response.use(
     // Handle other error codes
     if (error.response?.status === 403) {
       console.warn('[API] 403 Forbidden: Missing permissions for this resource.');
+      if (error.response.data && error.response.data.message) {
+        if (typeof window !== 'undefined') {
+          const { toast } = require('react-hot-toast');
+          toast.error(error.response.data.message, { duration: 5000 });
+        }
+      }
+    }
+    
+    if (error.response?.status === 429) {
+      console.warn('[API] 429 Too Many Requests.');
+      if (error.response.data && error.response.data.message) {
+        if (typeof window !== 'undefined') {
+          const { toast } = require('react-hot-toast');
+          toast.error(error.response.data.message, { duration: 5000 });
+        }
+      }
     }
 
     if (error.response?.status && error.response.status >= 500) {

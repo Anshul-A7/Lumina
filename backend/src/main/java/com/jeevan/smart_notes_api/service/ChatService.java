@@ -12,12 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class ChatService {
+
+    private static final Logger log = LoggerFactory.getLogger(ChatService.class);
 
     @Autowired
     private ChatSessionRepository sessionRepository;
@@ -30,6 +34,9 @@ public class ChatService {
 
     @Autowired
     private AiService aiService;
+
+    @Autowired
+    private ImageService imageService;
 
     // ════════════════════════════════════════════════════════════════════════
     // SESSION MANAGEMENT
@@ -150,9 +157,12 @@ public class ChatService {
                 aiResponseText = aiService.chat(conversationHistory, email);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            aiResponseText = "I encountered an issue processing your request. Please try again.";
+            log.error("AI processing error: ", e);
+            aiResponseText = e.getMessage() != null ? e.getMessage() : "Something went wrong, Please try again.";
         }
+
+        // Extract and save any generated images
+        extractAndSaveImages(aiResponseText, email);
 
         // Save AI response
         ChatMessage aiMessage = new ChatMessage(
@@ -206,9 +216,12 @@ public class ChatService {
         try {
             aiResponseText = aiService.streamChat(conversationHistory, email, tokenConsumer);
         } catch (Exception e) {
-            e.printStackTrace();
-            aiResponseText = "I encountered an issue processing your request. Please try again.";
+            log.error("AI streaming error: ", e);
+            aiResponseText = e.getMessage() != null ? e.getMessage() : "Something went wrong, Please try again.";
         }
+
+        // Extract and save any generated images
+        extractAndSaveImages(aiResponseText, email);
 
         // Save AI response
         ChatMessage aiMessage = new ChatMessage(session, ChatMessage.Role.ASSISTANT, aiResponseText, null);
@@ -261,7 +274,8 @@ public class ChatService {
         try {
             newResponse = aiService.regenerateResponse(conversationHistory, lastUserMessage.getContent());
         } catch (Exception e) {
-            newResponse = "I encountered an issue regenerating the response. Please try again.";
+            log.error("AI regeneration error: ", e);
+            newResponse = e.getMessage() != null ? e.getMessage() : "Something went wrong, Please try again.";
         }
 
         // Save new AI response
@@ -399,5 +413,26 @@ public class ChatService {
                     return result;
                 })
                 .collect(Collectors.toList());
+    }
+
+    private void extractAndSaveImages(String responseText, String email) {
+        if (responseText == null || !responseText.contains("GENERATE_IMAGE:")) return;
+
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
+            "!\\[([^\\]]*)\\]\\(GENERATE_IMAGE:([^)]+)\\)"
+        );
+        java.util.regex.Matcher matcher = pattern.matcher(responseText);
+
+        while (matcher.find()) {
+            String prompt = matcher.group(2).trim();
+            String encodedPrompt = java.net.URLEncoder.encode(prompt, java.nio.charset.StandardCharsets.UTF_8);
+            String imageUrl = "https://image.pollinations.ai/prompt/" + encodedPrompt + "?width=1024&height=1024&nologo=true";
+            
+            try {
+                imageService.saveImage(email, prompt, imageUrl);
+            } catch (Exception e) {
+                log.error("Failed to save generated image to workspace: {}", e.getMessage());
+            }
+        }
     }
 }

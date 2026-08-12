@@ -41,9 +41,9 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "2lQFyNH4uMmhPZ27koQeMTA5N1P-O1O8o_u9nxCnaO4",
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
     other: {
-      'msvalidate.01': [process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION || "ED67D5569E31D74242ECBCCB58C6CE8C"],
+      'msvalidate.01': process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION ? [process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION] : [],
     },
   },
   openGraph: {
@@ -51,12 +51,12 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: BASE_URL,
     siteName: "Lumina Notes",
-    title: "Lumina | The Sovereign Workspace for Deep Thinkers",
+    title: "Lumina | The Workspace for Deep Thinkers",
     description: "A distraction-free sanctuary for deep thinkers, researchers, and students to build and export publication-grade notes.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Lumina | The Sovereign Workspace for Deep Thinkers",
+    title: "Lumina | The Workspace for Deep Thinkers",
     description: "A distraction-free sanctuary for deep thinkers, researchers, and students.",
   },
   icons: {
@@ -103,7 +103,7 @@ export default function RootLayout({
         >
           {children}
           <Toaster position="top-right" />
-          
+
           {/* Google Identity Services — loaded globally for OAuth on all auth pages */}
           <Script
             src="https://accounts.google.com/gsi/client"

@@ -45,6 +45,22 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+
+  // ── Auth Guard: Redirect authenticated users to dashboard ──
+  useEffect(() => {
+    if (AuthService.isAuthenticated()) {
+      AuthService.getCurrentUser()
+        .then(() => {
+          router.replace("/dashboard");
+        })
+        .catch(() => {
+          setIsCheckingAuth(false);
+        });
+    } else {
+      setIsCheckingAuth(false);
+    }
+  }, [router]);
 
   // Validation logic
   const hasMinLength = password.length >= 8;

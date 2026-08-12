@@ -229,7 +229,7 @@ public class ChatController {
         String content = body.get("content");
 
         org.springframework.web.servlet.mvc.method.annotation.SseEmitter emitter =
-                new org.springframework.web.servlet.mvc.method.annotation.SseEmitter(120_000L);
+                new org.springframework.web.servlet.mvc.method.annotation.SseEmitter(600_000L);
 
         // Check quota
         if (!subscriptionService.canPerformAction(email, "ai_request")) {

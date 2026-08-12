@@ -133,6 +133,22 @@ public class Subscription {
         };
     }
 
+    public int getMaxWorkspaces() {
+        return switch (plan) {
+            case FREE -> 0;
+            case PLUS -> 3;
+            case PRO -> Integer.MAX_VALUE;
+        };
+    }
+
+    public int getMaxWorkspaceMembers() {
+        return switch (plan) {
+            case FREE -> 0;
+            case PLUS -> 5;
+            case PRO -> Integer.MAX_VALUE;
+        };
+    }
+
     public int getMonthlyPriceInr() {
         return switch (plan) {
             case FREE -> 0;

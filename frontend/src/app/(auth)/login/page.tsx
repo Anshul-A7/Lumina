@@ -32,6 +32,24 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+
+  // ── Auth Guard: Redirect authenticated users to dashboard ──
+  useEffect(() => {
+    if (AuthService.isAuthenticated()) {
+      // Validate token is still valid by calling the server
+      AuthService.getCurrentUser()
+        .then(() => {
+          router.replace("/dashboard");
+        })
+        .catch(() => {
+          // Token is invalid/expired — stay on login page
+          setIsCheckingAuth(false);
+        });
+    } else {
+      setIsCheckingAuth(false);
+    }
+  }, [router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -151,6 +169,15 @@ export default function LoginPage() {
   // The official button renders itself into the #google-signin-btn container.
   
   const isAnyLoading = isLoading || isGoogleLoading;
+
+  // Show nothing while checking auth status (prevents flash of login form)
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center bg-background">
+        <div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-full bg-background flex items-center justify-center p-4 sm:p-6 md:p-8 font-sans selection:bg-black selection:text-white overflow-hidden">

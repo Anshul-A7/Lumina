@@ -81,21 +81,35 @@ export default function DashboardLayout({
   }, []);
 
   useEffect(() => {
-    // If no token, assign demo session so user can freely explore
+    // ── Proper Auth Guard: Check real authentication ──
     if (!AuthService.isAuthenticated()) {
-      if (typeof window !== "undefined") {
-        localStorage.setItem("auth_token", "lumina_active_session_" + Date.now());
-      }
+      router.replace("/login");
+      return;
     }
     
-    if (typeof window !== "undefined") {
-      const email = localStorage.getItem("lumina_user_email") || localStorage.getItem("note_xz_user_email");
-      const name = localStorage.getItem("lumina_user_name") || localStorage.getItem("note_xz_user_name");
-      if (email) setUserEmail(email);
-      if (name) setUserName(name);
-    }
-
-    setIsAuthenticated(true);
+    // Validate token is still valid
+    AuthService.getCurrentUser()
+      .then((user) => {
+        if (typeof window !== "undefined") {
+          // Sync user data from validated response
+          if (user.email) {
+            setUserEmail(user.email);
+            localStorage.setItem("lumina_user_email", user.email);
+            localStorage.setItem("note_xz_user_email", user.email);
+          }
+          if (user.username) {
+            setUserName(user.username);
+            localStorage.setItem("lumina_user_name", user.username);
+            localStorage.setItem("note_xz_user_name", user.username);
+          }
+        }
+        setIsAuthenticated(true);
+      })
+      .catch(() => {
+        // Token invalid — clear and redirect
+        AuthService.logout();
+        router.replace("/login");
+      });
   }, [router]);
 
   const handleLogout = () => {
@@ -134,6 +148,7 @@ export default function DashboardLayout({
       console.error("Failed to mark notifications as read:", err);
     }
   };
+
 
   if (isAuthenticated === null) {
     return (
@@ -258,6 +273,7 @@ export default function DashboardLayout({
                     {notificationsList.length === 0 && (
                       <div className="py-8 text-center text-xs text-foreground/40 font-medium">No notifications yet.</div>
                     )}
+
                     {notificationsList.map((n) => (
                       <div key={n.id} className={`py-3 flex items-start gap-3 hover:bg-foreground/[0.02] px-2 rounded-xl transition-colors cursor-pointer ${!n.read ? 'bg-foreground/[0.03]' : ''}`}>
                         <div className="w-7 h-7 rounded-lg bg-foreground/[0.05] flex items-center justify-center shrink-0 mt-0.5">

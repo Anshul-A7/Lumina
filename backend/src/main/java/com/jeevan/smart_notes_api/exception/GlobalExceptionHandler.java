@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.jeevan.smart_notes_api.exception.SubscriptionLimitException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -53,6 +55,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(SubscriptionLimitException.class)
+    public ResponseEntity<Map<String, Object>> handleSubscriptionLimitException(
+            SubscriptionLimitException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
     @ExceptionHandler(RateLimitExceededException.class)
     public ResponseEntity<Map<String, Object>> handleRateLimitExceeded(
             RateLimitExceededException ex) {
@@ -78,12 +86,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, Object>> handleRuntime(
             RuntimeException ex) {
+        ex.printStackTrace();
         return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneral(
             Exception ex) {
+        
+        ex.printStackTrace();
 
         return buildErrorResponse(
                 "An unexpected error occurred. Please try again.",

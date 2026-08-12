@@ -42,16 +42,5 @@ public class UserController {
         return ResponseEntity.ok(userService.updateSettings(email, settings));
     }
 
-    @GetMapping("/notifications")
-    public ResponseEntity<List<Notification>> getNotifications(Authentication authentication) {
-        String email = authentication.getName();
-        return ResponseEntity.ok(userService.getNotifications(email));
-    }
 
-    @PutMapping("/notifications/read")
-    public ResponseEntity<Map<String, String>> markNotificationsAsRead(Authentication authentication) {
-        String email = authentication.getName();
-        userService.markAllNotificationsAsRead(email);
-        return ResponseEntity.ok(Map.of("message", "Notifications marked as read"));
-    }
 }

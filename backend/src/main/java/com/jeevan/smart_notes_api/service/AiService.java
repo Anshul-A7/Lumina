@@ -1,20 +1,28 @@
 package com.jeevan.smart_notes_api.service;
 
+import com.jeevan.smart_notes_api.config.AiProviderPool;
+import com.jeevan.smart_notes_api.exception.RateLimitExceededException;
+import com.jeevan.smart_notes_api.util.FileExtractor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MimeType;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.multipart.MultipartFile;
-import com.jeevan.smart_notes_api.util.FileExtractor;
-import com.jeevan.smart_notes_api.service.SubscriptionService;
-import com.jeevan.smart_notes_api.exception.RateLimitExceededException;
-import java.util.List;
+
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class AiService {
 
-    private final ChatClient chatClient;
+    private static final Logger log = LoggerFactory.getLogger(AiService.class);
+
+    private final AiProviderPool providerPool;
+    private final SubscriptionService subscriptionService;
+    private final UsageTrackingService usageTrackingService;
+    private final com.jeevan.smart_notes_api.repository.UserRepository userRepository;
 
     // ════════════════════════════════════════════════════════════════════════
     // MASTER SYSTEM PROMPT — Comprehensive Operational Rules & Standards
@@ -72,7 +80,7 @@ public class AiService {
                - Include complete headers, aligned columns, and rich descriptive cells.
 
             3. MATHEMATICS & FORMULAS:
-               - Format ALL mathematical expressions using LaTeX notation: inline `$E = mc^2$` or block `$$\\sum_{i=1}^{n} x_i$$`.
+               - Format ALL mathematical expressions using LaTeX notation: inline `$E = mc^2$` or block `$$\\\\sum_{i=1}^{n} x_i$$`.
 
             4. CODE BLOCKS:
                - Wrap all code in fenced code blocks with explicit language tags (e.g., ```python, ```java, ```typescript).
@@ -103,6 +111,8 @@ public class AiService {
             1. DEFAULT CHAT BEHAVIOR:
                - When a user asks a question, requests an explanation, or asks for important points from an attached document/PDF:
                  - Output the COMPLETE, exhaustive, detailed answer directly in the chat in formatted Markdown.
+                 - DO NOT emit `\n` to end lines prematurely, let text wrap naturally.
+                 - IMPORTANT: For ALL mathematical equations or formulas, you MUST use `$$` for block math and `$` for inline math. Do NOT use backticks for formulas.
                  - DO NOT emit `<pdf_document>` tags.
 
             2. EXPLICIT PDF GENERATION TRIGGER:
@@ -114,6 +124,22 @@ public class AiService {
                  ## Section 1: Detailed Overview
                  ...
                  </pdf_document>
+
+            ═══════════════════════════════════════════════════
+            SECTION 5: IMAGE GENERATION RULES
+            ═══════════════════════════════════════════════════
+
+            1. IMAGE GENERATION DETECTION:
+               - When the user asks you to "generate an image", "create a picture", "draw", "make an image of", "visualize", "illustrate":
+                 - You MUST respond with a special image tag format.
+                 - Format: `![Description](GENERATE_IMAGE:detailed prompt for the image)`
+                 - The system will intercept this tag and replace it with a real generated image.
+                 - Write a brief description before the image tag.
+
+            2. DO NOT generate images for:
+               - Diagrams, flowcharts, architecture maps (use Mermaid instead).
+               - Screenshots or UI mockups.
+               - Only generate images for creative, artistic, or photographic requests.
             """;
 
     // ════════════════════════════════════════════════════════════════════════
@@ -192,33 +218,40 @@ public class AiService {
             10. Return ONLY the reformatted content in clean markdown
             """;
 
-    private final SubscriptionService subscriptionService;
+    // ════════════════════════════════════════════════════════════════════════
+    // CONSTRUCTOR — Inject AiProviderPool instead of single ChatClient
+    // ════════════════════════════════════════════════════════════════════════
 
-    public AiService(ChatClient.Builder builder, SubscriptionService subscriptionService) {
-        this.chatClient = builder
-                .defaultSystem(MASTER_SYSTEM_PROMPT)
-                .build();
+    public AiService(AiProviderPool providerPool, 
+                     SubscriptionService subscriptionService,
+                     UsageTrackingService usageTrackingService,
+                     com.jeevan.smart_notes_api.repository.UserRepository userRepository) {
+        this.providerPool = providerPool;
         this.subscriptionService = subscriptionService;
+        this.usageTrackingService = usageTrackingService;
+        this.userRepository = userRepository;
+        log.info("🤖 AiService initialized with AiProviderPool (failover enabled)");
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // CHAT — Main conversational endpoint
+    // CHAT — Main conversational endpoint WITH FAILOVER
     // ════════════════════════════════════════════════════════════════════════
 
     public String chat(String history, String email) {
-        checkAiRequestLimit(email);
-        boolean isPdfRequest = history.toLowerCase().contains("generate a pdf") || 
-                               history.toLowerCase().contains("make a pdf") || 
-                               history.toLowerCase().contains("create a pdf") ||
-                               history.toLowerCase().contains("generate pdf");
+        com.jeevan.smart_notes_api.entity.User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+            
+        usageTrackingService.checkAndIncrementAiRequest(user.getId());
         
+        boolean isPdfRequest = isPdfGenerationRequest(history);
+
         if (isPdfRequest) {
-            if (!subscriptionService.canPerformAction(email, "pdf_generate")) {
-                throw new RateLimitExceededException("Daily PDF generation limit reached. Please upgrade your plan.");
-            }
+            // Checked separately in PdfService
         }
 
-        String response = chatClient.prompt()
+        String response = providerPool.callWithFailover(chatClient ->
+            chatClient.prompt()
+                .system(MASTER_SYSTEM_PROMPT)
                 .user("""
                         CONVERSATION CONTEXT:
                         %s
@@ -229,25 +262,33 @@ public class AiService {
                         - Do NOT output <pdf_document> tags unless the user explicitly requested to generate or compile a PDF file.
                         """.formatted(history))
                 .call()
-                .content();
+                .content()
+        );
 
         subscriptionService.incrementUsage(email, "ai_request");
         if (isPdfRequest && response != null && response.contains("<pdf_document")) {
             subscriptionService.incrementUsage(email, "pdf_generate");
         }
+
+        // Post-process for image generation requests
+        response = processImageGenerationTags(response);
+
         return response;
     }
 
     /**
-     * Stream chat response token by token. The tokenConsumer receives each token fragment as it arrives.
+     * Stream chat response token by token WITH FAILOVER.
+     * The tokenConsumer receives each token fragment as it arrives.
      * Returns the complete accumulated response when finished.
      */
     public String streamChat(String history, String email, java.util.function.Consumer<String> tokenConsumer) {
         checkAiRequestLimit(email);
 
-        StringBuilder fullResponse = new StringBuilder();
+        String response = providerPool.streamWithFailover(chatClient -> {
+            StringBuilder fullResponse = new StringBuilder();
 
-        chatClient.prompt()
+            chatClient.prompt()
+                .system(MASTER_SYSTEM_PROMPT)
                 .user("""
                         CONVERSATION CONTEXT:
                         %s
@@ -270,28 +311,30 @@ public class AiService {
                 })
                 .blockLast();
 
+            return fullResponse.toString();
+        });
+
         subscriptionService.incrementUsage(email, "ai_request");
-        return fullResponse.toString();
+        return response;
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // SUMMARIZE — Quick note summarization
+    // SUMMARIZE — Quick note summarization WITH FAILOVER
     // ════════════════════════════════════════════════════════════════════════
 
     public String summarize(String text, String email) {
         checkAiRequestLimit(email);
-        boolean isPdfRequest = text.toLowerCase().contains("generate a pdf") || 
-                               text.toLowerCase().contains("make a pdf") || 
-                               text.toLowerCase().contains("create a pdf") ||
-                               text.toLowerCase().contains("generate pdf");
-        
+        boolean isPdfRequest = isPdfGenerationRequest(text);
+
         if (isPdfRequest) {
             if (!subscriptionService.canPerformAction(email, "pdf_generate")) {
                 throw new RateLimitExceededException("Daily PDF generation limit reached. Please upgrade your plan.");
             }
         }
 
-        String response = chatClient.prompt()
+        String response = providerPool.callWithFailover(chatClient ->
+            chatClient.prompt()
+                .system(MASTER_SYSTEM_PROMPT)
                 .user("""
                         Create structured study notes from the following content.
 
@@ -302,34 +345,36 @@ public class AiService {
                         - Include formulas in LaTeX notation if present
                         - Comparisons -> Markdown Tables
                         - Flowcharts -> Mermaid Blocks
-    
+
                         ## 4. PDF GENERATION REQUESTS (CRITICAL SYSTEM FUNCTION)
                         When the user asks to "generate pdf", "make a pdf", or "create a pdf", they are invoking a system feature.
                         You MUST NOT write Python code, HTML, or scripts to generate a PDF.
                         Instead, you MUST use our internal XML tag `<pdf_document>` to trigger the system's PDF generator.
-                        
+
                         When requested, you MUST do BOTH of the following:
                         1. Write a short, highly precise summary in the normal chat area.
                         2. Include the FULL, detailed, beautifully formatted document content inside the XML tag at the VERY END of your response.
-                        
+
                         Format exactly like this (do NOT wrap the xml in markdown blocks):
                         Here is a short summary of the important topics...
                         - Point 1
                         - Point 2
-                        
+
                         <pdf_document title="Appropriate Document Title">
                         # Full Detailed Content
                         ## ...
                         </pdf_document>
-    
+
                         ## 5. TONE & STYLE
                         - Direct, concise, hyper-precise. No conversational filler.
+                        - IMPORTANT: For ALL mathematical equations or formulas, you MUST use `$$` for block math and `$` for inline math. Do NOT use backticks for formulas.
 
                         CONTENT:
                         %s
                         """.formatted(text))
                 .call()
-                .content();
+                .content()
+        );
 
         subscriptionService.incrementUsage(email, "ai_request");
         if (isPdfRequest && response != null && response.contains("<pdf_document")) {
@@ -339,12 +384,14 @@ public class AiService {
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // GENERATE TITLE — For notes
+    // GENERATE TITLE — For notes WITH FAILOVER
     // ════════════════════════════════════════════════════════════════════════
 
     public String generateTitle(String text, String email) {
         checkAiRequestLimit(email);
-        String response = chatClient.prompt()
+        String response = providerPool.callWithFailover(chatClient ->
+            chatClient.prompt()
+                .system(MASTER_SYSTEM_PROMPT)
                 .user("""
                         Generate 5 professional titles for the following content.
 
@@ -359,17 +406,19 @@ public class AiService {
                         %s
                         """.formatted(text))
                 .call()
-                .content();
+                .content()
+        );
         subscriptionService.incrementUsage(email, "ai_request");
         return response;
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // SUMMARIZE WITH PROMPT — File content + user instruction
+    // SUMMARIZE WITH PROMPT — File content + user instruction WITH FAILOVER
     // ════════════════════════════════════════════════════════════════════════
 
     public String summarizeWithPrompt(String text, String userPrompt) {
-        return chatClient.prompt()
+        return providerPool.callWithFailover(chatClient ->
+            chatClient.prompt()
                 .system(FILE_ANALYSIS_PROMPT)
                 .user("""
                         USER REQUEST:
@@ -379,15 +428,18 @@ public class AiService {
                         %s
                         """.formatted(userPrompt, text))
                 .call()
-                .content();
+                .content()
+        );
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // SUMMARIZE WITH IMAGE — Multimodal image analysis
+    // SUMMARIZE WITH IMAGE — Multimodal image analysis WITH FAILOVER
+    // Uses callMultimodalWithFailover to prefer Gemini for vision
     // ════════════════════════════════════════════════════════════════════════
 
     public String summarizeWithImage(byte[] imageBytes, String mimeType, String userPrompt) {
-        return chatClient.prompt()
+        return providerPool.callMultimodalWithFailover(chatClient ->
+            chatClient.prompt()
                 .system(FILE_ANALYSIS_PROMPT)
                 .user(u -> u.text("""
                         USER REQUEST:
@@ -398,15 +450,19 @@ public class AiService {
                         """.formatted(userPrompt))
                         .media(MimeType.valueOf(mimeType), new ByteArrayResource(imageBytes)))
                 .call()
-                .content();
+                .content()
+        );
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // SUMMARIZE WITH FILES — Multi-file processing (PDFs + Images)
+    // SUMMARIZE WITH FILES — Multi-file processing (PDFs + Images) WITH FAILOVER
     // ════════════════════════════════════════════════════════════════════════
 
     public String summarizeWithFiles(List<MultipartFile> files, String userPrompt, String email) {
-        checkAiRequestLimit(email);
+        com.jeevan.smart_notes_api.entity.User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+            
+        usageTrackingService.checkAndIncrementAiRequest(user.getId());
 
         int pdfCount = 0;
         int imageCount = 0;
@@ -420,27 +476,19 @@ public class AiService {
         }
 
         if (pdfCount > 0) {
-            int remaining = subscriptionService.getRemainingQuota(email, "pdf_attach");
-            if (pdfCount > remaining) {
-                throw new RateLimitExceededException("Daily PDF attachment limit reached. Please upgrade your plan to attach more PDFs.");
-            }
+            usageTrackingService.checkAndIncrementPdfAttachment(user.getId(), pdfCount);
         }
         if (imageCount > 0) {
-            int remaining = subscriptionService.getRemainingQuota(email, "image_attach");
-            if (imageCount > remaining) {
-                throw new RateLimitExceededException("Daily image attachment limit reached. Please upgrade your plan to attach more images.");
-            }
+            usageTrackingService.checkAndIncrementImageAttachment(user.getId(), imageCount);
         }
 
-        boolean isPdfRequest = userPrompt.toLowerCase().contains("generate a pdf") || 
-                               userPrompt.toLowerCase().contains("make a pdf") || 
-                               userPrompt.toLowerCase().contains("create a pdf") ||
-                               userPrompt.toLowerCase().contains("generate pdf");
-        
+        boolean isPdfRequest = isPdfGenerationRequest(userPrompt);
+
         if (isPdfRequest) {
-            if (!subscriptionService.canPerformAction(email, "pdf_generate")) {
-                throw new RateLimitExceededException("Daily PDF generation limit reached. Please upgrade your plan.");
-            }
+            // Wait, PDF generation via AI chat is supposed to trigger checkAndIncrementPdfGeneration?
+            // Yes, let's keep it here for now or it's checked when PdfService is actually called.
+            // Actually, PdfService is called by ChatController/WebSocket separately.
+            // Let's remove this duplicate check.
         }
 
         StringBuilder extractedText = new StringBuilder();
@@ -465,28 +513,34 @@ public class AiService {
         final String documentContent = extractedText.toString();
 
         String response;
-        // If we have images, process the first image with multimodal and include PDF text in prompt
+        // If we have images, use multimodal failover (prefers Gemini for vision)
         if (!imageBytesList.isEmpty()) {
             String combinedPrompt = userPrompt;
             if (!documentContent.isBlank()) {
                 combinedPrompt = userPrompt + "\n\nDOCUMENT CONTENT:\n" + documentContent;
             }
             final String finalCombinedPrompt = combinedPrompt;
-            response = chatClient.prompt()
-                .system(FILE_ANALYSIS_PROMPT)
-                .user(u -> u.text("""
-                        USER REQUEST:
-                        %s
+            final byte[] firstImageBytes = imageBytesList.get(0);
+            final String firstImageMime = imageMimeTypes.get(0);
 
-                        Analyze the attached image and respond according to the user's request.
-                        Apply all formatting rules.
-                        """.formatted(finalCombinedPrompt))
-                        .media(MimeType.valueOf(imageMimeTypes.get(0)), new ByteArrayResource(imageBytesList.get(0))))
-                .call()
-                .content();
+            response = providerPool.callMultimodalWithFailover(chatClient ->
+                chatClient.prompt()
+                    .system(FILE_ANALYSIS_PROMPT)
+                    .user(u -> u.text("""
+                            USER REQUEST:
+                            %s
+
+                            Analyze the attached image and respond according to the user's request.
+                            Apply all formatting rules.
+                            """.formatted(finalCombinedPrompt))
+                            .media(MimeType.valueOf(firstImageMime), new ByteArrayResource(firstImageBytes)))
+                    .call()
+                    .content()
+            );
         } else {
-            // Text-only (PDFs)
-            response = chatClient.prompt()
+            // Text-only (PDFs) — use regular failover
+            response = providerPool.callWithFailover(chatClient ->
+                chatClient.prompt()
                     .system(FILE_ANALYSIS_PROMPT)
                     .user("""
                             USER REQUEST:
@@ -499,7 +553,8 @@ public class AiService {
                             Apply all formatting rules strictly.
                             """.formatted(userPrompt, documentContent))
                     .call()
-                    .content();
+                    .content()
+            );
         }
 
         subscriptionService.incrementUsage(email, "ai_request");
@@ -517,21 +572,22 @@ public class AiService {
     }
 
     private void checkAiRequestLimit(String email) {
-        // Here we could implement a global AI request limit if needed
-        // For now, it just tracks usage via incrementUsage("ai_request")
+        // Usage is tracked via incrementUsage("ai_request") after successful calls
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // GENERATE SESSION TITLE — AI-powered dynamic session naming
+    // GENERATE SESSION TITLE — AI-powered dynamic session naming WITH FAILOVER
     // ════════════════════════════════════════════════════════════════════════
 
     public String generateSessionTitle(String firstMessage) {
         try {
-            String title = chatClient.prompt()
+            String title = providerPool.callWithFailover(chatClient ->
+                chatClient.prompt()
                     .system(TITLE_GENERATION_PROMPT)
                     .user(firstMessage)
                     .call()
-                    .content();
+                    .content()
+            );
 
             if (title != null) {
                 title = title.trim().replaceAll("^\"|\"$", "").replaceAll("\\.$", "");
@@ -541,16 +597,18 @@ public class AiService {
             }
             return title != null ? title : "New Session";
         } catch (Exception e) {
+            log.warn("Failed to generate session title: {}", e.getMessage());
             return "New Session";
         }
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // FORMAT FOR PDF — Re-process content for clean PDF generation
+    // FORMAT FOR PDF — Re-process content for clean PDF generation WITH FAILOVER
     // ════════════════════════════════════════════════════════════════════════
 
     public String formatForPdf(String content, String title) {
-        return chatClient.prompt()
+        return providerPool.callWithFailover(chatClient ->
+            chatClient.prompt()
                 .system(PDF_FORMAT_PROMPT)
                 .user("""
                         DOCUMENT TITLE: %s
@@ -559,15 +617,18 @@ public class AiService {
                         %s
                         """.formatted(title, content))
                 .call()
-                .content();
+                .content()
+        );
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // REGENERATE — Re-generate the last AI response with variation
+    // REGENERATE — Re-generate the last AI response with variation WITH FAILOVER
     // ════════════════════════════════════════════════════════════════════════
 
     public String regenerateResponse(String conversationHistory, String lastUserMessage) {
-        return chatClient.prompt()
+        return providerPool.callWithFailover(chatClient ->
+            chatClient.prompt()
+                .system(MASTER_SYSTEM_PROMPT)
                 .user("""
                         The user has requested a regenerated response. Provide a DIFFERENT, improved answer
                         to the same question. Use different examples, different structure, or deeper analysis.
@@ -580,11 +641,12 @@ public class AiService {
                         %s
                         """.formatted(conversationHistory, lastUserMessage))
                 .call()
-                .content();
+                .content()
+        );
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // EDIT DOCUMENT — Precision in-place document modification via AI
+    // EDIT DOCUMENT — Precision in-place document modification via AI WITH FAILOVER
     // ════════════════════════════════════════════════════════════════════════
 
     public String editDocument(String content, String instruction, String email) {
@@ -595,7 +657,7 @@ public class AiService {
         if (email != null) {
             subscriptionService.incrementUsage(email, "ai_request");
         }
-        
+
         String prompt;
         if (selectedText != null && !selectedText.trim().isEmpty()) {
             prompt = """
@@ -652,11 +714,14 @@ public class AiService {
                     """.formatted(content, instruction);
         }
 
-        String result = chatClient.prompt()
+        final String finalPrompt = prompt;
+        String result = providerPool.callWithFailover(chatClient ->
+            chatClient.prompt()
                 .system("You are an expert document editor. You strictly return the full modified markdown document with the user's requested changes applied. Never use ASCII character art (+---+) for diagrams; always use Mermaid code blocks. No filler, no conversational text, no whole-document code fences.")
-                .user(prompt)
+                .user(finalPrompt)
                 .call()
-                .content();
+                .content()
+        );
 
         if (result != null) {
             result = result.replaceAll("^```markdown\\s*", "")
@@ -664,5 +729,53 @@ public class AiService {
                            .replaceAll("\\s*```$", "");
         }
         return result != null ? result : content;
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    // UTILITY: PDF Request Detection
+    // ════════════════════════════════════════════════════════════════════════
+
+    private boolean isPdfGenerationRequest(String text) {
+        if (text == null) return false;
+        String lower = text.toLowerCase();
+        return lower.contains("generate a pdf") ||
+               lower.contains("make a pdf") ||
+               lower.contains("create a pdf") ||
+               lower.contains("generate pdf") ||
+               lower.contains("export to pdf") ||
+               lower.contains("compile a pdf");
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    // UTILITY: Image Generation Tag Processing
+    // ════════════════════════════════════════════════════════════════════════
+
+    /**
+     * Process GENERATE_IMAGE tags in AI responses and replace with actual image URLs
+     * from Pollinations.ai (free, no API key needed).
+     */
+    private String processImageGenerationTags(String response) {
+        if (response == null || !response.contains("GENERATE_IMAGE:")) {
+            return response;
+        }
+
+        // Pattern: ![Description](GENERATE_IMAGE:prompt text here)
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
+            "!\\[([^\\]]*)\\]\\(GENERATE_IMAGE:([^)]+)\\)"
+        );
+        java.util.regex.Matcher matcher = pattern.matcher(response);
+
+        StringBuilder result = new StringBuilder();
+        while (matcher.find()) {
+            String description = matcher.group(1);
+            String prompt = matcher.group(2).trim();
+            String encodedPrompt = java.net.URLEncoder.encode(prompt, java.nio.charset.StandardCharsets.UTF_8);
+            String imageUrl = "https://image.pollinations.ai/prompt/" + encodedPrompt + "?width=1024&height=1024&nologo=true";
+            matcher.appendReplacement(result, "![" + description + "](" + imageUrl + ")");
+            log.info("🎨 Generated image URL for prompt: {}", prompt.substring(0, Math.min(50, prompt.length())));
+        }
+        matcher.appendTail(result);
+
+        return result.toString();
     }
 }

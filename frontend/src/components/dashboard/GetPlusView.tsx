@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Sparkles, Check, Zap, Infinity, Loader2, Star, ShieldCheck } from "lucide-react";
+import { Sparkles, Check, Zap, Infinity, Loader2, Star, ShieldCheck, X } from "lucide-react";
 import { purchasePlan, getSubscription, SubscriptionDetails } from "@/lib/subscription.service";
 import toast from "react-hot-toast";
 
@@ -90,6 +90,10 @@ export default function GetPlusView() {
                 <Check className="w-5 h-5 text-black mt-0.5 flex-shrink-0" />
                 <span>Standard response speed</span>
               </li>
+              <li className="flex items-start gap-3 text-black/80">
+                <X className="w-5 h-5 text-black/40 mt-0.5 flex-shrink-0" />
+                <span className="text-black/60">No Collaboration Workspaces</span>
+              </li>
             </ul>
             
             <button className="w-full bg-black/10 text-black px-6 py-3 rounded-xl font-medium cursor-not-allowed">
@@ -133,6 +137,10 @@ export default function GetPlusView() {
               <li className="flex items-start gap-3 text-black/80">
                 <Check className="w-5 h-5 text-black mt-0.5 flex-shrink-0" />
                 <span>Faster response times</span>
+              </li>
+              <li className="flex items-start gap-3 text-black/80">
+                <Check className="w-5 h-5 text-black mt-0.5 flex-shrink-0" />
+                <span>Up to 3 Workspaces (5 members each)</span>
               </li>
             </ul>
             
@@ -180,6 +188,10 @@ export default function GetPlusView() {
               <li className="flex items-start gap-3 text-white/90">
                 <Sparkles className="w-5 h-5 text-pink-400 mt-0.5 flex-shrink-0" />
                 <span>Early access to new features</span>
+              </li>
+              <li className="flex items-start gap-3 text-white/90">
+                <Infinity className="w-5 h-5 text-pink-400 mt-0.5 flex-shrink-0" />
+                <span>Unlimited Workspaces & Members</span>
               </li>
             </ul>
             

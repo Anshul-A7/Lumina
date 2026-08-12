@@ -63,6 +63,9 @@ public class PdfService {
     private ChatMessageRepository chatMessageRepository;
 
     @Autowired
+    private UsageTrackingService usageTrackingService;
+
+    @Autowired
     private AiService aiService;
 
     // ── Color Palette ───────────────────────────────────────────────────
@@ -92,6 +95,8 @@ public class PdfService {
     @Transactional
     public byte[] generatePdf(String content, String title, String email, Long sessionId) {
         User user = findUserByEmail(email);
+
+        usageTrackingService.checkAndIncrementPdfGeneration(user.getId());
 
         // Protect any Mermaid diagrams from AI reformatting alterations
         List<String> mermaidBlocks = new java.util.ArrayList<>();
@@ -254,6 +259,8 @@ public class PdfService {
             boolean inCodeBlock = false;
             String codeBlockLang = "";
             StringBuilder codeContent = new StringBuilder();
+            boolean inMathBlock = false;
+            StringBuilder mathContent = new StringBuilder();
             boolean inTable = false;
             List<String[]> tableRows = new java.util.ArrayList<>();
 
@@ -322,6 +329,57 @@ public class PdfService {
 
                 if (inCodeBlock) {
                     codeContent.append(line).append("\n");
+                    continue;
+                }
+
+                // ── Block Math Detection ────────────────────────────────
+                if (line.trim().equals("$$")) {
+                    if (inMathBlock) {
+                        String rawMath = mathContent.toString().trim();
+                        byte[] mathBytes = renderMathToImage(rawMath, true);
+                        if (mathBytes != null && mathBytes.length > 0) {
+                            try {
+                                ImageData imgData = ImageDataFactory.create(mathBytes);
+                                Image mathImg = new Image(imgData);
+                                mathImg.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                                mathImg.scale(0.35f, 0.35f);
+                                mathImg.setMarginTop(8);
+                                mathImg.setMarginBottom(14);
+                                doc.add(mathImg);
+                            } catch (Exception imgEx) {
+                                doc.add(new Paragraph("$$" + rawMath + "$$").setFont(fontMono));
+                            }
+                        } else {
+                            doc.add(new Paragraph("$$" + rawMath + "$$").setFont(fontMono));
+                        }
+                        mathContent.setLength(0);
+                        inMathBlock = false;
+                    } else {
+                        inMathBlock = true;
+                    }
+                    continue;
+                }
+
+                if (inMathBlock) {
+                    mathContent.append(line).append("\n");
+                    continue;
+                }
+
+                // Single line block math
+                if (line.trim().startsWith("$$") && line.trim().endsWith("$$") && line.trim().length() > 3) {
+                    String rawMath = line.trim().substring(2, line.trim().length() - 2).trim();
+                    byte[] mathBytes = renderMathToImage(rawMath, true);
+                    if (mathBytes != null && mathBytes.length > 0) {
+                        try {
+                            ImageData imgData = ImageDataFactory.create(mathBytes);
+                            Image mathImg = new Image(imgData);
+                            mathImg.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                            mathImg.scale(0.35f, 0.35f);
+                            mathImg.setMarginTop(8);
+                            mathImg.setMarginBottom(14);
+                            doc.add(mathImg);
+                        } catch (Exception e) {}
+                    }
                     continue;
                 }
 
@@ -462,6 +520,38 @@ public class PdfService {
                     continue;
                 }
 
+                // ── Image Rendering ─────────────────────────────────────────
+                if (line.matches("^!\\[.*?\\]\\(https?://.*?\\)$")) {
+                    Matcher imgMatcher = Pattern.compile("^!\\[(.*?)\\]\\((https?://.*?)\\)$").matcher(line.trim());
+                    if (imgMatcher.find()) {
+                        String imgDesc = imgMatcher.group(1);
+                        String imgUrl = imgMatcher.group(2);
+                        try {
+                            ImageData imgData = ImageDataFactory.create(new java.net.URL(imgUrl));
+                            Image generatedImg = new Image(imgData);
+                            generatedImg.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                            generatedImg.setMaxWidth(UnitValue.createPercentValue(100));
+                            generatedImg.setAutoScale(true);
+                            generatedImg.setMarginTop(10);
+                            generatedImg.setMarginBottom(10);
+                            doc.add(generatedImg);
+                            if (imgDesc != null && !imgDesc.isEmpty()) {
+                                doc.add(new Paragraph(imgDesc)
+                                        .setFont(fontItalic)
+                                        .setFontSize(9)
+                                        .setFontColor(COLOR_MUTED)
+                                        .setTextAlignment(TextAlignment.CENTER)
+                                        .setMarginBottom(15));
+                            }
+                        } catch (Exception e) {
+                            System.err.println("Failed to load image for PDF: " + imgUrl);
+                            doc.add(new Paragraph("[Image rendering failed: " + imgDesc + "]")
+                                    .setFont(fontItalic).setFontSize(9).setFontColor(COLOR_MUTED));
+                        }
+                    }
+                    continue;
+                }
+
                 // ── Regular Paragraph ───────────────────────────────────
                 Paragraph paragraph = createFormattedParagraph(line, null, fontRegular, fontBold, fontItalic, fontBoldItalic, fontMono)
                         .setFontSize(10.5f)
@@ -494,12 +584,14 @@ public class PdfService {
         }
         p.setFont(regular);
 
-        // Pattern to match: ***bold italic***, **bold**, *italic*, `code`
+        // Pattern to match: $$inline block$$, $inline math$, ***bold italic***, **bold**, *italic*, `code`
         Pattern pattern = Pattern.compile(
-                "(\\*{3})(.*?)\\1" +       // ***bold italic***
-                "|(\\*{2})(.*?)\\3" +       // **bold**
-                "|(\\*)(.*?)\\5" +          // *italic*
-                "|(`)(.*?)\\7"              // `code`
+                "(\\$\\$)(.*?)\\1" +                 // 1,2: $$math$$
+                "|(?<!\\$)\\$([^$]+)\\$(?!\\$)" +    // 3: $math$
+                "|(\\*{3})(.*?)\\4" +                // 4,5: ***bold italic***
+                "|(\\*{2})(.*?)\\6" +                // 6,7: **bold**
+                "|(\\*)(.*?)\\8" +                   // 8,9: *italic*
+                "|(`)(.*?)\\10"                      // 10,11: `code`
         );
 
         Matcher matcher = pattern.matcher(text);
@@ -511,18 +603,35 @@ public class PdfService {
                 p.add(new Text(text.substring(lastEnd, matcher.start())).setFont(regular));
             }
 
-            if (matcher.group(1) != null) {
+            if (matcher.group(1) != null || matcher.group(3) != null) {
+                // $$math$$ or $math$
+                String rawMath = matcher.group(1) != null ? matcher.group(2) : matcher.group(3);
+                byte[] mathBytes = renderMathToImage(rawMath, false);
+                if (mathBytes != null && mathBytes.length > 0) {
+                    try {
+                        ImageData imgData = ImageDataFactory.create(mathBytes);
+                        Image mathImg = new Image(imgData);
+                        mathImg.scale(0.35f, 0.35f);
+                        // Using setAction or tweaking baseline isn't perfect, but adding the Image directly works inline
+                        p.add(mathImg);
+                    } catch (Exception e) {
+                        p.add(new Text("$" + rawMath + "$").setFont(mono));
+                    }
+                } else {
+                    p.add(new Text("$" + rawMath + "$").setFont(mono));
+                }
+            } else if (matcher.group(4) != null) {
                 // ***bold italic***
-                p.add(new Text(matcher.group(2)).setFont(boldItalic));
-            } else if (matcher.group(3) != null) {
+                p.add(new Text(matcher.group(5)).setFont(boldItalic));
+            } else if (matcher.group(6) != null) {
                 // **bold**
-                p.add(new Text(matcher.group(4)).setFont(bold));
-            } else if (matcher.group(5) != null) {
+                p.add(new Text(matcher.group(7)).setFont(bold));
+            } else if (matcher.group(8) != null) {
                 // *italic*
-                p.add(new Text(matcher.group(6)).setFont(italic));
-            } else if (matcher.group(7) != null) {
+                p.add(new Text(matcher.group(9)).setFont(italic));
+            } else if (matcher.group(10) != null) {
                 // `code`
-                p.add(new Text(matcher.group(8))
+                p.add(new Text(matcher.group(11))
                         .setFont(mono)
                         .setFontSize(9)
                         .setBackgroundColor(COLOR_CODE_BG));
@@ -590,16 +699,43 @@ public class PdfService {
                 .replaceAll("\\*(.*?)\\*", "$1")
                 .replaceAll("`(.*?)`", "$1")
                 .replaceAll("~~(.*?)~~", "$1")
+                .replaceAll("\\$\\$(.*?)\\$\\$", "$1")
+                .replaceAll("\\$(.*?)\\$", "$1")
                 .trim();
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // MERMAID DIAGRAM RENDERER — High-resolution dark canvas rendering for PDF
+    // MERMAID & MATH RENDERERS — High-resolution rendering for PDF
     // ════════════════════════════════════════════════════════════════════════
 
     private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(12))
             .build();
+
+    private byte[] renderMathToImage(String mathFormula, boolean isBlock) {
+        if (mathFormula == null || mathFormula.isBlank()) return null;
+        try {
+            String prefix = isBlock ? "\\dpi{300}\\bg{white}\\large\\displaystyle " : "\\dpi{300}\\bg{white}\\large ";
+            String query = prefix + mathFormula.trim();
+            String encodedQuery = java.net.URLEncoder.encode(query, StandardCharsets.UTF_8).replace("+", "%20");
+            String url = "https://latex.codecogs.com/png.image?" + encodedQuery;
+
+            HttpRequest req = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .timeout(Duration.ofSeconds(12))
+                    .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36")
+                    .GET()
+                    .build();
+
+            HttpResponse<byte[]> resp = HTTP_CLIENT.send(req, HttpResponse.BodyHandlers.ofByteArray());
+            if (resp.statusCode() == 200 && resp.body() != null && resp.body().length > 0) {
+                return resp.body();
+            }
+        } catch (Exception e) {
+            System.err.println("Error rendering Math formula via CodeCogs: " + e.getMessage());
+        }
+        return null;
+    }
 
     private boolean isMermaidSyntax(String text) {
         if (text == null || text.isBlank()) return false;

@@ -3,6 +3,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 import { Download, Sparkles, Copy, Share, RefreshCcw, MoreHorizontal, FileText, Check } from "lucide-react";
 import { Mermaid } from "./Mermaid";
 import PdfDocumentCard from "../dashboard/PdfDocumentCard";
@@ -65,13 +68,26 @@ export function RichMessage({ content, isUser, animate = false, onRequestGenerat
 
   if (isUser) {
     return (
-      <div className="flex w-full justify-end">
-        <div className="max-w-[85%] sm:max-w-[75%] rounded-3xl px-5 py-3.5 text-[15px] leading-relaxed shadow-sm bg-secondary text-foreground border border-foreground/[0.02]">
-          {content.split("\n").map((line, i) => (
-            <p key={i} className="mb-1.5 last:mb-0">
-              {line}
-            </p>
-          ))}
+      <div className="flex w-full justify-end group">
+        <div className="flex flex-col items-end gap-1 max-w-[85%] sm:max-w-[75%]">
+          <div className="rounded-3xl px-5 py-3.5 text-[15px] leading-relaxed shadow-sm bg-secondary text-foreground border border-foreground/[0.02]">
+            {content.split("\n").map((line, i) => (
+              <p key={i} className="mb-1.5 last:mb-0">
+                {line}
+              </p>
+            ))}
+          </div>
+          <button 
+            onClick={() => {
+              navigator.clipboard.writeText(content);
+              setIsCopied(true);
+              setTimeout(() => setIsCopied(false), 2000);
+            }}
+            className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 text-[11px] text-foreground/40 hover:text-foreground mr-2 cursor-pointer"
+          >
+            {isCopied ? <Check className="w-3 h-3 text-green-600" /> : <Copy className="w-3 h-3" />}
+            {isCopied ? 'Copied' : 'Copy'}
+          </button>
         </div>
       </div>
     );
@@ -94,6 +110,37 @@ export function RichMessage({ content, isUser, animate = false, onRequestGenerat
     pdfContent = pdfMatch[3].trim();
   }
 
+  // Handle GENERATE_IMAGE tags on the frontend since streaming bypasses backend post-processing
+  const processImageTags = (text: string) => {
+    if (!text) return text;
+    // Pattern: ![Description](GENERATE_IMAGE:prompt text here)
+    const regex = /!\[([^\]]*)\]\(GENERATE_IMAGE:([^)]+)\)/g;
+    return text.replace(regex, (match, description, prompt) => {
+      const encodedPrompt = encodeURIComponent(prompt.trim());
+      const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true`;
+      return `![${description}](${imageUrl})`;
+    });
+  };
+
+  preText = processImageTags(preText);
+  if (hasPdf) {
+    pdfContent = processImageTags(pdfContent);
+    // Strip common leading whitespace (un-indent) to prevent ReactMarkdown from treating it as an indented code block
+    const lines = pdfContent.split('\n');
+    let minIndent = Infinity;
+    for (const line of lines) {
+      if (line.trim().length > 0) {
+        const indentMatch = line.match(/^[ \t]*/);
+        const indent = indentMatch ? indentMatch[0].length : 0;
+        if (indent < minIndent) minIndent = indent;
+      }
+    }
+    if (minIndent > 0 && minIndent !== Infinity) {
+      const regex = new RegExp(`^[ \\t]{${minIndent}}`, 'gm');
+      pdfContent = pdfContent.replace(regex, '');
+    }
+  }
+
   // Do not render empty assistant messages while waiting for initial tokens
   if ((!preText || preText.trim().length === 0) && !hasPdf && !isTyping) {
     return null;
@@ -104,30 +151,44 @@ export function RichMessage({ content, isUser, animate = false, onRequestGenerat
       <div className="w-full max-w-full lg:max-w-[90%] xl:max-w-[85%]">
         <div 
           ref={contentRef}
-          className="text-[15px] leading-relaxed text-black"
+          className="text-[15px] leading-relaxed text-foreground"
         >
           {preText && (
             <div className="markdown-content mb-3">
               <ReactMarkdown 
-                remarkPlugins={[remarkGfm]}
+                remarkPlugins={[remarkGfm, remarkMath]}
+                rehypePlugins={[[rehypeKatex, { strict: false, throwOnError: false }]]}
                 components={{
+                  img: ({ src, alt }: any) => (
+                    <span className="block my-4">
+                      <img 
+                        src={src} 
+                        alt={alt} 
+                        className="rounded-2xl shadow-md max-w-full h-auto border border-foreground/5" 
+                      />
+                      {alt && <span className="block text-center text-xs text-foreground/50 mt-2">{alt}</span>}
+                    </span>
+                  ),
                   code({node, inline, className, children, ...props}: any) {
                     const match = /language-(\w+)/.exec(className || '')
                     const isMermaid = match && match[1] === 'mermaid'
                     if (!inline && isMermaid) {
                       return <Mermaid chart={String(children).replace(/\n$/, '')} />
                     }
-                    return !inline && match ? (
-                      <div className="bg-primary text-primary-foreground text-sm rounded-lg p-4 my-2 overflow-x-auto font-mono">
-                        <code className={className} {...props}>
-                          {children}
-                        </code>
-                      </div>
-                    ) : (
-                      <code className="bg-black/5 rounded px-1.5 py-0.5 text-sm font-mono text-pink-600" {...props}>
+                    if (!inline && match) {
+                      return (
+                        <div className="bg-primary text-primary-foreground text-sm rounded-lg p-4 my-2 overflow-x-auto font-mono">
+                          <code className={className} {...props}>
+                            {children}
+                          </code>
+                        </div>
+                      );
+                    }
+                    return (
+                      <code className="bg-foreground/5 rounded px-1.5 py-0.5 text-sm font-mono text-pink-600 whitespace-pre-wrap" {...props}>
                         {children}
                       </code>
-                    )
+                    );
                   }
                 }}
               >
@@ -140,34 +201,39 @@ export function RichMessage({ content, isUser, animate = false, onRequestGenerat
             <PdfDocumentCard title={pdfTitle} initialContent={pdfContent} sessionId={sessionId} />
           )}
 
-          {isTyping && <span className="inline-block w-2 h-4 ml-1 bg-black animate-pulse" />}
+          {isTyping && <span className="inline-block w-2 h-4 ml-1 bg-foreground animate-pulse" />}
         </div>
 
         {/* Footer Actions (Only visible after typing and when content is non-empty) */}
         {!isTyping && (displayedContent.trim().length > 0 || hasPdf) && (
-          <div className="mt-4 flex items-center gap-2 text-black/40">
+          <div className="mt-4 flex items-center gap-2 text-foreground/40">
             <button 
               onClick={() => {
                 navigator.clipboard.writeText(content);
                 setIsCopied(true);
                 setTimeout(() => setIsCopied(false), 2000);
               }}
-              className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-black/[0.04] hover:text-black transition-colors cursor-pointer" 
+              className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-foreground/[0.04] hover:text-foreground transition-colors cursor-pointer" 
               title="Copy"
             >
               {isCopied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
             </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-black/[0.04] hover:text-black transition-colors cursor-pointer" title="Share">
+            <button 
+              onClick={() => {
+                const url = window.location.href;
+                navigator.clipboard.writeText(url);
+                toast.success("Link copied to clipboard!");
+              }}
+              className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-foreground/[0.04] hover:text-foreground transition-colors cursor-pointer" 
+              title="Share Link"
+            >
               <Share className="w-4 h-4" />
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-black/[0.04] hover:text-black transition-colors cursor-pointer" title="Regenerate">
-              <RefreshCcw className="w-4 h-4" />
             </button>
             
             <div className="relative" ref={menuRef}>
               <button 
                 onClick={() => setShowMoreMenu(!showMoreMenu)}
-                className={`w-8 h-8 flex items-center justify-center rounded-lg hover:bg-black/[0.04] hover:text-black transition-colors cursor-pointer ${showMoreMenu ? 'bg-black/[0.04] text-black' : ''}`}
+                className={`w-8 h-8 flex items-center justify-center rounded-lg hover:bg-foreground/[0.04] hover:text-foreground transition-colors cursor-pointer ${showMoreMenu ? 'bg-foreground/[0.04] text-foreground' : ''}`}
                 title="More"
               >
                 <MoreHorizontal className="w-4 h-4" />

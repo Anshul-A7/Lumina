@@ -26,7 +26,8 @@ import {
   BarChart3,
   MessageSquarePlus,
   X,
-  Download
+  Download,
+  Users
 } from "lucide-react";
 import { AuthService } from "@/services/auth.service";
 import * as ChatService from "@/lib/chat.service";
@@ -40,6 +41,9 @@ import SettingsView from "@/components/dashboard/SettingsView";
 import GetPlusView from "@/components/dashboard/GetPlusView";
 import WorkspaceView from "@/components/dashboard/WorkspaceView";
 import EditPdfView from "@/components/dashboard/EditPdfView";
+import NotificationTray from "@/components/dashboard/NotificationTray";
+import CollaborationView from "@/components/dashboard/CollaborationView";
+import CollabEditor from "@/components/dashboard/CollabEditor";
 import { LuminaIcon } from "@/components/common/LuminaLogo";
 import toast from "react-hot-toast";
 
@@ -75,7 +79,8 @@ function DashboardContent() {
   // Selected File States
   const [attachments, setAttachments] = useState<{ file: File, preview: string | null }[]>([]);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const pdfInputRef = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   // Menu states
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
@@ -95,6 +100,11 @@ function DashboardContent() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // Collab state
+  const [collabWsId, setCollabWsId] = useState<number | null>(null);
+  const [collabDocId, setCollabDocId] = useState<number | null>(null);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   // Search modal state (Feature 3)
   const [showSearchModal, setShowSearchModal] = useState(false);
@@ -369,7 +379,8 @@ function DashboardContent() {
     setAttachments(prev => [...prev, ...newAttachments]);
 
     setActiveMenuId(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+    if (pdfInputRef.current) pdfInputRef.current.value = "";
+    if (imageInputRef.current) imageInputRef.current.value = "";
   };
 
   const handleDriveUpload = () => {
@@ -851,12 +862,34 @@ function DashboardContent() {
                   </div>
                 </Link>
 
+                <Link href="/dashboard?tab=collab"
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-foreground/[0.05] transition-colors text-left cursor-pointer"
+                >
+                  <Users className="w-[18px] h-[18px] text-foreground/60 shrink-0" />
+                  <span className="text-[13px] font-semibold text-foreground">Workspaces</span>
+                </Link>
+
                 <Link href="/dashboard?tab=settings"
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-foreground/[0.05] transition-colors text-left cursor-pointer"
                 >
                   <Settings className="w-[18px] h-[18px] text-foreground/60 shrink-0" />
                   <span className="text-[13px] font-semibold text-foreground">Settings</span>
                 </Link>
+
+                <div className="relative">
+                  <button
+                    onClick={() => setShowNotifications(!showNotifications)}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-foreground/[0.05] transition-colors text-left cursor-pointer"
+                  >
+                    <Bell className="w-[18px] h-[18px] text-foreground/60 shrink-0" />
+                    <span className="text-[13px] font-semibold text-foreground">Notifications</span>
+                  </button>
+                  <AnimatePresence>
+                    {showNotifications && (
+                      <NotificationTray onClose={() => setShowNotifications(false)} />
+                    )}
+                  </AnimatePresence>
+                </div>
 
                 <button
                   onClick={() => {
@@ -888,6 +921,12 @@ function DashboardContent() {
           <WorkspaceView />
         ) : activeTab === "edit-pdf" ? (
           <EditPdfView />
+        ) : activeTab === "collab" ? (
+          collabDocId && collabWsId ? (
+            <CollabEditor workspaceId={collabWsId} documentId={collabDocId} onBack={() => { setCollabDocId(null); setCollabWsId(null); }} />
+          ) : (
+            <CollaborationView onOpenDocument={(wsId, docId) => { setCollabWsId(wsId); setCollabDocId(docId); }} />
+          )
         ) : (
           <>
             {/* Chat Header for Get Plus and New Chat */}
@@ -1028,7 +1067,8 @@ function DashboardContent() {
                           onClick={(e) => e.stopPropagation()}
                         >
                           {[
-                            { id: "local", icon: MonitorUp, title: "Upload PDF or Image", sub: "From your computer", action: () => fileInputRef.current?.click() },
+                            { id: "local-pdf", icon: FileText, title: "Upload PDF", sub: "From your computer", action: () => pdfInputRef.current?.click() },
+                            { id: "local-image", icon: ImageIcon, title: "Upload Image", sub: "From your computer", action: () => imageInputRef.current?.click() },
                             { id: "drive", icon: FolderArchive, title: "Add from Google Drive", sub: "Select PDF or Image from your drive", action: handleDriveUpload },
                           ].map((item, i) => (
                             <motion.button
@@ -1052,12 +1092,20 @@ function DashboardContent() {
                       )}
                     </AnimatePresence>
 
-                    {/* Hidden File Input */}
+                    {/* Hidden File Inputs */}
                     <input
                       type="file"
-                      accept="application/pdf,image/png,image/jpeg,image/webp"
+                      accept="application/pdf"
                       multiple
-                      ref={fileInputRef}
+                      ref={pdfInputRef}
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp"
+                      multiple
+                      ref={imageInputRef}
                       onChange={handleFileUpload}
                       className="hidden"
                     />

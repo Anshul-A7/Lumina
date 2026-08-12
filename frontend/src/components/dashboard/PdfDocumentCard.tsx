@@ -5,6 +5,9 @@ import { Edit3, Download, Maximize, Minimize, Copy, Check, Eye, FileText } from 
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 import { generateAndDownloadPdf, deletePdf } from '@/lib/pdf.service';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
@@ -143,8 +146,8 @@ export default function PdfDocumentCard({ title, initialContent, sessionId }: Pd
           <div className="w-full h-full p-4 sm:p-8 flex flex-col items-center">
             <div className="prose prose-sm sm:prose-base max-w-3xl w-full bg-white shadow-md border border-gray-200 rounded-xl p-8 sm:p-14 min-h-[1056px] shrink-0 mb-8">
               <ReactMarkdown 
-                remarkPlugins={[remarkGfm]} 
-                rehypePlugins={[rehypeRaw]}
+                remarkPlugins={[remarkGfm, remarkMath]} 
+                rehypePlugins={[rehypeRaw, [rehypeKatex, { strict: false, throwOnError: false }]]}
                 components={{
                   code({node, inline, className, children, ...props}: any) {
                     const match = /language-(\w+)/.exec(className || '')
@@ -152,17 +155,20 @@ export default function PdfDocumentCard({ title, initialContent, sessionId }: Pd
                     if (!inline && isMermaid) {
                       return <Mermaid chart={String(children).replace(/\n$/, '')} />
                     }
-                    return !inline && match ? (
-                      <div className="bg-[#000000] text-white text-sm rounded-xl p-4 my-3 overflow-x-auto font-mono border border-zinc-800 shadow-md">
-                        <code className={className} {...props}>
-                          {children}
-                        </code>
-                      </div>
-                    ) : (
-                      <code className="bg-black/5 rounded px-1.5 py-0.5 text-sm font-mono text-pink-600" {...props}>
+                    if (!inline && match) {
+                      return (
+                        <div className="bg-[#000000] text-white text-sm rounded-xl p-4 my-3 overflow-x-auto font-mono border border-zinc-800 shadow-md">
+                          <code className={className} {...props}>
+                            {children}
+                          </code>
+                        </div>
+                      );
+                    }
+                    return (
+                      <code className="bg-black/5 rounded px-1.5 py-0.5 text-sm font-mono text-pink-600 whitespace-pre-wrap" {...props}>
                         {children}
                       </code>
-                    )
+                    );
                   }
                 }}
               >
