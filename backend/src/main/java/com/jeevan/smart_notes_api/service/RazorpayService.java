@@ -68,6 +68,9 @@ public class RazorpayService {
             // The customer receives an invoice and must complete checkout
             request.put("customer_notify", 1); 
 
+            // Log the payload to debug "Invalid ID" errors on Railway
+            log.info("Creating Razorpay Subscription. CustomerID: '{}', PlanID: '{}'", razorpayCustomerId, planId);
+
             return razorpayClient.subscriptions.create(request);
         } catch (RazorpayException e) {
             log.error("Failed to create Razorpay subscription for customer {} and plan {}", razorpayCustomerId, planId, e);
