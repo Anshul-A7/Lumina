@@ -117,7 +117,7 @@ export function RichMessage({ content, isUser, animate = false, onRequestGenerat
     const regex = /!\[([^\]]*)\]\(GENERATE_IMAGE:([^)]+)\)/g;
     return text.replace(regex, (match, description, prompt) => {
       const encodedPrompt = encodeURIComponent(prompt.trim());
-      const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true`;
+      const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true&model=flux`;
       return `![${description}](${imageUrl})`;
     });
   };

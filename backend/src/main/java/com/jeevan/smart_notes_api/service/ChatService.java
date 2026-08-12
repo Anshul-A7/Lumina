@@ -435,7 +435,7 @@ public class ChatService {
         while (matcher.find()) {
             String prompt = matcher.group(2).trim();
             String encodedPrompt = java.net.URLEncoder.encode(prompt, java.nio.charset.StandardCharsets.UTF_8);
-            String imageUrl = "https://image.pollinations.ai/prompt/" + encodedPrompt + "?width=1024&height=1024&nologo=true";
+            String imageUrl = "https://image.pollinations.ai/prompt/" + encodedPrompt + "?width=1024&height=1024&nologo=true&model=flux";
             
             try {
                 imageService.saveImage(email, prompt, imageUrl);

@@ -778,7 +778,7 @@ public class AiService {
             String description = matcher.group(1);
             String prompt = matcher.group(2).trim();
             String encodedPrompt = java.net.URLEncoder.encode(prompt, java.nio.charset.StandardCharsets.UTF_8);
-            String imageUrl = "https://image.pollinations.ai/prompt/" + encodedPrompt + "?width=1024&height=1024&nologo=true";
+            String imageUrl = "https://image.pollinations.ai/prompt/" + encodedPrompt + "?width=1024&height=1024&nologo=true&model=flux";
             matcher.appendReplacement(result, "![" + description + "](" + imageUrl + ")");
             log.info("🎨 Generated image URL for prompt: {}", prompt.substring(0, Math.min(50, prompt.length())));
         }
