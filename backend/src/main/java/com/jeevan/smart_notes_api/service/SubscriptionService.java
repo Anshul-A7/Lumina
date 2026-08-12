@@ -323,14 +323,22 @@ public class SubscriptionService {
                 .orElseGet(() -> {
                     User user = findUserByEmail(email);
                     UsageTracker tracker = new UsageTracker(user, today);
-                    return usageTrackerRepository.save(tracker);
+                    try {
+                        return usageTrackerRepository.save(tracker);
+                    } catch (org.springframework.dao.DataIntegrityViolationException e) {
+                        return usageTrackerRepository.findByUserEmailAndUsageDate(email, today).get();
+                    }
                 });
     }
 
     private Subscription createDefaultSubscription(String email) {
         User user = findUserByEmail(email);
         Subscription sub = new Subscription(user, Subscription.Plan.FREE, Subscription.BillingCycle.MONTHLY);
-        return subscriptionRepository.save(sub);
+        try {
+            return subscriptionRepository.save(sub);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            return subscriptionRepository.findByUserEmail(email).get();
+        }
     }
 
     private User findUserByEmail(String email) {
