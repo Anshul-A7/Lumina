@@ -356,9 +356,13 @@ public class AiProviderPool {
      * Same as callWithFailover but tries vision-capable providers first.
      */
     public String callMultimodalWithFailover(Function<ChatClient, String> operation) {
+        int attempts = 0;
+        List<String> errors = new ArrayList<>();
+        
         // Try Gemini slots first (vision-capable)
         for (ProviderSlot slot : slots) {
             if (slot.getProviderName().equalsIgnoreCase("GEMINI") && slot.isAvailable()) {
+                attempts++;
                 try {
                     String result = operation.apply(slot.getChatClient());
                     slot.markSuccess();
@@ -366,13 +370,21 @@ public class AiProviderPool {
                 } catch (Exception e) {
                     if (isRateLimitError(e)) {
                         slot.markRateLimited(getCooldownForProvider(slot.getProviderName()));
+                        log.warn("Gemini multimodal rate-limited, trying next Gemini slot: {}", e.getMessage());
+                    } else {
+                        errors.add(slot.getProviderName() + "[" + slot.getMaskedKey() + "]: " + e.getMessage());
+                        log.warn("Gemini multimodal failed: {}", e.getMessage());
                     }
-                    log.warn("Gemini multimodal failed, trying other providers: {}", e.getMessage());
                 }
             }
         }
-        // Fallback to regular failover for non-Gemini
-        return callWithFailover(operation);
+        
+        if (attempts == 0) {
+            throw new RuntimeException("Image analysis is currently rate-limited. Please wait a minute and try again.");
+        }
+        
+        log.error("🚨 ALL Gemini providers exhausted for multimodal request. Errors: {}", errors);
+        throw new RuntimeException("Image analysis failed or is rate-limited. Please try again.");
     }
 
     /**
