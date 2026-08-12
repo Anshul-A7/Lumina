@@ -118,7 +118,7 @@ public class AiService {
                  - DO NOT emit `<pdf_document>` tags.
 
             2. EXPLICIT PDF GENERATION TRIGGER:
-               - ONLY when the user EXPLICITLY commands you to compile, generate, create, or export a PDF (e.g., "generate a PDF"):
+               - ONLY when the user EXPLICITLY commands or suggests you to generate a PDF output (e.g., "generate a PDF", "give pdf", "make pdf", "Explain -- in pdf", "in pdf", or any phrasing that suggests a PDF as output):
                  - In your conversational chat response, provide ONLY a very brief 1-2 sentence summary of the document.
                  - CRITICAL: NEVER write the full explanation in the chat and then duplicate it inside the PDF tags. The full exhaustive explanation MUST ONLY be placed inside the `<pdf_document>` tags.
                  - Followed by the complete, publication-grade document enclosed inside:
@@ -167,8 +167,8 @@ public class AiService {
 
             2. INTENT-BASED OUTPUT RULES:
                - If the user asks a question or requests an explanation: Deliver the entire detailed response in the chat using rich Markdown formatting.
-               - DO NOT emit `<pdf_document>` tags unless the user specifically and explicitly commands "generate a PDF" or "make a PDF".
-               - CRITICAL: If the user explicitly asks to generate a PDF, you must ONLY provide a very brief 1-2 sentence summary in the chat, and place the ENTIRE detailed explanation exclusively inside the `<pdf_document>` tags. NEVER duplicate the content.
+               - DO NOT emit `<pdf_document>` tags unless the user specifically and explicitly commands or suggests generating a PDF (e.g., "generate a PDF", "make a PDF", "give pdf", "in pdf").
+               - CRITICAL: If the user asks to generate a PDF, you must ONLY provide a very brief 1-2 sentence summary in the chat, and place the ENTIRE detailed explanation exclusively inside the `<pdf_document>` tags. NEVER duplicate the content.
 
             3. STRUCTURE & VISUAL RIGOR:
                - Use `##` and `###` headers for clean hierarchical structure.
@@ -747,7 +747,10 @@ public class AiService {
                lower.contains("create a pdf") ||
                lower.contains("generate pdf") ||
                lower.contains("export to pdf") ||
-               lower.contains("compile a pdf");
+               lower.contains("compile a pdf") ||
+               lower.contains("give pdf") ||
+               lower.contains("make pdf") ||
+               lower.contains("in pdf");
     }
 
     // ════════════════════════════════════════════════════════════════════════
