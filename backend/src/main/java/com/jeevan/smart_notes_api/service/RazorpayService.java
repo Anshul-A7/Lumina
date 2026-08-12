@@ -120,8 +120,7 @@ public class RazorpayService {
         try {
             com.razorpay.Plan plan = razorpayClient.plans.fetch(planId);
             report.put("plan_fetch_success", true);
-            report.put("plan_interval", plan.get("interval"));
-            report.put("plan_amount", plan.get("item").get("amount"));
+            report.put("plan_details", plan.toString());
         } catch (Exception e) {
             report.put("plan_fetch_success", false);
             report.put("plan_error", e.getMessage());
