@@ -37,9 +37,16 @@ public class RazorpayService {
         try {
             JSONObject customerRequest = new JSONObject();
             customerRequest.put("name", user.getUsername());
-            customerRequest.put("email", user.getEmail());
-            // fail_existing: 0 tells Razorpay to return the existing customer if the email matches
-            customerRequest.put("fail_existing", 0); 
+            
+            // To bypass Razorpay's strict "Customer already exists" constraint on emails
+            // especially after database resets, we append +userId to the email handle.
+            // For example: anshulrathod76+1@gmail.com. This acts as a unique email to Razorpay
+            // but still routes to the user's real inbox (supported by Gmail, Outlook, etc).
+            String[] emailParts = user.getEmail().split("@");
+            String uniqueEmail = emailParts[0] + "+" + user.getId() + "@" + emailParts[1];
+            customerRequest.put("email", uniqueEmail);
+
+            customerRequest.put("fail_existing", 0);
 
             Customer customer = razorpayClient.customers.create(customerRequest);
             return customer.get("id");
