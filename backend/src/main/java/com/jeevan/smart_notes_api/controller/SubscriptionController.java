@@ -28,11 +28,11 @@ public class SubscriptionController {
     }
 
     /**
-     * POST /subscription/purchase — Purchase or upgrade a plan.
+     * POST /subscription/checkout — Initialize Razorpay Checkout Session
      * Body: { "plan": "PLUS", "billingCycle": "MONTHLY" }
      */
-    @PostMapping("/purchase")
-    public ResponseEntity<Map<String, Object>> purchasePlan(
+    @PostMapping("/checkout")
+    public ResponseEntity<Map<String, Object>> createCheckoutSession(
             @RequestBody Map<String, String> body,
             Authentication auth) {
 
@@ -47,20 +47,15 @@ public class SubscriptionController {
         }
 
         try {
-            Subscription sub = subscriptionService.purchasePlan(email, plan, cycle);
+            String subscriptionId = subscriptionService.createCheckoutSession(email, plan, cycle);
 
             Map<String, Object> result = new HashMap<>();
-            result.put("message", "Subscription updated successfully");
-            result.put("plan", sub.getPlan().name());
-            result.put("billingCycle", sub.getBillingCycle().name());
-            result.put("active", sub.isActive());
-            result.put("startDate", sub.getStartDate());
-            result.put("endDate", sub.getEndDate());
-            result.put("monthlyPriceInr", sub.getMonthlyPriceInr());
+            result.put("message", "Checkout session initialized");
+            result.put("subscription_id", subscriptionId);
             return ResponseEntity.ok(result);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | IllegalStateException e) {
             Map<String, Object> error = new HashMap<>();
-            error.put("error", "Invalid plan or billing cycle. Valid plans: FREE, PLUS, PRO. Valid cycles: MONTHLY, YEARLY");
+            error.put("error", e.getMessage());
             return ResponseEntity.badRequest().body(error);
         }
     }
@@ -71,11 +66,16 @@ public class SubscriptionController {
     @PostMapping("/cancel")
     public ResponseEntity<Map<String, String>> cancelSubscription(Authentication auth) {
         String email = auth.getName();
-        subscriptionService.cancelSubscription(email);
-
-        Map<String, String> result = new HashMap<>();
-        result.put("message", "Subscription cancelled. You are now on the Free plan.");
-        return ResponseEntity.ok(result);
+        try {
+            subscriptionService.cancelSubscription(email);
+            Map<String, String> result = new HashMap<>();
+            result.put("message", "Your subscription has been scheduled for cancellation at the end of the current billing cycle.");
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
     }
 
     /**

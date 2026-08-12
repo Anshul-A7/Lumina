@@ -48,6 +48,9 @@ public class User {
     @Column(columnDefinition = "varchar(10) default 'FREE'")
     private SubscriptionPlan subscriptionPlan = SubscriptionPlan.FREE;
 
+    @Column(name = "razorpay_customer_id")
+    private String razorpayCustomerId;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -165,5 +168,13 @@ public class User {
 
     public void setSubscriptionPlan(SubscriptionPlan subscriptionPlan) {
         this.subscriptionPlan = subscriptionPlan;
+    }
+
+    public String getRazorpayCustomerId() {
+        return razorpayCustomerId;
+    }
+
+    public void setRazorpayCustomerId(String razorpayCustomerId) {
+        this.razorpayCustomerId = razorpayCustomerId;
     }
 }

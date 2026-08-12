@@ -18,6 +18,10 @@ public class Subscription {
         MONTHLY, YEARLY
     }
 
+    public enum SubscriptionStatus {
+        CREATED, ACTIVE, CANCELLATION_SCHEDULED, CANCELLED, HALTED, PENDING, COMPLETED
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,6 +43,25 @@ public class Subscription {
     private LocalDateTime startDate;
 
     private LocalDateTime endDate;
+
+    @Column(name = "current_period_start")
+    private LocalDateTime currentPeriodStart;
+
+    @Column(name = "current_period_end")
+    private LocalDateTime currentPeriodEnd;
+
+    @Column(name = "razorpay_subscription_id", unique = true)
+    private String razorpaySubscriptionId;
+
+    @Column(name = "razorpay_plan_id")
+    private String razorpayPlanId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private SubscriptionStatus status = SubscriptionStatus.ACTIVE;
+
+    @Column(name = "cancel_at_cycle_end", nullable = false)
+    private boolean cancelAtCycleEnd = false;
 
     @Column(nullable = false)
     private boolean active = true;
@@ -229,5 +252,53 @@ public class Subscription {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public LocalDateTime getCurrentPeriodStart() {
+        return currentPeriodStart;
+    }
+
+    public void setCurrentPeriodStart(LocalDateTime currentPeriodStart) {
+        this.currentPeriodStart = currentPeriodStart;
+    }
+
+    public LocalDateTime getCurrentPeriodEnd() {
+        return currentPeriodEnd;
+    }
+
+    public void setCurrentPeriodEnd(LocalDateTime currentPeriodEnd) {
+        this.currentPeriodEnd = currentPeriodEnd;
+    }
+
+    public String getRazorpaySubscriptionId() {
+        return razorpaySubscriptionId;
+    }
+
+    public void setRazorpaySubscriptionId(String razorpaySubscriptionId) {
+        this.razorpaySubscriptionId = razorpaySubscriptionId;
+    }
+
+    public String getRazorpayPlanId() {
+        return razorpayPlanId;
+    }
+
+    public void setRazorpayPlanId(String razorpayPlanId) {
+        this.razorpayPlanId = razorpayPlanId;
+    }
+
+    public SubscriptionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(SubscriptionStatus status) {
+        this.status = status;
+    }
+
+    public boolean isCancelAtCycleEnd() {
+        return cancelAtCycleEnd;
+    }
+
+    public void setCancelAtCycleEnd(boolean cancelAtCycleEnd) {
+        this.cancelAtCycleEnd = cancelAtCycleEnd;
     }
 }

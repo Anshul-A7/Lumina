@@ -2,8 +2,15 @@
 
 import React, { useState, useEffect } from "react";
 import { Sparkles, Check, Zap, Infinity, Loader2, Star, ShieldCheck, X } from "lucide-react";
-import { purchasePlan, getSubscription, SubscriptionDetails } from "@/lib/subscription.service";
+import { createCheckoutSession, getSubscription, SubscriptionDetails } from "@/lib/subscription.service";
 import toast from "react-hot-toast";
+
+// Declare Razorpay on the window object
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 export default function GetPlusView() {
   const [sub, setSub] = useState<SubscriptionDetails | null>(null);
@@ -20,13 +27,45 @@ export default function GetPlusView() {
   const handleUpgrade = async (plan: "PLUS" | "PRO") => {
     try {
       setPurchasing(true);
-      await purchasePlan(plan, billingCycle);
-      toast.success(`Successfully upgraded to Lumina ${plan}!`);
-      const updatedSub = await getSubscription();
-      setSub(updatedSub);
-    } catch (err) {
+      
+      // 1. Initialize checkout session on the backend
+      const { subscription_id } = await createCheckoutSession(plan, billingCycle);
+      
+      // 2. Open Razorpay Checkout Modal
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Enter the Key ID generated from the Dashboard
+        subscription_id: subscription_id,
+        name: "Lumina Notes",
+        description: `Upgrade to Lumina ${plan}`,
+        handler: async function (response: any) {
+          // Razorpay returns razorpay_payment_id, razorpay_subscription_id, razorpay_signature
+          // We can optionally verify it here, but the webhook handles the actual entitlement backend update.
+          toast.success(`Payment successful! Welcome to Lumina ${plan}. Please wait a moment for the server to activate your account.`);
+          
+          // Poll or refetch subscription details to reflect new state
+          setLoading(true);
+          setTimeout(async () => {
+             const updatedSub = await getSubscription();
+             setSub(updatedSub);
+             setLoading(false);
+          }, 3000); // Give the webhook a few seconds to process
+        },
+        theme: {
+          color: plan === "PRO" ? "#ec4899" : "#000000",
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      
+      rzp.on('payment.failed', function (response: any){
+         toast.error(response.error.description || "Payment failed. Please try again.");
+      });
+      
+      rzp.open();
+      
+    } catch (err: any) {
       console.error(err);
-      toast.error("Failed to upgrade plan.");
+      toast.error(err.response?.data?.error || "Failed to initialize checkout.");
     } finally {
       setPurchasing(false);
     }
@@ -69,7 +108,7 @@ export default function GetPlusView() {
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-black mb-2">Free</h2>
               <p className="text-black/60 mb-6 text-sm">Perfect for light usage and testing the waters.</p>
-              <div className="text-4xl font-bold text-black">$0<span className="text-lg text-black/40 font-normal">/mo</span></div>
+              <div className="text-4xl font-bold text-black">₹0<span className="text-lg text-black/40 font-normal">/mo</span></div>
               <div className="text-sm text-transparent mt-1">₹0/mo</div> {/* Placeholder to align height */}
             </div>
             
@@ -112,12 +151,11 @@ export default function GetPlusView() {
               <h2 className="text-2xl font-bold text-black mb-2 flex items-center gap-2"><Zap className="w-6 h-6 text-yellow-500" /> Plus</h2>
               <p className="text-black/60 mb-6 text-sm">For regular users who need more capabilities.</p>
               <div className="flex items-end gap-2">
-                <div className="text-4xl font-bold text-black">{billingCycle === "MONTHLY" ? "$1.2" : "$0.96"}<span className="text-lg text-black/40 font-normal">/mo</span></div>
-                {billingCycle === "MONTHLY" && <div className="text-sm text-black/40 line-through mb-1">$3.6</div>}
+                <div className="text-4xl font-bold text-black">{billingCycle === "MONTHLY" ? "₹100" : "₹80"}<span className="text-lg text-black/40 font-normal">/mo</span></div>
+                {billingCycle === "MONTHLY" && <div className="text-sm text-black/40 line-through mb-1">₹299</div>}
               </div>
               <div className="text-sm text-black/60 mt-1 font-medium">
-                {billingCycle === "MONTHLY" ? "₹100/mo" : "₹80/mo (billed ₹960/yr)"}
-                {billingCycle === "MONTHLY" && <span className="line-through text-black/40 ml-2">₹299</span>}
+                {billingCycle === "MONTHLY" ? "Billed Monthly" : "Billed ₹960/yr"}
               </div>
             </div>
             
@@ -162,9 +200,9 @@ export default function GetPlusView() {
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2"><Star className="w-6 h-6 text-pink-400" fill="currentColor" /> Pro</h2>
               <p className="text-white/60 mb-6 text-sm">For power users who need maximum capabilities.</p>
-              <div className="text-4xl font-bold text-white">{billingCycle === "MONTHLY" ? "$6" : "$4.8"}<span className="text-lg text-white/40 font-normal">/mo</span></div>
+              <div className="text-4xl font-bold text-white">{billingCycle === "MONTHLY" ? "₹499" : "₹399"}<span className="text-lg text-white/40 font-normal">/mo</span></div>
               <div className="text-sm text-white/60 mt-1 font-medium">
-                {billingCycle === "MONTHLY" ? "₹499/mo" : "₹399/mo (billed ₹4788/yr)"}
+                {billingCycle === "MONTHLY" ? "Billed Monthly" : "Billed ₹4788/yr"}
               </div>
             </div>
             

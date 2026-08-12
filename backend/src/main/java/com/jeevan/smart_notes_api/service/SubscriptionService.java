@@ -8,6 +8,7 @@ import com.jeevan.smart_notes_api.repository.SubscriptionRepository;
 import com.jeevan.smart_notes_api.repository.UsageTrackerRepository;
 import com.jeevan.smart_notes_api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,40 +29,103 @@ public class SubscriptionService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private RazorpayService razorpayService;
+
+    @Value("${razorpay.plan.plus-monthly:${RAZORPAY_PLAN_PLUS_MONTHLY:}}")
+    private String planPlusMonthly;
+
+    @Value("${razorpay.plan.plus-yearly:${RAZORPAY_PLAN_PLUS_YEARLY:}}")
+    private String planPlusYearly;
+
+    @Value("${razorpay.plan.pro-monthly:${RAZORPAY_PLAN_PRO_MONTHLY:}}")
+    private String planProMonthly;
+
+    @Value("${razorpay.plan.pro-yearly:${RAZORPAY_PLAN_PRO_YEARLY:}}")
+    private String planProYearly;
+
     // ════════════════════════════════════════════════════════════════════════
     // SUBSCRIPTION MANAGEMENT
     // ════════════════════════════════════════════════════════════════════════
 
-    /**
-     * Get the current subscription for a user.
-     * If no subscription exists, creates a default FREE subscription.
-     */
-    public Subscription getSubscription(String email) {
-        return subscriptionRepository.findByUserEmail(email)
-                .orElseGet(() -> createDefaultSubscription(email));
+    public String getRazorpayPlanId(String planName, String cycleName) {
+        String key = planName.toUpperCase() + "_" + cycleName.toUpperCase();
+        return switch (key) {
+            case "PLUS_MONTHLY" -> planPlusMonthly;
+            case "PLUS_YEARLY" -> planPlusYearly;
+            case "PRO_MONTHLY" -> planProMonthly;
+            case "PRO_YEARLY" -> planProYearly;
+            default -> throw new IllegalArgumentException("Invalid plan or billing cycle combination: " + key);
+        };
+    }
+
+    public Subscription.Plan getInternalPlanFromRazorpayPlanId(String razorpayPlanId) {
+        if (razorpayPlanId.equals(planPlusMonthly) || razorpayPlanId.equals(planPlusYearly)) {
+            return Subscription.Plan.PLUS;
+        } else if (razorpayPlanId.equals(planProMonthly) || razorpayPlanId.equals(planProYearly)) {
+            return Subscription.Plan.PRO;
+        }
+        return Subscription.Plan.FREE;
+    }
+
+    public Subscription.BillingCycle getInternalCycleFromRazorpayPlanId(String razorpayPlanId) {
+        if (razorpayPlanId.equals(planPlusMonthly) || razorpayPlanId.equals(planProMonthly)) {
+            return Subscription.BillingCycle.MONTHLY;
+        } else if (razorpayPlanId.equals(planPlusYearly) || razorpayPlanId.equals(planProYearly)) {
+            return Subscription.BillingCycle.YEARLY;
+        }
+        return Subscription.BillingCycle.MONTHLY;
     }
 
     /**
-     * Get subscription details as a structured map for API response.
+     * Get the current active subscription for a user.
+     * Evaluates expiration and status strictly according to the architecture specification.
      */
+    public Subscription getSubscription(String email) {
+        Subscription sub = subscriptionRepository.findByUserEmail(email)
+                .orElseGet(() -> createDefaultSubscription(email));
+        
+        // Entitlement Check Rule: 
+        // If it's cancelled/halted/completed and past the period end date, it's effectively FREE.
+        if (sub.getPlan() != Subscription.Plan.FREE) {
+            boolean isExpired = sub.getCurrentPeriodEnd() != null && LocalDateTime.now().isAfter(sub.getCurrentPeriodEnd());
+            boolean isCancelledOrHalted = sub.getStatus() == Subscription.SubscriptionStatus.CANCELLED ||
+                                          sub.getStatus() == Subscription.SubscriptionStatus.HALTED ||
+                                          sub.getStatus() == Subscription.SubscriptionStatus.COMPLETED;
+            
+            // If they scheduled cancellation, they keep access UNTIL currentPeriodEnd
+            if (isCancelledOrHalted || (sub.getStatus() == Subscription.SubscriptionStatus.CANCELLATION_SCHEDULED && isExpired)) {
+                // Return a temporary FREE subscription representation for authorization purposes,
+                // without deleting their history from the database.
+                User user = findUserByEmail(email);
+                return new Subscription(user, Subscription.Plan.FREE, Subscription.BillingCycle.MONTHLY);
+            }
+        }
+
+        return sub;
+    }
+
     public Map<String, Object> getSubscriptionDetails(String email) {
-        Subscription sub = getSubscription(email);
+        Subscription effectiveSub = getSubscription(email); // Evaluated for expiry
+        Subscription dbSub = subscriptionRepository.findByUserEmail(email).orElse(effectiveSub);
+
         UsageTracker usage = getOrCreateTodayUsage(email);
 
         Map<String, Object> details = new HashMap<>();
-        details.put("plan", sub.getPlan().name());
-        details.put("billingCycle", sub.getBillingCycle().name());
-        details.put("active", sub.isActive());
-        details.put("startDate", sub.getStartDate());
-        details.put("endDate", sub.getEndDate());
-        details.put("monthlyPriceInr", sub.getMonthlyPriceInr());
+        details.put("plan", effectiveSub.getPlan().name());
+        details.put("billingCycle", effectiveSub.getBillingCycle().name());
+        details.put("active", effectiveSub.getPlan() != Subscription.Plan.FREE);
+        details.put("status", dbSub.getStatus().name());
+        details.put("cancelAtCycleEnd", dbSub.isCancelAtCycleEnd());
+        details.put("currentPeriodStart", dbSub.getCurrentPeriodStart());
+        details.put("currentPeriodEnd", dbSub.getCurrentPeriodEnd());
 
         // Limits
         Map<String, Object> limits = new HashMap<>();
-        limits.put("pdfGeneration", sub.getDailyPdfGenerationLimit());
-        limits.put("imageGeneration", sub.getDailyImageGenerationLimit());
-        limits.put("pdfAttachment", sub.getDailyPdfAttachmentLimit());
-        limits.put("imageAttachment", sub.getDailyImageAttachmentLimit());
+        limits.put("pdfGeneration", effectiveSub.getDailyPdfGenerationLimit());
+        limits.put("imageGeneration", effectiveSub.getDailyImageGenerationLimit());
+        limits.put("pdfAttachment", effectiveSub.getDailyPdfAttachmentLimit());
+        limits.put("imageAttachment", effectiveSub.getDailyImageAttachmentLimit());
         details.put("limits", limits);
 
         // Today's usage
@@ -75,77 +139,97 @@ public class SubscriptionService {
 
         // Remaining
         Map<String, Object> remaining = new HashMap<>();
-        remaining.put("pdfGeneration", Math.max(0, sub.getDailyPdfGenerationLimit() - usage.getPdfsGenerated()));
-        remaining.put("imageGeneration", Math.max(0, sub.getDailyImageGenerationLimit() - usage.getImagesGenerated()));
-        remaining.put("pdfAttachment", sub.getDailyPdfAttachmentLimit() == Integer.MAX_VALUE
+        remaining.put("pdfGeneration", Math.max(0, effectiveSub.getDailyPdfGenerationLimit() - usage.getPdfsGenerated()));
+        remaining.put("imageGeneration", Math.max(0, effectiveSub.getDailyImageGenerationLimit() - usage.getImagesGenerated()));
+        remaining.put("pdfAttachment", effectiveSub.getDailyPdfAttachmentLimit() == Integer.MAX_VALUE
                 ? "unlimited"
-                : Math.max(0, sub.getDailyPdfAttachmentLimit() - usage.getPdfsAttached()));
-        remaining.put("imageAttachment", sub.getDailyImageAttachmentLimit() == Integer.MAX_VALUE
+                : Math.max(0, effectiveSub.getDailyPdfAttachmentLimit() - usage.getPdfsAttached()));
+        remaining.put("imageAttachment", effectiveSub.getDailyImageAttachmentLimit() == Integer.MAX_VALUE
                 ? "unlimited"
-                : Math.max(0, sub.getDailyImageAttachmentLimit() - usage.getImagesAttached()));
+                : Math.max(0, effectiveSub.getDailyImageAttachmentLimit() - usage.getImagesAttached()));
         details.put("remaining", remaining);
 
         return details;
     }
 
     /**
-     * Purchase/upgrade a subscription plan.
-     * For now, this directly changes the plan without real payment integration.
-     * Payment gateway (Razorpay) will be added in a future phase.
+     * Initializes a checkout by creating a Razorpay Subscription and storing it locally in CREATED state.
      */
     @Transactional
-    public Subscription purchasePlan(String email, String planName, String cycleName) {
+    public String createCheckoutSession(String email, String planName, String cycleName) {
         User user = findUserByEmail(email);
-        Subscription.Plan plan = Subscription.Plan.valueOf(planName.toUpperCase());
-        Subscription.BillingCycle cycle = Subscription.BillingCycle.valueOf(cycleName.toUpperCase());
-
-        Subscription sub = subscriptionRepository.findByUserEmail(email)
-                .orElse(null);
-
-        if (sub == null) {
-            sub = new Subscription(user, plan, cycle);
-        } else {
-            sub.setPlan(plan);
-            sub.setBillingCycle(cycle);
-            sub.setStartDate(LocalDateTime.now());
-            sub.setActive(true);
-
-            if (plan != Subscription.Plan.FREE) {
-                if (cycle == Subscription.BillingCycle.MONTHLY) {
-                    sub.setEndDate(LocalDateTime.now().plusMonths(1));
-                } else {
-                    sub.setEndDate(LocalDateTime.now().plusYears(1));
-                }
-            } else {
-                sub.setEndDate(null);
-            }
+        String razorpayPlanId = getRazorpayPlanId(planName, cycleName);
+        
+        String razorpayCustomerId = razorpayService.getOrCreateCustomer(user);
+        
+        // Update user's razorpay customer ID if not set
+        if (user.getRazorpayCustomerId() == null) {
+            user.setRazorpayCustomerId(razorpayCustomerId);
+            userRepository.save(user);
         }
 
-        // Sync plan to User entity for quick lookups
-        user.setSubscriptionPlan(User.SubscriptionPlan.valueOf(plan.name()));
-        userRepository.save(user);
+        // Check if user already has an ACTIVE subscription.
+        // If they do, they should be routed to an upgrade/downgrade flow instead (Not implemented in this basic checkout)
+        Subscription existingSub = subscriptionRepository.findByUserEmail(email).orElse(null);
+        if (existingSub != null && existingSub.getStatus() == Subscription.SubscriptionStatus.ACTIVE && existingSub.getPlan() != Subscription.Plan.FREE) {
+            throw new IllegalStateException("You already have an active subscription. Please cancel it before starting a new one.");
+        }
 
-        return subscriptionRepository.save(sub);
+        com.razorpay.Subscription rzpSub = razorpayService.createSubscription(razorpayCustomerId, razorpayPlanId);
+        
+        Subscription.Plan internalPlan = Subscription.Plan.valueOf(planName.toUpperCase());
+        Subscription.BillingCycle internalCycle = Subscription.BillingCycle.valueOf(cycleName.toUpperCase());
+
+        Subscription sub = existingSub;
+        if (sub == null) {
+            sub = new Subscription(user, internalPlan, internalCycle);
+        } else {
+            sub.setPlan(internalPlan);
+            sub.setBillingCycle(internalCycle);
+        }
+        
+        sub.setRazorpaySubscriptionId(rzpSub.get("id"));
+        sub.setRazorpayPlanId(razorpayPlanId);
+        sub.setStatus(Subscription.SubscriptionStatus.CREATED);
+        sub.setStartDate(LocalDateTime.now());
+        sub.setCancelAtCycleEnd(false);
+
+        subscriptionRepository.save(sub);
+        
+        return rzpSub.get("id");
     }
 
     /**
-     * Cancel subscription — downgrades to FREE plan.
+     * Cancels subscription securely.
      */
     @Transactional
-    public Subscription cancelSubscription(String email) {
-        return purchasePlan(email, "FREE", "MONTHLY");
+    public void cancelSubscription(String email) {
+        Subscription sub = subscriptionRepository.findByUserEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("No subscription found"));
+
+        if (sub.getPlan() == Subscription.Plan.FREE || sub.getRazorpaySubscriptionId() == null) {
+            throw new IllegalStateException("You do not have an active paid subscription to cancel.");
+        }
+        
+        if (sub.isCancelAtCycleEnd() || sub.getStatus() == Subscription.SubscriptionStatus.CANCELLATION_SCHEDULED) {
+            throw new IllegalStateException("Your subscription is already scheduled for cancellation.");
+        }
+
+        // Tell Razorpay to cancel at cycle end
+        razorpayService.cancelSubscriptionAtCycleEnd(sub.getRazorpaySubscriptionId());
+        
+        // Update Local State
+        sub.setStatus(Subscription.SubscriptionStatus.CANCELLATION_SCHEDULED);
+        sub.setCancelAtCycleEnd(true);
+        subscriptionRepository.save(sub);
     }
 
     // ════════════════════════════════════════════════════════════════════════
     // USAGE TRACKING & RATE LIMITING
     // ════════════════════════════════════════════════════════════════════════
 
-    /**
-     * Check if the user can perform a specific action based on their plan limits.
-     * Returns true if within limits, false if quota exceeded.
-     */
     public boolean canPerformAction(String email, String action) {
-        Subscription sub = getSubscription(email);
+        Subscription sub = getSubscription(email); // Uses strictly evaluated effective subscription
         UsageTracker usage = getOrCreateTodayUsage(email);
 
         return switch (action.toLowerCase()) {
@@ -158,9 +242,6 @@ public class SubscriptionService {
         };
     }
 
-    /**
-     * Get remaining quota for a specific action.
-     */
     public int getRemainingQuota(String email, String action) {
         Subscription sub = getSubscription(email);
         UsageTracker usage = getOrCreateTodayUsage(email);
@@ -178,10 +259,6 @@ public class SubscriptionService {
         };
     }
 
-    /**
-     * Increment usage counter for a specific action.
-     * Call this AFTER successfully performing the action.
-     */
     @Transactional
     public void incrementUsage(String email, String action) {
         UsageTracker usage = getOrCreateTodayUsage(email);
@@ -197,9 +274,6 @@ public class SubscriptionService {
         usageTrackerRepository.save(usage);
     }
 
-    /**
-     * Increment usage for multiple attachments at once (e.g., 3 PDFs uploaded).
-     */
     @Transactional
     public void incrementUsageBulk(String email, String action, int count) {
         UsageTracker usage = getOrCreateTodayUsage(email);
@@ -212,9 +286,6 @@ public class SubscriptionService {
         usageTrackerRepository.save(usage);
     }
 
-    /**
-     * Get today's usage statistics for the API response.
-     */
     public Map<String, Object> getUsageStats(String email) {
         Subscription sub = getSubscription(email);
         UsageTracker usage = getOrCreateTodayUsage(email);
@@ -246,9 +317,6 @@ public class SubscriptionService {
     // INTERNAL HELPERS
     // ════════════════════════════════════════════════════════════════════════
 
-    /**
-     * Get or create today's usage record for the user.
-     */
     private UsageTracker getOrCreateTodayUsage(String email) {
         LocalDate today = LocalDate.now();
         return usageTrackerRepository.findByUserEmailAndUsageDate(email, today)
@@ -259,9 +327,6 @@ public class SubscriptionService {
                 });
     }
 
-    /**
-     * Create a default FREE subscription for a new user.
-     */
     private Subscription createDefaultSubscription(String email) {
         User user = findUserByEmail(email);
         Subscription sub = new Subscription(user, Subscription.Plan.FREE, Subscription.BillingCycle.MONTHLY);

@@ -8,6 +8,10 @@ export interface SubscriptionDetails {
   plan: 'FREE' | 'PLUS' | 'PRO';
   billingCycle: 'MONTHLY' | 'YEARLY';
   active: boolean;
+  status: 'CREATED' | 'ACTIVE' | 'CANCELLATION_SCHEDULED' | 'CANCELLED' | 'HALTED' | 'PENDING' | 'COMPLETED';
+  cancelAtCycleEnd?: boolean;
+  currentPeriodStart?: string;
+  currentPeriodEnd?: string;
   startDate: string;
   endDate: string | null;
   monthlyPriceInr: number;
@@ -55,19 +59,14 @@ export async function getSubscription(): Promise<SubscriptionDetails> {
   return data;
 }
 
-export async function purchasePlan(
+export async function createCheckoutSession(
   plan: 'FREE' | 'PLUS' | 'PRO',
   billingCycle: 'MONTHLY' | 'YEARLY' = 'MONTHLY'
 ): Promise<{
   message: string;
-  plan: string;
-  billingCycle: string;
-  active: boolean;
-  startDate: string;
-  endDate: string | null;
-  monthlyPriceInr: number;
+  subscription_id: string;
 }> {
-  const { data } = await apiClient.post('/subscription/purchase', { plan, billingCycle });
+  const { data } = await apiClient.post('/subscription/checkout', { plan, billingCycle });
   return data;
 }
 

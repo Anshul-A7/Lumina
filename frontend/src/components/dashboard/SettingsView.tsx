@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Settings2, Palette, Volume2, Globe, Brain, Trash2, Loader2 } from "lucide-react";
 import { AuthService } from "@/services/auth.service";
 import { UserService, UserSettings } from "@/services/user.service";
-import { getSubscription } from "@/lib/subscription.service";
+import { getSubscription, cancelSubscription, SubscriptionDetails } from "@/lib/subscription.service";
 import { useTheme } from "next-themes";
 
 export default function SettingsView() {
@@ -13,7 +13,9 @@ export default function SettingsView() {
   const [defaultModel, setDefaultModel] = useState("gpt-4o");
   const [autoTitle, setAutoTitle] = useState(true);
   const [userPlan, setUserPlan] = useState("Free Account");
+  const [subscription, setSubscription] = useState<SubscriptionDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCancelling, setIsCancelling] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -31,6 +33,7 @@ export default function SettingsView() {
       try {
         const sub = await getSubscription();
         if (sub && sub.plan) {
+           setSubscription(sub);
            setUserPlan(sub.plan === "FREE" ? "Free Account" : (sub.plan === "PLUS" ? "Plus Account" : "Pro Account"));
         }
       } catch (err) {
@@ -74,6 +77,25 @@ export default function SettingsView() {
     const newAutoTitle = e.target.checked;
     setAutoTitle(newAutoTitle);
     saveSettings({ autoTitle: newAutoTitle });
+  };
+
+  const handleCancelSubscription = async () => {
+    if (confirm("Are you sure you want to cancel your subscription? You will continue to have access until the end of your current billing cycle.")) {
+      try {
+        setIsCancelling(true);
+        const res = await cancelSubscription();
+        alert(res.message || "Subscription scheduled for cancellation.");
+        const sub = await getSubscription();
+        setSubscription(sub);
+        if (sub && sub.plan) {
+           setUserPlan(sub.plan === "FREE" ? "Free Account" : (sub.plan === "PLUS" ? "Plus Account" : "Pro Account"));
+        }
+      } catch (err: any) {
+        alert(err.response?.data?.error || "Failed to cancel subscription.");
+      } finally {
+        setIsCancelling(false);
+      }
+    }
   };
 
   const handleDeleteAccount = async () => {
@@ -173,15 +195,33 @@ export default function SettingsView() {
               <p className="text-[11px] text-muted-foreground m-0">
                 {userPlan === "Free Account" ? "You are on the free plan with limited PDF and image generation." : "You have access to premium features, increased limits, and faster models."}
               </p>
+              {subscription?.cancelAtCycleEnd && subscription?.currentPeriodEnd && (
+                <p className="text-[11px] text-pink-500 font-medium mt-1">
+                  Your subscription will end on {new Date(subscription.currentPeriodEnd).toLocaleDateString()}
+                </p>
+              )}
             </div>
-            {userPlan === "Free Account" && (
-              <button 
-                onClick={() => window.dispatchEvent(new CustomEvent('lumina:switch_tab', { detail: 'get-plus' }))}
-                className="bg-foreground text-background text-[12px] font-medium px-4 py-1.5 rounded-lg hover:bg-foreground/80 transition-colors"
-              >
-                Upgrade Plan
-              </button>
-            )}
+            
+            <div className="flex gap-2">
+              {userPlan === "Free Account" ? (
+                <button 
+                  onClick={() => window.dispatchEvent(new CustomEvent('lumina:switch_tab', { detail: 'get-plus' }))}
+                  className="bg-foreground text-background text-[12px] font-medium px-4 py-1.5 rounded-lg hover:bg-foreground/80 transition-colors"
+                >
+                  Upgrade Plan
+                </button>
+              ) : (
+                !subscription?.cancelAtCycleEnd && (
+                  <button 
+                    onClick={handleCancelSubscription}
+                    disabled={isCancelling}
+                    className="bg-destructive/10 text-destructive border border-destructive/20 text-[12px] font-medium px-4 py-1.5 rounded-lg hover:bg-destructive/20 transition-colors disabled:opacity-50"
+                  >
+                    {isCancelling ? "Cancelling..." : "Cancel Subscription"}
+                  </button>
+                )
+              )}
+            </div>
           </div>
         </div>
 

@@ -11,5 +11,7 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
 
     Optional<Subscription> findByUserId(Long userId);
 
+    Optional<Subscription> findByRazorpaySubscriptionId(String razorpaySubscriptionId);
+
     boolean existsByUserEmail(String email);
 }
