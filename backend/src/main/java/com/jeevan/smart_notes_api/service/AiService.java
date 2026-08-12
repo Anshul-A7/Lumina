@@ -736,7 +736,7 @@ public class AiService {
     // UTILITY: PDF Request Detection
     // ════════════════════════════════════════════════════════════════════════
 
-    private boolean isPdfGenerationRequest(String text) {
+    public boolean isPdfGenerationRequest(String text) {
         if (text == null) return false;
         String lower = text.toLowerCase();
         return lower.contains("generate a pdf") ||

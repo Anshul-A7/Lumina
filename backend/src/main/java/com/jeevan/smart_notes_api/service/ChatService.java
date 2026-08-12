@@ -164,6 +164,11 @@ public class ChatService {
         // Extract and save any generated images
         extractAndSaveImages(aiResponseText, email);
 
+        // Fallback: If user explicitly asked for a PDF, but AI forgot the <pdf_document> tags, we inject them manually
+        if (aiService.isPdfGenerationRequest(content) && !aiResponseText.contains("<pdf_document")) {
+            aiResponseText = "<pdf_document title=\"Generated Document\">\n" + aiResponseText + "\n</pdf_document>";
+        }
+
         // Save AI response
         ChatMessage aiMessage = new ChatMessage(
                 session,
