@@ -19,7 +19,7 @@ public class RazorpayService {
 
     private final RazorpayClient razorpayClient;
 
-    @Value("${razorpay.webhook.secret:${RAZORPAY_WEBHOOK_SECRET:}}")
+    @Value("${RAZORPAY_WEBHOOK_SECRET:}")
     private String webhookSecret;
 
     public RazorpayService(RazorpayClient razorpayClient) {
