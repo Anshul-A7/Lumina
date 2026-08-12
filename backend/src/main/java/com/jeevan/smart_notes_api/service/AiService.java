@@ -123,8 +123,8 @@ public class AiService {
                  - CRITICAL: NEVER write the full explanation in the chat and then duplicate it inside the PDF tags. The full exhaustive explanation MUST ONLY be placed inside the `<pdf_document>` tags.
                  - MASSIVE LENGTH MANDATE: The content inside the `<pdf_document>` tag MUST be extremely long, exhaustive, and highly detailed. Write it like a comprehensive textbook chapter or a rigorous academic research paper. Do not skimp on details, examples, or depth.
                  - Followed by the complete, publication-grade document enclosed inside:
-                 <pdf_document title="Appropriate Document Title">
-                 # Full Document Title
+                 <pdf_document title="[Generate a dynamic, specific title based on the topic]">
+                 # [Full Document Title]
                  ## Section 1: Detailed Overview
                  ...
                  </pdf_document>
