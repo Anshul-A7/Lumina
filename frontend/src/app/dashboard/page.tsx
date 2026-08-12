@@ -27,7 +27,8 @@ import {
   MessageSquarePlus,
   X,
   Download,
-  Users
+  Users,
+  Bell
 } from "lucide-react";
 import { AuthService } from "@/services/auth.service";
 import * as ChatService from "@/lib/chat.service";
@@ -1319,8 +1320,8 @@ function DashboardContent() {
       <div
         key={session.id}
         className={`relative px-3 py-2.5 rounded-xl transition-all flex items-center justify-between group ${isSelected
-            ? "bg-black text-white shadow-sm"
-            : "hover:bg-foreground/[0.04] text-foreground cursor-pointer"
+          ? "bg-black text-white shadow-sm"
+          : "hover:bg-foreground/[0.04] text-foreground cursor-pointer"
           }`}
         onClick={() => {
           if (!isEditing) selectSession(session);
