@@ -53,6 +53,38 @@ export function sanitizeMermaid(rawChart: string): string {
       }
     }
 
+    // Auto-quote double-parenthesis nodes (Circle)
+    // e.g. A((User Mode)) -> A(("User Mode"))
+    line = line.replace(/([a-zA-Z0-9_-]+)\(\(([^"\)\n]+)\)\)/g, (match, id, text) => {
+      const trimmedText = text.trim();
+      return `${id}(("${trimmedText.replace(/"/g, "'")}"))`;
+    });
+
+    // Auto-quote stadium nodes
+    // e.g. A([Stadium]) -> A(["Stadium"])
+    line = line.replace(/([a-zA-Z0-9_-]+)\(\[([^"\]\n]+)\]\)/g, (match, id, text) => {
+      const trimmedText = text.trim();
+      return `${id}(["${trimmedText.replace(/"/g, "'")}"])`;
+    });
+
+    // Auto-quote database nodes
+    // e.g. A[(Database)] -> A[("(Database)")]
+    line = line.replace(/([a-zA-Z0-9_-]+)\[\(([^"\)\n]+)\)\]/g, (match, id, text) => {
+      const trimmedText = text.trim();
+      return `${id}[("${trimmedText.replace(/"/g, "'")}")]`;
+    });
+
+    // Auto-quote curly brackets (Rhombus / Hexagon)
+    // e.g. A{Condition} -> A{"Condition"} or A{{Hexagon}} -> A{{"Hexagon"}}
+    line = line.replace(/([a-zA-Z0-9_-]+)\{\{([^"\}\n]+)\}\}/g, (match, id, text) => {
+      const trimmedText = text.trim();
+      return `${id}{{"${trimmedText.replace(/"/g, "'")}"}}`;
+    });
+    line = line.replace(/([a-zA-Z0-9_-]+)\{([^"\}\n]+)\}/g, (match, id, text) => {
+      const trimmedText = text.trim();
+      return `${id}{"${trimmedText.replace(/"/g, "'")}"}`;
+    });
+
     // Auto-quote square bracket node labels that contain spaces or special chars
     // e.g. A[User Space] -> A["User Space"]
     line = line.replace(/([a-zA-Z0-9_-]+)\[([^"\]\n]+)\]/g, (match, id, text) => {
@@ -67,12 +99,14 @@ export function sanitizeMermaid(rawChart: string): string {
       return `${id}("${trimmedText.replace(/"/g, "'")}")`;
     });
 
-    // Clean up duplicate quotes like [""text""] -> ["text"]
+    // Clean up duplicate quotes
     line = line
       .replace(/\[\s*\"+/g, '["')
       .replace(/\"+\s*\]/g, '"]')
       .replace(/\(\s*\"+/g, '("')
-      .replace(/\"+\s*\)/g, '")');
+      .replace(/\"+\s*\)/g, '")')
+      .replace(/\{\s*\"+/g, '{"')
+      .replace(/\"+\s*\}/g, '"}');
 
     sanitizedLines.push(line);
   }
