@@ -168,7 +168,13 @@ export default function CollaborationView({ onOpenDocument }: { onOpenDocument: 
         <div className="p-4 border-b border-gray-200 flex justify-between items-center">
           <h2 className="font-bold text-gray-800">Workspaces</h2>
           <button 
-            onClick={() => setIsCreating(true)} 
+            onClick={() => {
+              if (userPlan === "FREE") {
+                toast.error("Workspaces are a premium feature. Please upgrade to the Plus plan to collaborate.");
+                return;
+              }
+              setIsCreating(true);
+            }} 
             className="p-1 rounded hover:bg-gray-100"
             title="Create Workspace"
           >
@@ -299,7 +305,13 @@ export default function CollaborationView({ onOpenDocument }: { onOpenDocument: 
             <p>Select a workspace or create a new one to collaborate.</p>
             <div className="flex items-center gap-3 mt-4">
               <button 
-                onClick={() => setIsCreating(true)} 
+                onClick={() => {
+                  if (userPlan === "FREE") {
+                    toast.error("Workspaces are a premium feature. Please upgrade to the Plus plan to collaborate.");
+                    return;
+                  }
+                  setIsCreating(true);
+                }} 
                 className="px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-colors bg-black text-white hover:bg-gray-800"
                 title="Create Workspace"
               >

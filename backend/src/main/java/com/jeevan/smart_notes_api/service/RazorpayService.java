@@ -38,8 +38,8 @@ public class RazorpayService {
             JSONObject customerRequest = new JSONObject();
             customerRequest.put("name", user.getUsername());
             customerRequest.put("email", user.getEmail());
-            // Fail if user already has this email on razorpay? Razorpay handles it or creates duplicate customer. 
-            // Better to let Razorpay create it.
+            // fail_existing: 0 tells Razorpay to return the existing customer if the email matches
+            customerRequest.put("fail_existing", 0); 
 
             Customer customer = razorpayClient.customers.create(customerRequest);
             return customer.get("id");
