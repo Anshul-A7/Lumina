@@ -85,12 +85,14 @@ public class SubscriptionService {
         // If it's cancelled/halted/completed and past the period end date, it's effectively FREE.
         if (sub.getPlan() != Subscription.Plan.FREE) {
             boolean isExpired = sub.getCurrentPeriodEnd() != null && LocalDateTime.now().isAfter(sub.getCurrentPeriodEnd());
+            boolean isPendingOrCreated = sub.getStatus() == Subscription.SubscriptionStatus.CREATED ||
+                                         sub.getStatus() == Subscription.SubscriptionStatus.PENDING;
             boolean isCancelledOrHalted = sub.getStatus() == Subscription.SubscriptionStatus.CANCELLED ||
                                           sub.getStatus() == Subscription.SubscriptionStatus.HALTED ||
                                           sub.getStatus() == Subscription.SubscriptionStatus.COMPLETED;
             
             // If they scheduled cancellation, they keep access UNTIL currentPeriodEnd
-            if (isCancelledOrHalted || (sub.getStatus() == Subscription.SubscriptionStatus.CANCELLATION_SCHEDULED && isExpired)) {
+            if (isPendingOrCreated || isCancelledOrHalted || (sub.getStatus() == Subscription.SubscriptionStatus.CANCELLATION_SCHEDULED && isExpired)) {
                 // Return a temporary FREE subscription representation for authorization purposes,
                 // without deleting their history from the database.
                 User user = findUserByEmail(email);
