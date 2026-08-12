@@ -180,7 +180,20 @@ public class SubscriptionService {
             throw new IllegalStateException("You already have an active subscription. Please cancel it before starting a new one.");
         }
 
-        com.razorpay.Subscription rzpSub = razorpayService.createSubscription(razorpayCustomerId, razorpayPlanId);
+        com.razorpay.Subscription rzpSub = null;
+        try {
+            rzpSub = razorpayService.createSubscription(razorpayCustomerId, razorpayPlanId);
+        } catch (Exception e) {
+            // If the subscription fails, it's highly likely the user regenerated their Razorpay API keys
+            // for a new account, meaning the cached customer ID in Postgres is invalid for the new keys.
+            // Self-heal by clearing the invalid ID, creating a new one, and retrying.
+            user.setRazorpayCustomerId(null);
+            razorpayCustomerId = razorpayService.getOrCreateCustomer(user);
+            user.setRazorpayCustomerId(razorpayCustomerId);
+            userRepository.save(user);
+            
+            rzpSub = razorpayService.createSubscription(razorpayCustomerId, razorpayPlanId);
+        }
         
         Subscription.Plan internalPlan = Subscription.Plan.valueOf(planName.toUpperCase());
         Subscription.BillingCycle internalCycle = Subscription.BillingCycle.valueOf(cycleName.toUpperCase());
